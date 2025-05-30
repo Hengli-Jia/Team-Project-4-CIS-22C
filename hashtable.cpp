@@ -33,7 +33,7 @@ int HashTable::linearProbe(const std::string& key, int& probeLength) const {
     }
 }
 
-void HashTable::insert(const Puzzle& puzzle) {
+int HashTable::insert(const Puzzle& puzzle) {
     // Rehash if load factor exceeds threshold
     if (static_cast<double>(size) / capacity > 0.7) {
         rehash();
@@ -56,8 +56,7 @@ void HashTable::insert(const Puzzle& puzzle) {
     }
     table[index] = puzzle;
     
-    // Insert into BST with both key and index
-    bst.insert(puzzle.getKey(), index);  // BST's insert method
+    return index;
 }
 
 Puzzle* HashTable::search(const std::string& key) {
