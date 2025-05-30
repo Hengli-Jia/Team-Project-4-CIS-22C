@@ -14,7 +14,7 @@ public:
     HashTable(int initialCapacity = 10);
     
     // Insert puzzle into hash table and BST
-    void insert(const Puzzle& puzzle);
+    int insert(const Puzzle& puzzle);
     
     // search puzzle by key
     Puzzle* search(const std::string& key);
@@ -27,7 +27,6 @@ public:
 
 private:
     std::vector<Puzzle> table;      // Hash table array
-    BST bst;                        // Binary Search Tree
     int capacity;                   // Total capacity
     int size;                       // Current size
     int collisionCount;             // Number of collisions
