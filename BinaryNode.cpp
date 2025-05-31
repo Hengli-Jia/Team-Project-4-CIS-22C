@@ -13,7 +13,7 @@ public:
   BinarNodde (left, right, key, index) { this -> left = leftl; this -> right = right; this -> key = key; this -> index = index;}
   
 int* setLeft(BinaryNode* Ptr) {this -> left = Ptr;}
-  int* setRight(BinaryNode* Ptr) {this -> left = Ptr;}
+  int* setRight(BinaryNode* Ptr) {this -> right = Ptr;}
   int* getLeft() {return left;}
   int* getRight() { return right;}
   int setKey(const& Puzzle puzzle) {puzzle -> key = key;}
