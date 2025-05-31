@@ -11,8 +11,8 @@ private:
 public: 
   void insertBST (const& string newPuzzle) { _insertBST(newPuzzle) ;}
   void deleteBST (const& string Puzzle) {_deleteBST(Puzzle);}
-  void inorderTraversal (void visit(Puzzle currPuzzle), BinaryNode*) {_inorderTraversal (visit(currPuzzle), BinaryNode*) const;}
-  void indetedTree(BinaryNode*) {_indetedTree(void visit (visit (string&), BinaryNode*, int level) const;} 
+  void inorderTraversal (void visit(Puzzle currPuzzle), BinaryNode*) {_inorderTraversal (visit, BinaryNode*);}
+  void indetedTree(void visit (Puzzle currPuzzle), BinaryNode*) {_indetedTree(visit , BinaryNode*, int level);} 
 };
 
 #endif
