@@ -1,6 +1,8 @@
 # ifndef "BINARYNODE.h"
 # define "BINARYNODE.h"
 
+# include <iostream>
+
 class* BinaryNode {
 private:
   int* left;
