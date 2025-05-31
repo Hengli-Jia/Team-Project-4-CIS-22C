@@ -1,5 +1,8 @@
 #ifndef "BST.h"
 #define "BST.h"
+
+# include <iosteam>
+
 class BinaryTree {
 private:
   BinaryNode* nodePtr; 
