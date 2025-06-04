@@ -17,95 +17,84 @@ int HashTable::hashFunction(const std::string& key) const {
 
 
 int HashTable::linearProbe(int hashcode) const {
-    int index = hashcode % capacity;
-    int probeLength = 1;
-    while (probeLength <= capacity) {
-        if (table[index].getKey().empty()) {
-             break;
-        }
+    int index = hashcode;
+    int probeCount = 0;
+    while (table[index].getOccupied() == 1) {
         index = (index + 1) % capacity;
-        probeLength++;
-        
-    }
-    if (probeLength > 1) {
-        collisionCount++;
-    }
-    if (probeLength > longestCollisionPath) {
-        longestCollisionPath = probeLength;
+        probeCount++;
+        if (probeCount >= capacity) break; // Table full
     }
     return index;
 }
 
-void HashTable::insert(const Puzzle& puzzle) {
-    if (static_cast<double>(size) / capacity > 0.7) {
+void HashTable::rehash() {
+    int oldCapacity = capacity;
+    capacity *= 2;
+    std::vector<HashNode> oldTable = table;
+    table.clear();
+    table.resize(capacity);
+    size = 0;
+    for (const auto& node : oldTable) {
+        if (node.getOccupied() == 1) {
+            insert(node.getItem());
+        }
+    }
+}
+
+bool HashTable::insert(const HashNode& node) {
+    if (size >= capacity * 0.7) {
         rehash();
     }
-    int hashcode = hashFunction(puzzle.getKey());
-    int probeLength = 0;
-    int index = linearProbe(hashcode);
-
-    if (table[index].getKey().empty()) {
-        size++;
+    std::string key = node.getItem().getKey(); // You must implement getKey() in Puzzle
+    int hashcode = hashFunction(key);
+    int index = hashcode;
+    int collisions = 0;
+    while (table[index].getOccupied() == 1) {
+        if (table[index].getItem().getKey() == key) {
+            // Already exists, do not insert
+            return false;
+        }
+        index = (index + 1) % capacity;
+        collisions++;
     }
-    table[index] = puzzle;
+    HashNode newNode = node;
+    newNode.setOccupied(1);
+    newNode.setCollisions(collisions);
+    table[index] = newNode;
+    size++;
+    if (collisions > longestCollisionPath) longestCollisionPath = collisions;
+    collisionCount += collisions;
+    return true;
 }
 
-Puzzle* HashTable::search(const std::string& key) {
+bool HashTable::search(HashNode& node, const std::string& key) {
     int hashcode = hashFunction(key);
-    int probeLength = 0;
-    int index = linearProbe(hashcode);
-    if (!table[index].getKey().empty()) {
-        return &table[index];
-    }
-    return nullptr;
-}
-
-bool HashTable::remove(const std::string& key) {
-    int hashcode = hashFunction(key);
-    int probeLength = 0;
-    int index = linearProbe(hashcode);
-    if (!table[index].getKey().empty()) {
-        table[index] = Puzzle("", 0); 
-        size--;
-        return true;
+    int index = hashcode;
+    int probeCount = 0;
+    while (table[index].getOccupied() == 1 && probeCount < capacity) {
+        if (table[index].getItem().getKey() == key) {
+            node = table[index];
+            return true;
+        }
+        index = (index + 1) % capacity;
+        probeCount++;
     }
     return false;
 }
 
-void HashTable::rehash() {
-    int newCapacity = capacity * 2;
-    std::vector<Puzzle> newTable(newCapacity);
-
-    int oldCapacity = capacity;
-    auto oldTable = table;
-
-    capacity = newCapacity;
-    table = std::move(newTable);
-    size = 0;
-    collisionCount = 0;
-    longestCollisionPath = 0;
-
-    for (int i = 0; i < oldCapacity; ++i) {
-        if (!oldTable[i].getKey().empty()) {
-            insert(oldTable[i]);
+bool HashTable::remove(HashNode& node, const std::string& key) {
+    int hashcode = hashFunction(key);
+    int index = hashcode;
+    int probeCount = 0;
+    while (table[index].getOccupied() == 1 && probeCount < capacity) {
+        if (table[index].getItem().getKey() == key) {
+            node = table[index];
+            table[index].setOccupied(0);
+            size--;
+            return true;
         }
+        index = (index + 1) % capacity;
+        probeCount++;
     }
-}
-
-void HashTable::printStats() const {
-    std::cout << "HashTable Statistics:\n";
-    std::cout << " - Capacity: " << capacity << "\n";
-    std::cout << " - Size: " << size << "\n";
-    std::cout << " - Load Factor: " << static_cast<double>(size) / capacity << "\n";
-    std::cout << " - Collision Count: " << collisionCount << "\n";
-    std::cout << " - Longest Collision Path: " << longestCollisionPath << "\n";
-}
-
-void HashTable::printAll() const {
-    std::cout << "All Puzzles in HashTable:\n";
-    for (const auto& puzzle : table) {
-        if (!puzzle.getKey().empty()) {
-            std::cout << "Key: " << puzzle.getKey() << ", Value: " << puzzle.getValue() << "\n";
-        }
-    }
+    return false;
 }
