@@ -7,40 +7,45 @@
 #include <functional>
 #include <string>
 
-class HashTable {
+// HashNode definition
+class HashNode {
 public:
-    // Constructor with default initial capacity
-    HashTable(int initialCapacity = 10);
-    
-    // Insert puzzle into hash table
-    void insert(const Puzzle& puzzle);
-    
-    // search puzzle by key
-    Puzzle* search(const std::string& key);
-    
-    // Remove puzzle by key
-    bool remove(const std::string& key);
-    
-    // Print statistics
-    void printStats() const;
+    HashNode() : occupied(0), collisions(0) {}
+    HashNode(const Puzzle& anItem) : item(anItem), occupied(0), collisions(0) {}
+    HashNode(const Puzzle& anItem, int ocp, int nCol)
+        : item(anItem), occupied(ocp), collisions(nCol) {}
 
-    // print all puzzles in the hash table
-    void printAll() const;
+    void setItem(const Puzzle& anItem) { item = anItem; }
+    void setOccupied(int ocp) { occupied = ocp; }
+    void setCollisions(int nCol) { collisions = nCol; }
+
+    Puzzle getItem() const { return item; }
+    int getOccupied() const { return occupied; }
+    int getCollisions() const { return collisions; }
 
 private:
-    std::vector<Puzzle> table;      // Hash table array
-    int capacity;                   // Total capacity
-    int size;                       // Current size
-    int collisionCount;             // Number of collisions
-    int longestCollisionPath;       // Longest probe sequence
+    Puzzle item;
+    int occupied;   // 1 -> occupied, 0 -> empty 
+    int collisions; // number of collisions
+};
 
-    // Hash function to compute index
+class HashTable {
+public:
+    HashTable(int initialCapacity = 10);
+
+    bool insert(const HashNode& node);
+    bool search(HashNode& node, const std::string& key);
+    bool remove(HashNode& node, const std::string& key);
+
+private:
+    std::vector<HashNode> table; 
+    int size;     
+    int capacity;
+    int collisionCount;
+    int longestCollisionPath;
+
     int hashFunction(const std::string& key) const;
-    
-    // Linear probing to resolve collisions
     int linearProbe(int hashcode) const;
-    
-    // Resize and rehash when load factor is high
     void rehash();
 };
 
