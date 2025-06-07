@@ -2,7 +2,7 @@
 # include <iostream>
 # include "Puzzle.h"
 
-class* BinaryNode {
+class BinaryNode {
 private:
   Puzzle puzzle;
   int* left;
