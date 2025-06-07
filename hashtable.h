@@ -1,17 +1,14 @@
-// hashtable.h
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
 #include "puzzle.h"
-#include <vector>
-#include <functional>
 #include <string>
 
 // HashNode definition
 class HashNode {
 public:
     HashNode() : occupied(0), collisions(0) {}
-    HashNode(const Puzzle& anItem) : item(anItem), occupied(0), collisions(0) {}
+    HashNode(const Puzzle& anItem) : item(anItem), occupied(1), collisions(0) {}
     HashNode(const Puzzle& anItem, int ocp, int nCol)
         : item(anItem), occupied(ocp), collisions(nCol) {}
 
@@ -25,27 +22,41 @@ public:
 
 private:
     Puzzle item;
-    int occupied;   // 1 -> occupied, 0 -> empty 
+    int occupied;   // 1 -> occupied, 0 -> empty, -1 -> deleted
     int collisions; // number of collisions
 };
 
+// HashTable definition
 class HashTable {
 public:
-    HashTable(int initialCapacity = 10);
+    // Constructor: initializes the hash table with a given capacity
+    HashTable(int initialCapacity = 50);
+    // Destructor: releases allocated memory
+    ~HashTable();
 
-    bool insert(const HashNode& node);
-    bool search(HashNode& node, const std::string& key);
-    bool remove(HashNode& node, const std::string& key);
+    int getSize() const { return size; }
+    int getCapacity() const { return capacity; }
+    double getLoadFactor() const { return 100.0 * size / capacity; }
+    bool isEmpty() const { return size == 0; }
+    bool isFull() const { return size == capacity; }
+
+    // Insert a Puzzle item into the hash table
+    bool insert(const Puzzle& item);
+    // Remove a Puzzle item by key, output the removed item
+    bool remove(Puzzle& itemOut, const std::string& key);
+    // Search for a Puzzle item by key, output the found item
+    bool search(Puzzle& itemOut, const std::string& key) const;
 
 private:
-    std::vector<HashNode> table; 
-    int size;     
-    int capacity;
-    int collisionCount;
-    int longestCollisionPath;
+    HashNode* table;   // Pointer to the array of hash nodes
+    int size;          // Number of items in the table
+    int capacity;      // Size of the table
 
+    // Hash function for string keys
     int hashFunction(const std::string& key) const;
+    // Linear probing for collision resolution
     int linearProbe(int hashcode) const;
+    // Rehash the table when load factor is too high
     void rehash();
 };
 
