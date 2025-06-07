@@ -4,8 +4,8 @@
 # include <iosteam>
 
 class BinaryTree {
-private:
-  BinaryNode* nodePtr; 
+private: 
+  BinaryNode* rootPtr;
   int count;
   void _insertBST (const& Puzzle item) const;
   void _deleteBST (const& Puzzle item) const;
