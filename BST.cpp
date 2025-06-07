@@ -16,6 +16,7 @@ BinaryNode* _insertBST (BinaryNode* nodePtr, BinaryNode* newPtr) const {
     pwalk -> setLeft(newPtr);
   else 
     pwalk -> setRight(newPtr);
+  count ++;
   return newPtr;
 }
 
