@@ -23,6 +23,6 @@ public:
   int setIndex(const& Puzzle puzzle) {puzzle -> index = index;}
   int getIndex() { return index;}
 
-  bool isLeaf () { return this -> left == nullptr && this -> right = nullptr;}
+  bool isLeaf () { return this -> left == nullptr && this -> right == nullptr;}
 
 }
