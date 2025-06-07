@@ -19,9 +19,9 @@ const void displayTeamMembers();
 void help();
 bool exit();
 
-void hDisplay(Puzzle &);
-void vDisplay(Puzzle &);
-void iDisplay(Puzzle &, int);
+void horiDisplay(Puzzle &);
+void vertiDisplay(Puzzle &);
+void indentedDisplay(Puzzle &, int);
 
 int main() 
 {
@@ -113,17 +113,17 @@ void menu(HashTable &HashTable, BinaryTree &bst)
     */
 }
 
-void hDisplay (Puzzle & item) 
+void horitDisplay (Puzzle & item) 
 {
     cout << item << " ";
 }
 
-void vDisplay (Puzzle &item) 
+void vertiDisplay (Puzzle &item) 
 {
     cout << item << endl;
 }
 
-void iDisplay(Puzzle &item, int level)
+void indentedDisplay(Puzzle &item, int level)
 {
     for (int i = 1; i < level; i++)
         cout << "..";
