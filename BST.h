@@ -1,5 +1,5 @@
-#ifndef "BST.h"
-#define "BST.h"
+#ifndef BST.H
+#define BST.H
 
 # include <iosteam>
 
