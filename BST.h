@@ -1,7 +1,8 @@
 #ifndef BST.H
 #define BST.H
 
-# include <iosteam>
+# include <iostream>
+#include "BinaryNode.cpp"
 
 class BinaryTree {
 private: 
