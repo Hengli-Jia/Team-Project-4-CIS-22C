@@ -6,17 +6,19 @@
 #include "Puzzle.h"
 
 #include "hashtable.h"
-//#include "hashtable.cpp"
+#include "hashtable.cpp"
 
 #include "BST.h"
-//#include "BST.cpp"
+#include "BST.cpp"
 
 #include <iostream>
 
 
-bool inputData(HashTable &hashTable, BinaryTree &bst,string inputFile);
+bool inputData(HashTable &hashTable, BinaryTree &binaryTree,string inputFile);
 
-void menu(HashTable &HashTable, BinaryTree &bst);
+void menu(HashTable &hashTable, BinaryTree &binaryTree);
+
+void displayMenuOptions();
 
 
 const void displayTeamMembers();
@@ -27,31 +29,136 @@ void horiDisplay(string &);
 void vertiDisplay(string &);
 void indentedDisplay(string &, int);
 
+void inputDataFromFile(HashTable& hashTable, BinaryTree& binaryTree);
+void inputSingleEntry(HashTable& hashTable, BinaryTree& binaryTree);
+void deleteEntry(HashTable& hashTable, BinaryTree& binaryTree);
+void findEntry(const HashTable& hashTable, const BinaryTree& binaryTree);
+void listEntrys(const HashTable& hashTable, const BinaryTree& binaryTree);
+void writeToFile(const HashTable& hashTable, const BinaryTree& binaryTree);
+void statistics(const HashTable& hashTable, const BinaryTree& binaryTree);
+
+
+
 int main() 
 {
-    /*
-    HashTable hashTable;
-    BinaryTree bst;
-
-    string inputFile = "puzzles_database.txt";
-
-    inputData(hashTable, bst, inputFile);*/
-
-
     BinaryTree binaryTree;
 
     HashTable hashTable;
 
     menu(hashTable, binaryTree);
+}
 
 
+void menu(HashTable &hashTable, BinaryTree &binaryTree)
+{
+    bool exitMenu = false;
+
+    std::cout << "Welcome to ________" << std::endl;
+
+    char input;
+    
+    while (!exitMenu)
+    {
+        displayMenuOptions();
+
+        std::cout << "Input: ";
+
+        std::cin >> input;
+
+        input = tolower(input);
+
+        switch (input)
+        {
+            case 'e':
+                exitMenu = exit();
+                break;
+            
+            case 'a':
+                inputSingleEntry(hashTable, binaryTree);
+                break;
+            
+            case 'i':
+                inputDataFromFile(hashTable, binaryTree);
+                break;
+            
+            case 'd':
+                deleteEntry(hashTable, binaryTree);
+                break;
+
+            case 'f':
+                findEntry(hashTable, binaryTree);
+                break;
+
+            case 'l':
+                listEntrys(hashTable, binaryTree);
+                break;
+
+            case 'w':
+                writeToFile(hashTable, binaryTree);
+                break;
+
+            case 's':
+                exitMenu = exit();
+                break;
+
+            case 'h':
+                help();
+                break;
+            
+            default:
+                std::cout << "Invalid Input. Try again" << std::endl;
+                break;
+        }
+
+
+        std::cout << std::endl << std::endl;
+    }
+    
+    //will loop until the user is done using the data
+    /*
+    - Add data froma file
+    Missing
+
+    - Add a new data item. 
+    missing
+
+    - Delete data (one item).
+    missing
+
+    - Find and display one element using the primary key.
+    missing
+
+    - List data sorted by the primary key.
+    missing
+
+    - Hidden print option (do not show it in the menu: details are given in Team Project-
+    Part2).
+    missing
+
+    - Write data to a file.
+    missing
+
+    - Statistics (details are given in Team Project-Part2)
+    missing
+
+    - Hidden option (do not show it in the menu): when selected, display the names of the
+    team members.
+    missing
+
+    - Help – to show the menu. Show the menu once, before the loop, then show the menu
+    upon request: “Enter an option (H – for help): ”
+    Done
+
+    - Exit
+    Done
+    */
 }
 
 const void displayTeamMembers() {}
 
 void help() 
 {
-
+    displayMenuOptions();
 }
 
 /*
@@ -85,7 +192,7 @@ out:
     hashtable: hash table that stores the data
     bst: binary search tree that containes the keys to be used in the hashtable
 */
-bool inputData(HashTable &hashTable, BinaryTree &bst,string inputFile)
+bool inputDataFile(HashTable &hashTable, BinaryTree &binaryTree,string inputFile)
 {
     std::cout << "input data function";
     //Input data using puzzles_database.txt and output resulting hashtables and bst in the aprameters
@@ -94,39 +201,7 @@ bool inputData(HashTable &hashTable, BinaryTree &bst,string inputFile)
 }
 
 
-void menu(HashTable &HashTable, BinaryTree &bst)
-{
-    //will loop until the user is done using the data
-    /*
-    - Add data froma file
-    Missing
-    - Add a new data item. 
-    missing
-    - Add data from an input file (get the name of the input file from the user).
-    missing
-    - Delete data (one item).
-    missing
-    - Find and display one element using the primary key.
-    missing
-    - List data sorted by the primary key.
-    missing
-    - Hidden print option (do not show it in the menu: details are given in Team Project-
-    Part2).
-    missing
-    - Write data to a file.
-    missing
-    - Statistics (details are given in Team Project-Part2)
-    missing
-    - Hidden option (do not show it in the menu): when selected, display the names of the
-    team members.
-    missing
-    - Help – to show the menu. Show the menu once, before the loop, then show the menu
-    upon request: “Enter an option (H – for help): ”
-    missing
-    - Exit
-    untested
-    */
-}
+
 
 void horitDisplay (Puzzle & item) 
 {
@@ -145,3 +220,27 @@ void indentedDisplay(Puzzle &item, int level)
     std::cout << level << "). " << item << std::endl;
     
 }
+
+void displayMenuOptions()
+{
+    std::cout << "The menu controls are: " << std::endl;
+        std::cout << "   E to Exit" << std::endl;
+        std::cout << "   A to Add 1 entry" << std::endl;
+        std::cout << "   I to Input data from file" << std::endl;
+        std::cout << "   D to Delete an entry" << std::endl;
+        std::cout << "   F to Find an entry" << std::endl;
+        std::cout << "   L to List" << std::endl;
+        std::cout << "   W to Write data to file" << std::endl;
+        std::cout << "   S for Statistics" << std::endl;
+        std::cout << "   H for help" << std::endl;
+}
+
+
+
+void inputDataFromFile(HashTable& hashTable, BinaryTree& binaryTree){}
+void inputSingleEntry(HashTable& hashTable, BinaryTree& binaryTree){}
+void deleteEntry(HashTable& hashTable, BinaryTree& binaryTree){}
+void findEntry(const HashTable& hashTable, const BinaryTree& binaryTree){}
+void listEntrys(const HashTable& hashTable, const BinaryTree& binaryTree){}
+void writeToFile(const HashTable& hashTable, const BinaryTree& binaryTree){}
+void statistics(const HashTable& hashTable, const BinaryTree& binaryTree){}
