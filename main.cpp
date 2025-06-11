@@ -5,7 +5,7 @@
 //#include "Database.h"
 #include "Puzzle.h"
 #include "hashtable.h"
-//#include "BST.h"
+#include "BST.h"
 
 #include <iostream>
 
@@ -29,7 +29,7 @@ int main()
     HashTable hashTable;
     BinaryTree bst;
 
-    string inputFile = 'puzzles_database.txt';
+    string inputFile = "puzzles_database.txt";
 
     inputData(hashTable, bst, inputFile);
 
@@ -115,18 +115,18 @@ void menu(HashTable &HashTable, BinaryTree &bst)
 
 void horitDisplay (Puzzle & item) 
 {
-    cout << item << " ";
+    std::cout << item << " ";
 }
 
 void vertiDisplay (Puzzle &item) 
 {
-    cout << item << endl;
+    std::cout << item << std::endl;
 }
 
 void indentedDisplay(Puzzle &item, int level)
 {
     for (int i = 1; i < level; i++)
-        cout << "..";
-    cout << level << "). " << item << endl;
+        std::cout << "..";
+    std::cout << level << "). " << item << std::endl;
     
 }

@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 using std::string;
 using std::vector;
@@ -75,6 +76,14 @@ class Puzzle {
   vector<string> themes() const { return _themes; }
   string gameUrl() const { return _gameUrl; }
   vector<string> openingTags() const { return _openingTags; }
+
+
+  friend std::ostream& operator<<(std::ostream& stream,const Puzzle&);
 };
+
+std::ostream& operator<<(std::ostream& stream,const Puzzle&)
+{
+  //Put how a puzzle would be displayed here
+}
 
 #endif
