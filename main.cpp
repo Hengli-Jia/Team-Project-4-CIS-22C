@@ -6,7 +6,7 @@
 #include "Puzzle.h"
 
 #include "hashtable.h"
-#include "hashtable.cpp"
+//#include "hashtable.cpp"
 
 #include "BST.h"
 //#include "BST.cpp"
