@@ -14,7 +14,8 @@
 #include <iostream>
 
 
-bool inputData(HashTable &hashTable, BinaryTree &binaryTree,string inputFile);
+bool inputDataFile(HashTable& hashTable, BinaryTree& binaryTree,string inputFile);
+bool writeDataFile(const HashTable& hashTable, const BinaryTree& BinaryTree, string outputFile);
 
 void menu(HashTable &hashTable, BinaryTree &binaryTree);
 
@@ -194,10 +195,23 @@ out:
 */
 bool inputDataFile(HashTable &hashTable, BinaryTree &binaryTree,string inputFile)
 {
-    std::cout << "input data function";
-    //Input data using puzzles_database.txt and output resulting hashtables and bst in the aprameters
+    //Todo by file I/O person
+}
 
-    return true;
+
+/*
+Creates or overwrites file with data from binary tree or hashtable
+pre:
+    hashTable: hash table containing data
+    or
+    binaryTree: binary tree contiang data
+post:
+    bool: If the file output of data was succssful
+out:
+*/
+bool writeDataFile(const HashTable& hashTable, const BinaryTree& BinaryTree, string outputFile)
+{
+    //to do by file I/O person
 }
 
 
@@ -236,14 +250,69 @@ void displayMenuOptions()
 }
 
 
-
+/*
+Menu Function
+Gets file input from user and writes file
+pre:
+    hashTable: hash table containing data
+    binaryTree: binary tree contiang data
+post:
+out:
+*/
 void inputDataFromFile(HashTable& hashTable, BinaryTree& binaryTree)
 {
+    std::cout << "Input file name: ";
+
+    std::string fileName;
+    std::cin.ignore();
+
+    std::getline(std::cin,fileName);
+
+    if(inputDataFile(hashTable, binaryTree, fileName))
+    {
+        std::cout << "File data added succesfully" << std::endl;
+    }
+    else
+    {
+        std::cout << "Error in adding data from file" << std::endl;
+    }
+
 
 }
 void inputSingleEntry(HashTable& hashTable, BinaryTree& binaryTree){}
 void deleteEntry(HashTable& hashTable, BinaryTree& binaryTree){}
 void findEntry(const HashTable& hashTable, const BinaryTree& binaryTree){}
 void listEntrys(const HashTable& hashTable, const BinaryTree& binaryTree){}
-void writeToFile(const HashTable& hashTable, const BinaryTree& binaryTree){}
+
+
+/*
+Menu Function
+Gets file to output from user
+pre:
+    hashTable: hash table containing data
+    or
+    binaryTree: binary tree contiang data
+post:
+    
+out:
+    file containg data
+*/
+void writeToFile(const HashTable& hashTable, const BinaryTree& binaryTree)
+{
+    std::cout << "Output file name: ";
+
+    std::string fileName;
+    std::cin.ignore();
+
+    std::getline(std::cin,fileName);
+
+    if(writeDataFile(hashTable, binaryTree, fileName))
+    {
+        std::cout << "Data succesfully written to file" << std::endl;
+    }
+    else
+    {
+        std::cout << "Error in writing data to file" << std::endl;
+    }
+}
 void statistics(const HashTable& hashTable, const BinaryTree& binaryTree){}
