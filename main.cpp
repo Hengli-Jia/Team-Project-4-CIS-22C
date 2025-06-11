@@ -34,7 +34,9 @@ int main()
     inputData(hashTable, bst, inputFile);*/
 
 
+    //BinaryTree binaryTree;
 
+    HashTable hashTable;
 
     std::cout << "see it works";
 
