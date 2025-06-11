@@ -4,8 +4,12 @@
 
 //#include "Database.h"
 #include "Puzzle.h"
+
 #include "hashtable.h"
+#include "hashtable.cpp"
+
 #include "BST.h"
+//#include "BST.cpp"
 
 #include <iostream>
 
@@ -34,11 +38,13 @@ int main()
     inputData(hashTable, bst, inputFile);*/
 
 
-    //BinaryTree binaryTree;
+    BinaryTree binaryTree;
 
     HashTable hashTable;
 
-    std::cout << "see it works";
+    menu(hashTable, binaryTree);
+
+    std::cout << binaryTree.isEmpty();
 
 
 }
@@ -94,6 +100,8 @@ void menu(HashTable &HashTable, BinaryTree &bst)
 {
     //will loop until the user is done using the data
     /*
+    - Add data froma file
+    Missing
     - Add a new data item. 
     missing
     - Add data from an input file (get the name of the input file from the user).

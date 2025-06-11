@@ -24,19 +24,17 @@ bool BinaryTree::_deleteBST (const Puzzle& item, BinaryNode* node) const  {
 
   
 }
-void BinaryTree::_inorderTraversal (void visit(string& key), BinaryNode* nodePtr) const {
+void BinaryTree::_inorderTraversal (void visit(string key), BinaryNode* nodePtr) const {
   if (nodePtr) {
     _inorderTraversal (visit, nodePtr -> getLeft());
     visit(nodePtr->getKey());
     _inorderTraversal (visit, nodePtr -> getRight());
   }
 }
-void BinaryTree::_indetedTree(void visit (string& key), BinaryNode* nodePtr, int level) const {
+void BinaryTree::_indetedTree(void visit (string key), BinaryNode* nodePtr, int level) const {
   if (nodePtr) {
     visit(nodePtr->getKey());
     _indetedTree(visit, nodePtr -> getRight(), level + 1);
     _indetedTree (visit, nodePtr -> getLeft(), level + 1);
   }
 }
-
-
