@@ -77,6 +77,10 @@ class Puzzle {
   string gameUrl() const { return _gameUrl; }
   vector<string> openingTags() const { return _openingTags; }
 
+  //get key will return whatever we decide will be the key
+  //for now that will be the puzzle id
+  string getKey() const {return _puzzleId;}
+
 
   friend std::ostream& operator<<(std::ostream& stream,const Puzzle&);
 };
@@ -84,6 +88,8 @@ class Puzzle {
 std::ostream& operator<<(std::ostream& stream,const Puzzle&)
 {
   //Put how a puzzle would be displayed here
+
+  return stream;
 }
 
 #endif

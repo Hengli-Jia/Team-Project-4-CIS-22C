@@ -1,5 +1,5 @@
-#ifndef BST.H
-#define BST.H
+#ifndef BST_H
+#define BST_H
 
 # include <iostream>
 #include "BinaryNode.cpp"
@@ -9,10 +9,10 @@ class BinaryTree {
 private: 
   BinaryNode* rootPtr;
   int count;
-  BinaryNode* _insertBST (BinaryNode*, BinaryNode*) const;
+  BinaryNode* _insertBST (BinaryNode*, BinaryNode*);
   bool _deleteBST (const Puzzle& item, BinaryNode* node) const;
-  void _inorderTraversal (void visit(Puzzle& item), BinaryNode*) const;
-  void _indetedTree (void visit (Puzzle& item), BinaryNode*, int) const;
+  void _inorderTraversal (void visit(string& key), BinaryNode* nodePtr) const;
+  void _indetedTree (void visit (string& key), BinaryNode* nodePtr, int level) const;
 
 public: 
   bool isEmpty () { return count == 0;}
@@ -29,8 +29,8 @@ public:
     else 
       return false;
   }
-  void inorderTraversal (void visit(Puzzle& currPuzzle), BinaryNode*) {_inorderTraversal (visit, rootPtr);}
-  void indetedTree(void visit (Puzzle& currPuzzle), BinaryNode*, int level) {_indetedTree(visit , rootPtr, 1);} 
+  void inorderTraversal (void visit(string& key), BinaryNode* nodePtr) {_inorderTraversal (visit, rootPtr);}
+  void indetedTree(void visit (string& currPuzzle), BinaryNode*, int level) {_indetedTree(visit , rootPtr, 1);} 
 };
 
 #endif

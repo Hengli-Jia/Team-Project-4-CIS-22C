@@ -19,20 +19,24 @@ const void displayTeamMembers();
 void help();
 bool exit();
 
-void horiDisplay(Puzzle &);
-void vertiDisplay(Puzzle &);
-void indentedDisplay(Puzzle &, int);
+void horiDisplay(string &);
+void vertiDisplay(string &);
+void indentedDisplay(string &, int);
 
 int main() 
 {
-    
+    /*
     HashTable hashTable;
     BinaryTree bst;
 
     string inputFile = "puzzles_database.txt";
 
-    inputData(hashTable, bst, inputFile);
+    inputData(hashTable, bst, inputFile);*/
 
+
+
+
+    std::cout << "see it works";
 
 
 }
@@ -77,7 +81,10 @@ out:
 */
 bool inputData(HashTable &hashTable, BinaryTree &bst,string inputFile)
 {
+    std::cout << "input data function";
     //Input data using puzzles_database.txt and output resulting hashtables and bst in the aprameters
+
+    return true;
 }
 
 

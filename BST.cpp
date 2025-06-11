@@ -3,41 +3,39 @@
 
 using namespace std;
 
-BinaryNode* _insertBST (BinaryNode* nodePtr, BinaryNode* newPtr) const {
+BinaryNode* BinaryTree::_insertBST (BinaryNode* nodePtr, BinaryNode* newPtr) {
   BinaryNode* pwalk = nodePtr;
   while (!pwalk -> isLeaf()) {
     // parent = pwalk;
-  if (pwalk -> puzzleId() < newPtr -> puzzleId() )
+  if (pwalk -> getKey() < newPtr -> getKey() )
     pwalk = pwalk -> getLeft();
   else 
     pwalk = pwalk -> getRight();
   }
-  if (newPtr -> puzzleId() < pwalk -> puzzleId())
+  if (newPtr -> getKey() < pwalk -> getKey())
     pwalk -> setLeft(newPtr);
   else 
     pwalk -> setRight(newPtr);
-  count ++;
+  this->count ++;
   return newPtr;
 }
 
-void _deleteBST (const& Puzzle item) const  {
+bool BinaryTree::_deleteBST (const Puzzle& item, BinaryNode* node) const  {
 
   
 }
-void _inorderTraversal (void visit(Puzzle& item), BinaryNode* nodePtr) const {
-  Puzzle puzzle = nodePtr -> puzzleId();
+void BinaryTree::_inorderTraversal (void visit(string& key), BinaryNode* nodePtr) const {
   if (nodePtr) {
-  _inorderTraversal (visit, nodePtr -> getLeft());
-  visit(puzzle);
-  _inordeTraversal (visit, nodePtr -> getRight());
+    _inorderTraversal (visit, nodePtr -> getLeft());
+    visit(nodePtr->getKey());
+    _inorderTraversal (visit, nodePtr -> getRight());
   }
 }
-void _indetedTree(void visit (Puzzle& item), BinaryNode* nodePtr, int level) const {
-  Puzzle puzzle = nodePtr -> puzzleId();
+void BinaryTree::_indetedTree(void visit (string& key), BinaryNode* nodePtr, int level) const {
   if (nodePtr) {
-  visit(puzzle);
-  _indentedTree(visit, nodePtr -> getRight(), level + 1);
-  _indentedTree (visit, nodePtr -> getLeft(), level + 1);
+    visit(nodePtr->getKey());
+    _indetedTree(visit, nodePtr -> getRight(), level + 1);
+    _indetedTree (visit, nodePtr -> getLeft(), level + 1);
   }
 }
 
