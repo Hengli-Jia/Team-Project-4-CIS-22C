@@ -12,7 +12,10 @@ private:
 
 public: 
   BinaryNode() { left = right = nullptr; key = -1; index = -1;}
-  BinarNode(BinaryNode* left, BinaryNode* right, int key, int index) { this -> left = left; this -> right = right; this -> key = key; this -> index = index;}
+  BinaryNode(BinaryNode* left, BinaryNode* right, int key, int index) { this -> left = left; this -> right = right; this -> key = key; this -> index = index;}
+
+  //not implemeneted
+  BinaryNode(const Puzzle& puzzle);
   
   int* setLeft(BinaryNode* Ptr) {this -> left = Ptr;}
   int* setRight(BinaryNode* Ptr) {this -> right = Ptr;}

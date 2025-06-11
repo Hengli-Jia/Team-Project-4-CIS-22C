@@ -17,14 +17,14 @@ private:
 public: 
   bool isEmpty () { return count == 0;}
   int  getCount () {return count;}
-  bool insertBST (const& string newPuzzle) { 
-    BinaryNode* newNode = new BinaryNode(newPuzzle);
+  bool insertBST (const Puzzle& inputPuzzle) { 
+    BinaryNode* newNode = new BinaryNode(inputPuzzle);
     this -> rootPtr = _insertBST(this -> rootPtr, newNode) ;
     return true;
   }
-  bool deleteBST (const& Puzzle puzzle ) {
-    BinaryNode* newNode = new BinaryNode(puzzle);
-    if (_deleteBST(puzzle, this->rootPtr))
+  bool deleteBST (const Puzzle& deletePuzzle) {
+    BinaryNode* newNode = new BinaryNode(deletePuzzle);
+    if (_deleteBST(deletePuzzle, this->rootPtr))
       return true;
     else 
       return false;
