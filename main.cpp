@@ -6,10 +6,10 @@
 #include "Puzzle.h"
 
 #include "hashtable.h"
-#include "hashtable.cpp"
+//#include "hashtable.cpp"
 
 #include "BST.h"
-#include "BST.cpp"
+//#include "BST.cpp"
 
 #include <iostream>
 
@@ -237,7 +237,10 @@ void displayMenuOptions()
 
 
 
-void inputDataFromFile(HashTable& hashTable, BinaryTree& binaryTree){}
+void inputDataFromFile(HashTable& hashTable, BinaryTree& binaryTree)
+{
+
+}
 void inputSingleEntry(HashTable& hashTable, BinaryTree& binaryTree){}
 void deleteEntry(HashTable& hashTable, BinaryTree& binaryTree){}
 void findEntry(const HashTable& hashTable, const BinaryTree& binaryTree){}
