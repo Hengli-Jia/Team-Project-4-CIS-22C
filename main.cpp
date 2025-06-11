@@ -16,7 +16,7 @@
 
 bool inputData(HashTable &hashTable, BinaryTree &bst,string inputFile);
 
-void menu();
+void menu(HashTable &HashTable, BinaryTree &bst);
 
 
 const void displayTeamMembers();
@@ -43,8 +43,6 @@ int main()
     HashTable hashTable;
 
     menu(hashTable, binaryTree);
-
-    std::cout << binaryTree.isEmpty();
 
 
 }
