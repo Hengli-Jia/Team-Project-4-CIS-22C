@@ -2,7 +2,6 @@
 #include <iostream>
 
 // Constructor: initializes the hash table with a given capacity
-
 HashTable::HashTable(int initialCapacity) {
 	capacity = initialCapacity;
 	size = 0;

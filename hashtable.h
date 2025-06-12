@@ -42,4 +42,4 @@ class HashTable {
 	void rehash();
 };
 
-#endif // HASHTABLE_H
+#endif

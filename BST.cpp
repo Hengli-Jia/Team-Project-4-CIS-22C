@@ -1,4 +1,5 @@
 #include "BST.h"
+
 #include <iostream>
 
 BinaryNode *BinaryTree::_insertBST(BinaryNode *nodePtr, BinaryNode *newPtr) {

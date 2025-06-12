@@ -4,11 +4,6 @@
 
 #include "BST.cpp"
 #include "HashTable.cpp"
-// #include "Database.h"
-#include "Puzzle.h"
-
-#include "hashtable.h"
-// #include "hashtable.cpp"
 
 #include <fstream>
 #include <iostream>
@@ -44,9 +39,11 @@ void writeToFile(const HashTable &hashTable, const BinaryTree &binaryTree);
 void statistics(const HashTable &hashTable, const BinaryTree &binaryTree);
 
 int main() {
+	string inputFile = "puzzles_database.txt";
 	BinaryTree binaryTree;
-
 	HashTable hashTable;
+
+	loadPuzzles(hashTable, binaryTree, inputFile);
 
 	menu(hashTable, binaryTree);
 }

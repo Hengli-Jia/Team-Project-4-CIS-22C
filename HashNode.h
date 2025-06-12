@@ -1,7 +1,7 @@
 #ifndef HASHNODE_H
 #define HASHNODE_H
 
-#include "puzzle.h"
+#include "Puzzle.h"
 #include <string>
 
 class HashNode {

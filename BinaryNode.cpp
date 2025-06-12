@@ -1,4 +1,5 @@
 #include "Puzzle.h"
+
 #include <iostream>
 
 class BinaryNode {
