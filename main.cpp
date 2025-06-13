@@ -2,11 +2,11 @@
  TODO: add members information and project description
 */
 
-#include "BST.h"
-//#include "BST.cpp"
+// #include "BST.h"
+#include "BST.cpp"
 
-#include "hashtable.h"
-//#include "HashTable.cpp"
+// #include "hashtable.h"
+#include "HashTable.cpp"
 
 #include <fstream>
 #include <iostream>
@@ -52,7 +52,7 @@ int main() {
 
 	hash = &(hashTable);
 
-	//loadPuzzles(hashTable, binaryTree, inputFile);
+	loadPuzzles(hashTable, binaryTree, inputFile);
 
 	menu(hashTable, binaryTree);
 }
