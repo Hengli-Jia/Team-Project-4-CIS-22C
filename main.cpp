@@ -3,10 +3,10 @@
 */
 
 #include "BST.h"
-#include "BST.cpp"
+//#include "BST.cpp"
 
-#include "HashNode.h"
-#include "HashTable.cpp"
+#include "hashtable.h"
+//#include "HashTable.cpp"
 
 #include <fstream>
 #include <iostream>
