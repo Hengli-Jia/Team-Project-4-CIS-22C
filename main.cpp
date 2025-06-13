@@ -2,7 +2,10 @@
  TODO: add members information and project description
 */
 
+#include "BST.h"
 #include "BST.cpp"
+
+#include "HashNode.h"
 #include "HashTable.cpp"
 
 #include <fstream>
@@ -26,9 +29,9 @@ void displayTeamMembers();
 void help();
 bool exit();
 
-void horiDisplay(string &);
-void vertiDisplay(string &);
-void indentedDisplay(string &, int);
+void horiDisplay(string);
+void vertiDisplay(string);
+void indentedDisplay(string, int);
 
 void inputDataFromFile(HashTable &hashTable, BinaryTree &binaryTree);
 void inputSingleEntry(HashTable &hashTable, BinaryTree &binaryTree);
@@ -38,12 +41,18 @@ void listEntrys(const HashTable &hashTable, const BinaryTree &binaryTree);
 void writeToFile(const HashTable &hashTable, const BinaryTree &binaryTree);
 void statistics(const HashTable &hashTable, const BinaryTree &binaryTree);
 
+void getPuzzle(string key, Puzzle& puzzleOut);
+
+const HashTable* hash;
+
 int main() {
 	string inputFile = "puzzles_database.txt";
 	BinaryTree binaryTree;
 	HashTable hashTable;
 
-	loadPuzzles(hashTable, binaryTree, inputFile);
+	hash = &(hashTable);
+
+	//loadPuzzles(hashTable, binaryTree, inputFile);
 
 	menu(hashTable, binaryTree);
 }
@@ -369,9 +378,19 @@ bool writeDataFile(const HashTable &hashTable, const BinaryTree &BinaryTree,
 	// to do by file I/O person
 }
 
-void horitDisplay(Puzzle &item) { std::cout << item << " "; }
+void horiDisplay(string key) 
+{
+	Puzzle item;
+	getPuzzle(key,item);
+	std::cout << item << " ";
+ }
 
-void vertiDisplay(Puzzle &item) { std::cout << item << std::endl; }
+void vertiDisplay(string key)
+{
+	Puzzle item;
+	getPuzzle(key,item);
+	std::cout << item << std::endl; 
+}
 
 void indentedDisplay(Puzzle &item, int level) {
 	for (int i = 1; i < level; i++)
@@ -418,7 +437,10 @@ void inputDataFromFile(HashTable &hashTable, BinaryTree &binaryTree) {
 void inputSingleEntry(HashTable &hashTable, BinaryTree &binaryTree) {}
 void deleteEntry(HashTable &hashTable, BinaryTree &binaryTree) {}
 void findEntry(const HashTable &hashTable, const BinaryTree &binaryTree) {}
-void listEntrys(const HashTable &hashTable, const BinaryTree &binaryTree) {}
+void listEntrys(const HashTable &hashTable,const BinaryTree &binaryTree) 
+{
+	binaryTree.inorderTraversal(horiDisplay);
+}
 
 /*
 Menu Function
@@ -447,3 +469,9 @@ void writeToFile(const HashTable &hashTable, const BinaryTree &binaryTree) {
 	}
 }
 void statistics(const HashTable &hashTable, const BinaryTree &binaryTree) {}
+
+
+void getPuzzle(string key, Puzzle& puzzleOut)
+{
+	hash->search(puzzleOut,key);
+}

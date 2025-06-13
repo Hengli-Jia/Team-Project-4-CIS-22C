@@ -29,11 +29,11 @@ class BinaryTree {
 		else
 			return false;
 	}
-	void inorderTraversal(void visit(string key), BinaryNode * /*nodePtr*/) {
+	void inorderTraversal(void visit(string key) /*nodePtr*/) const{
 		_inorderTraversal(visit, rootPtr);
 	}
-	void indetedTree(void visit(string currPuzzle), BinaryNode * /*nodePtr*/,
-					 int /*level*/) {
+	void indetedTree(void visit(string currPuzzle) /*nodePtr*/,
+					 int /*level*/) const {
 		_indetedTree(visit, rootPtr, 1);
 	}
 };
