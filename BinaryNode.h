@@ -39,7 +39,7 @@ class BinaryNode {
 
 BinaryNode::BinaryNode(const Puzzle &puzzle) {
 	this->puzzle = puzzle;
-	this->key = puzzle.getKey();
+	this->key = puzzle.puzzleID();
 	this->left = nullptr;
 	this->right = nullptr;
 	this->index = -1;
