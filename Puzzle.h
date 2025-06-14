@@ -6,6 +6,7 @@
 #ifndef PUZZLE_H
 #define PUZZLE_H
 
+#include <iostream>
 #include <string>
 #include <vector>
 
