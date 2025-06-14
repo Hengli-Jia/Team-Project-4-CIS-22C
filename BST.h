@@ -1,49 +1,36 @@
 #ifndef BST_H
 #define BST_H
 
-#include "BinaryNode.h"
+#include "TreeNode.h"
+#include <functional>
+#include <string>
 
-class BinaryTree {
+class BST {
   private:
-	BinaryNode *rootPtr = nullptr;
-	int count;
-	BinaryNode* _insertBST(BinaryNode *, BinaryNode *) const;
-	bool _deleteBST(BinaryNode * , BinaryNode *) const;
-	void _inorderTraversal(void visit(string key), BinaryNode *nodePtr) const;
-	void _indetedTree(void visit(string key), BinaryNode *nodePtr,
-					  int level) const;
+	TreeNode *rootPtr = nullptr;
+	int count = 0;
+	TreeNode *_insert(TreeNode *, TreeNode *);
+	bool _delete(const std::string &key, TreeNode *, bool &);
+	void
+	_inorderTraversal(const std::function<void(const std::string &)> &visit,
+					  TreeNode *nodePtr) const;
+	void
+	_indentedTree(const std::function<void(const std::string &, int)> &visit,
+				  TreeNode *nodePtr, int level) const;
+	void _clear(TreeNode *node);
 
   public:
-	bool isEmpty() { return count == 0; }
-	int getCount() { return count; }
-	bool insertBST(const Puzzle &inputPuzzle) {
-		BinaryNode *newNode = new BinaryNode(inputPuzzle);
-		this->rootPtr = _insertBST(this->rootPtr, newNode);
-		return true;
-	}
-	bool deleteBST(const Puzzle &deletePuzzle) {
-		BinaryNode* deleteNode = new BinaryNode (deletePuzzle);
-		if (_deleteBST(deleteNode, this->rootPtr)) {
-			return true;
-		}
-		else
-			return false;
-	}
-	void inorderTraversal(void visit(string key) /*nodePtr*/) const {
-		_inorderTraversal(visit, rootPtr);
-	}
-	void indetedTree(void visit(string currPuzzle) /*nodePtr*/,
-					 int /*level*/) const {
-		_indetedTree(visit, rootPtr, 1);
-	}
-	~BinaryTree() { clear(rootPtr); }
-	void clear(BinaryNode *node) {
-		if (node) {
-			clear(node->getLeft());
-			clear(node->getRight());
-			delete node;
-		}
-	}
+	BST() = default;
+	~BST() { _clear(rootPtr); }
+	bool isEmpty() const { return count == 0; }
+	int getCount() const { return count; }
+	bool insert(const Puzzle &inputPuzzle);
+	bool remove(const std::string &key);
+	void inorderTraversal(
+		const std::function<void(const std::string &)> &visit) const;
+	void indentedTree(
+		const std::function<void(const std::string &, int)> &visit) const;
+	void clear();
 };
 
 #endif

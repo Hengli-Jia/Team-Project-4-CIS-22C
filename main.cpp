@@ -11,7 +11,7 @@
 #include <sstream>
 #include <vector>
 
-const int DEFAULT_HASH_SIZE = 211;
+const int DEFAULT_HASH_SIZE = 53;
 
 HashTable
 	*hash; // Toma: I don't think a global variable should be used like this
@@ -22,19 +22,18 @@ HashTable
 
 void menu();
 char menuInput();
-void addItem(HashTable &hashTable, BinaryTree &bst);
-void inputDataFile(HashTable &hashTable, BinaryTree &bst,
-				   string inputFile = "");
-void deleteItem(HashTable &hashTable, BinaryTree &bst);
+void addItem(HashTable &hashTable, BST &bst);
+void inputDataFile(HashTable &hashTable, BST &bst, string inputFile = "");
+void deleteItem(HashTable &hashTable, BST &bst);
 void findItem();
-void listSorted(const BinaryTree &bst);
+void listSorted(const BST &bst);
 void outputDataFile(const HashTable &hashTable, string inputFile = "");
 void statistics(const HashTable &hashTable);
 char attemptExit();
 
 // HIDDEN MENU OPTIONS
 
-void displayIndentedTree(const BinaryTree &bst);
+void displayIndentedTree(const BST &bst);
 void displayTeamMembers();
 
 // HELPER FUNCTION DECLARATIONS
@@ -53,7 +52,7 @@ int main() {
 
 	// Initialize Hash Table and BST
 	HashTable hashTable(hashSize);
-	BinaryTree bst;
+	BST bst;
 
 	// File I/O
 	inputDataFile(hashTable, bst, inputFile);
@@ -140,7 +139,7 @@ char menuInput() {
 	return '\0'; // no valid input
 }
 
-void addItem(HashTable &hashTable, BinaryTree &bst) {
+void addItem(HashTable &hashTable, BST &bst) {
 	std::cout << "Add a new puzzle:\n";
 	std::cout << "Enter full line (CSV format) or leave blank to input fields "
 				 "one by one:\n";
@@ -247,7 +246,7 @@ void addItem(HashTable &hashTable, BinaryTree &bst) {
 							 openingTagsVec);
 
 			hashTable.insert(newPuzzle);
-			bst.insertBST(newPuzzle);
+			bst.insert(newPuzzle);
 			std::cout << "Puzzle added successfully!\n";
 			valid = true;
 		} catch (const std::invalid_argument &) {
@@ -272,7 +271,7 @@ void addItem(HashTable &hashTable, BinaryTree &bst) {
 	}
 }
 
-void inputDataFile(HashTable &hashTable, BinaryTree &bst, string inputFile) {
+void inputDataFile(HashTable &hashTable, BST &bst, string inputFile) {
 	// if inputFile is empty, prompt user for input
 	if (inputFile.empty()) {
 		std::cout << "Enter input file name: ";
@@ -348,7 +347,7 @@ void inputDataFile(HashTable &hashTable, BinaryTree &bst, string inputFile) {
 						  std::stoi(nbPlays), themesVec, gameUrl,
 						  openingTagsVec);
 			hashTable.insert(puzzle);
-			bst.insertBST(puzzle);
+			bst.insert(puzzle);
 		} catch (const std::exception &e) {
 			std::cerr << "[ERROR] Failed to parse line " << lineNum << ": "
 					  << line << " with error: " << e.what() << std::endl;
@@ -358,7 +357,7 @@ void inputDataFile(HashTable &hashTable, BinaryTree &bst, string inputFile) {
 	file.close();
 }
 
-void deleteItem(HashTable &hashTable, BinaryTree &bst) {
+void deleteItem(HashTable &hashTable, BST &bst) {
 	std::cout << "Delete a puzzle by PuzzleId or FEN.\n";
 	std::string input;
 	std::cout << "Enter PuzzleId (leave blank to use FEN): ";
@@ -405,7 +404,7 @@ void deleteItem(HashTable &hashTable, BinaryTree &bst) {
 	}
 
 	// Remove from BST
-	if (bst.deleteBST(found)) {
+	if (bst.remove(found.getKey())) {
 		std::cout << "[INFO] Puzzle removed from BST.\n";
 	} else {
 		std::cout << "[WARN] Puzzle could not be removed from BST.\n";
@@ -456,7 +455,7 @@ void findItem() {
 	std::cout << found << std::endl;
 }
 
-void listSorted(const BinaryTree &bst) {
+void listSorted(const BST &bst) {
 	std::cout
 		<< "Listing all puzzles sorted by PuzzleId (BST inorder traversal):\n";
 	// Helper function to print each puzzle
@@ -529,7 +528,7 @@ char attemptExit() {
 
 // HIDDEN MENU OPTIONS
 
-void displayIndentedTree(const BinaryTree &bst) {
+void displayIndentedTree(const BST &bst) {
 	std::cout << "Indented BST (by PuzzleId):\n";
 	BinaryNode *root = *(BinaryNode **)(void *)&bst;
 	printIndentedTree(root, 0);

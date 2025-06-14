@@ -1,14 +1,14 @@
 #include "BST.h"
 
-BinaryNode *BinaryTree::_insertBST(BinaryNode *nodePtr, BinaryNode *newPtr) {
+BinaryNode *BST::_insert(BinaryNode *nodePtr, BinaryNode *newPtr) {
 	if (!nodePtr) {
-		this->count++;
+		++count;
 		return newPtr;
 	}
 	if (newPtr->getKey() < nodePtr->getKey()) {
-		nodePtr->setLeft(_insertBST(nodePtr->getLeft(), newPtr));
+		nodePtr->setLeft(_insert(nodePtr->getLeft(), newPtr));
 	} else if (newPtr->getKey() > nodePtr->getKey()) {
-		nodePtr->setRight(_insertBST(nodePtr->getRight(), newPtr));
+		nodePtr->setRight(_insert(nodePtr->getRight(), newPtr));
 	} else {
 		delete newPtr;
 		return nodePtr;
@@ -16,80 +16,95 @@ BinaryNode *BinaryTree::_insertBST(BinaryNode *nodePtr, BinaryNode *newPtr) {
 	return nodePtr;
 }
 
-bool BinaryTree::_deleteBST(BinaryNode * delPtr, BinaryNode * nodePtr) const {
-	BinaryNode* parent = nullptr;
-	// Empty tree
-	if (!nodePtr) 
+bool BST::_delete(const std::string &key, BinaryNode *nodePtr, bool &deleted) {
+	if (!nodePtr)
 		return false;
-	
-	while (nodePtr) {
-	if (delPtr -> getKey() < nodePtr -> getKey()) 
-		parent = nodePtr;
-		nodePtr = nodePtr -> getLeft();
-	else if ( delPtr -> getKey() > nodePtr -> getKey())
-		parent = nodePtr;
-		nodePtr = nodePtr -> getRight();
-	
-	// Found the node
-	else {
-	//Case 1: Leaf node		
-	if (nodePtr -> isLeaf()) {
-		if (!parent)
-			this -> rootPtr = nullptr;
-		else if (nodePtr -> getLeft () -> getKey() == delPtr -> getKey())
-			parent -> getLeft() = nullptr;
-		else
-			parent -> getRight() = nullptr;	
-	}
-	// Case 2: node with right child only
-	if (!nodePtr -> getLeft()) {
-		if (!parent)
-			this -> rootPtr -> getRight() = nodePtr -> getRight();
-		else if (nodePtr -> getLeft() ->  getKey() == delPtr -> getKey())
-			parent -> getLeft() = nodePtr -> getLeft();
-		else
-			parent -> getRight() = nodePtr -> getRight();
-	}	
-	// Case 3: node with left child only
-	else if (!nodePtr -> getRight()) {
-		if (!parent)
-			this -> rootPtr -> getLeft() = nodePtr -> getLeft();
-		else if (nodePtr -> getLeft() ->  getKey() == delPtr -> getKey())
-			parent -> getLeft() = nodePtr -> getLeft();
-		else
-			parent -> getRight() = nodePtr -> getRight();
-	}	
-	// Case 4: node with two children
-	else {
-		BinaryNode* successor = nodePtr -> getRight();
-		while (successor -> getLeft()) {
-			successor = successor -> getLeft();	
+	if (key < nodePtr->getKey()) {
+		return _delete(key, nodePtr->getLeft(), deleted);
+	} else if (key > nodePtr->getKey()) {
+		return _delete(key, nodePtr->getRight(), deleted);
+	} else {
+		// Node found
+		deleted = true;
+		--count;
+		if (!nodePtr->getLeft() && !nodePtr->getRight()) {
+			delete nodePtr;
+			nodePtr = nullptr;
+		} else if (!nodePtr->getLeft()) {
+			BinaryNode *temp = nodePtr;
+			nodePtr = nodePtr->getRight();
+			delete temp;
+		} else if (!nodePtr->getRight()) {
+			BinaryNode *temp = nodePtr;
+			nodePtr = nodePtr->getLeft();
+			delete temp;
+		} else {
+			// Two children: find inorder successor
+			BinaryNode *succParent = nodePtr;
+			BinaryNode *succ = nodePtr->getRight();
+			while (succ->getLeft()) {
+				succParent = succ;
+				succ = succ->getLeft();
+			}
+			nodePtr->setKey(succ->getKey());
+			_delete(succ->getKey(), nodePtr->getRight(), deleted);
 		}
-			nodePtr -> getKey() = successor -> getKey();
-			parent = nodePtr;
+		return true;
 	}
-
-	
-	return true;
-		}
-	}
-	return false; // Node not found
 }
 
-void BinaryTree::_inorderTraversal(void visit(string key),
-								   BinaryNode *nodePtr) const {
+void BST::_inorderTraversal(
+	const std::function<void(const std::string &)> &visit,
+	BinaryNode *nodePtr) const {
 	if (nodePtr) {
 		_inorderTraversal(visit, nodePtr->getLeft());
 		visit(nodePtr->getKey());
 		_inorderTraversal(visit, nodePtr->getRight());
 	}
 }
-void BinaryTree::_indetedTree(void visit(string key), BinaryNode *nodePtr,
-							  int level) const {
-	if (nodePtr) {
-		visit(nodePtr->getKey());
-		_indetedTree(visit, nodePtr->getRight(), level + 1);
-		_indetedTree(visit, nodePtr->getLeft(), level + 1);
-	}
 
+void BST::_indentedTree(
+	const std::function<void(const std::string &, int)> &visit,
+	BinaryNode *nodePtr, int level) const {
+	if (nodePtr) {
+		_indentedTree(visit, nodePtr->getRight(), level + 1);
+		visit(nodePtr->getKey(), level);
+		_indentedTree(visit, nodePtr->getLeft(), level + 1);
+	}
+}
+
+void BST::_clear(BinaryNode *node) {
+	if (node) {
+		_clear(node->getLeft());
+		_clear(node->getRight());
+		delete node;
+	}
+}
+
+bool BST::insert(const Puzzle &inputPuzzle) {
+	BinaryNode *newNode = new BinaryNode(inputPuzzle);
+	rootPtr = _insert(rootPtr, newNode);
+	return true;
+}
+
+bool BST::remove(const std::string &key) {
+	bool deleted = false;
+	_delete(key, rootPtr, deleted);
+	return deleted;
+}
+
+void BST::inorderTraversal(
+	const std::function<void(const std::string &)> &visit) const {
+	_inorderTraversal(visit, rootPtr);
+}
+
+void BST::indentedTree(
+	const std::function<void(const std::string &, int)> &visit) const {
+	_indentedTree(visit, rootPtr, 0);
+}
+
+void BST::clear() {
+	_clear(rootPtr);
+	rootPtr = nullptr;
+	count = 0;
 }

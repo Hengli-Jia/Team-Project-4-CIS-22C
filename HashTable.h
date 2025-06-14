@@ -19,7 +19,7 @@ class HashTable {
 
   public:
 	// Constructor: initializes the hash table with a given capacity
-	HashTable(int initialCapacity = 211);
+	HashTable(int initialCapacity = 53);
 	// Destructor: releases allocated memory
 	~HashTable();
 
