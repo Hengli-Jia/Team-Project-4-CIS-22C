@@ -31,7 +31,7 @@ class BinaryNode {
 	void setRight(BinaryNode *Ptr) { this->right = Ptr; }
 	BinaryNode *getLeft() const { return left; }
 	BinaryNode *getRight() const { return right; }
-	void setKey(int puzzleKey) { this->key = puzzleKey; }
+	void setKey(string puzzleKey) { this->key = puzzleKey; }
 	string getKey() const { return key; }
 	void setIndex(int puzzleIndex) { this->index = puzzleIndex; }
 	int getIndex() { return index; }
