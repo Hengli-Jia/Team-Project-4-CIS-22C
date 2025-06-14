@@ -18,6 +18,23 @@ BinaryNode *BinaryTree::_insertBST(BinaryNode *nodePtr, BinaryNode *newPtr) {
 
 bool BinaryTree::_deleteBST(const Puzzle & /*item*/,
 							BinaryNode * /*node*/) const {
+	if (!nodePtr) 
+		return nodePtr;
+	string ID = item -> getKey()
+	if (ID < nodePtr -> getItem()
+
+	else if ( ID < nodePtr -> getItem())
+
+	else {
+	//Case 1: Leaf node
+
+	// Case 2: root with one child
+
+	// Case 3: root with two children
+
+	
+	return true;
+		}
 	return false; // stubbed, returns false to silence warning
 }
 
