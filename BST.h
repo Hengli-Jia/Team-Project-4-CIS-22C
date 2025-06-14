@@ -8,7 +8,7 @@ class BinaryTree {
 	BinaryNode *rootPtr = nullptr;
 	int count;
 	BinaryNode* _insertBST(BinaryNode *, BinaryNode *) const;
-	BinaryNode* _deleteBST(const Puzzle &item, BinaryNode *node) const;
+	BinaryNode* _deleteBST(BinaryNode* , BinaryNode *node) const;
 	void _inorderTraversal(void visit(string key), BinaryNode *nodePtr) const;
 	void _indetedTree(void visit(string key), BinaryNode *nodePtr,
 					  int level) const;
@@ -22,9 +22,8 @@ class BinaryTree {
 		return true;
 	}
 	bool deleteBST(const Puzzle &deletePuzzle) {
-		if (_deleteBST(deletePuzzle, this->rootPtr)) {
-			BinaryNode* deletedNode = _deleteBST(deletePuzzle, this -> rootPtr)
-			deletePuzzle = deleteNode -> getItem();
+		BinaryNode *deleteNode = new BinaryNode(deletePuzzle);
+		if (_deleteBST(deleteNode, this->rootPtr)) {
 			return true;
 		}
 		else
