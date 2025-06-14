@@ -1,34 +1,34 @@
-#ifndef TREENODE_H
-#define TREENODE_H
+#ifndef BINARYNODE_H
+#define BINARYNODE_H
 
 #include "Puzzle.h"
 
-class TreeNode {
+class BinaryNode {
   private:
 	Puzzle puzzle;
-	TreeNode *left;
-	TreeNode *right;
+	BinaryNode *left;
+	BinaryNode *right;
 	string key;
 	int index;
 
   public:
-	TreeNode() {
+	BinaryNode() {
 		left = right = nullptr;
 		key = "";
 		index = -1;
 	}
-	TreeNode(TreeNode *left, TreeNode *right, string key, int index) {
+	BinaryNode(BinaryNode *left, BinaryNode *right, string key, int index) {
 		this->left = left;
 		this->right = right;
 		this->key = key;
 		this->index = index;
 	}
-	TreeNode(const Puzzle &puzzle);
+	BinaryNode(const Puzzle &puzzle);
 
-	void setLeft(TreeNode *Ptr) { this->left = Ptr; }
-	void setRight(TreeNode *Ptr) { this->right = Ptr; }
-	TreeNode *getLeft() const { return left; }
-	TreeNode *getRight() const { return right; }
+	void setLeft(BinaryNode *Ptr) { this->left = Ptr; }
+	void setRight(BinaryNode *Ptr) { this->right = Ptr; }
+	BinaryNode *getLeft() const { return left; }
+	BinaryNode *getRight() const { return right; }
 	void setKey(string puzzleKey) { this->key = puzzleKey; }
 	string getKey() const { return key; }
 	void setIndex(int puzzleIndex) { this->index = puzzleIndex; }
@@ -37,7 +37,7 @@ class TreeNode {
 	bool isLeaf() { return this->left == nullptr && this->right == nullptr; }
 };
 
-TreeNode::TreeNode(const Puzzle &puzzle) {
+BinaryNode::BinaryNode(const Puzzle &puzzle) {
 	this->puzzle = puzzle;
 	this->key = puzzle.puzzleId();
 	this->left = nullptr;

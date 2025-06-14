@@ -1,5 +1,5 @@
-#ifndef BINARYTREE_H
-#define BINARYTREE_H
+#ifndef BinaryNode_H
+#define BinaryNode_H
 
 #include "BinaryNode.h"
 #include <string>

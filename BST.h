@@ -1,23 +1,23 @@
 #ifndef BST_H
 #define BST_H
 
-#include "TreeNode.h"
+#include "BinaryNode.h"
 #include <functional>
 #include <string>
 
 class BST {
   private:
-	TreeNode *rootPtr = nullptr;
+	BinaryNode *rootPtr = nullptr;
 	int count = 0;
-	TreeNode *_insert(TreeNode *, TreeNode *);
-	bool _delete(const std::string &key, TreeNode *, bool &);
+	BinaryNode *_insert(BinaryNode *, BinaryNode *);
+	bool _delete(const std::string &key, BinaryNode *, bool &);
 	void
 	_inorderTraversal(const std::function<void(const std::string &)> &visit,
-					  TreeNode *nodePtr) const;
+					  BinaryNode *nodePtr) const;
 	void
 	_indentedTree(const std::function<void(const std::string &, int)> &visit,
-				  TreeNode *nodePtr, int level) const;
-	void _clear(TreeNode *node);
+				  BinaryNode *nodePtr, int level) const;
+	void _clear(BinaryNode *node);
 
   public:
 	BST() = default;
