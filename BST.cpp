@@ -65,7 +65,7 @@ bool BinaryTree::_deleteBST(BinaryNode * delPtr, BinaryNode * nodePtr) const {
 		while (successor -> getLeft()) {
 			successor = successor -> getLeft();	
 		}
-			nodePtr -> getItem() = successor -> getItem();
+			nodePtr -> getKey() = successor -> getKey();
 			parent = nodePtr;
 	}
 
