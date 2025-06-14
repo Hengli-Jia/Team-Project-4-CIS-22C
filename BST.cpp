@@ -21,7 +21,9 @@ bool BinaryTree::_deleteBST(const Puzzle & /*item*/,
 	if (!nodePtr) 
 		return nodePtr;
 	string ID = item -> getKey()
-	if (ID < nodePtr -> getItem()
+	if (ID < nodePtr -> getKey()) 
+		nodePtr = nodePtr -> getLeft()
+		_deleteBST(item, nodePtr);
 
 	else if ( ID < nodePtr -> getItem())
 
