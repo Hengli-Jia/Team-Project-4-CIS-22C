@@ -1,13 +1,13 @@
 #ifndef BST_H
 #define BST_H
 
-#include "BinaryNode.cpp"
+#include "BinaryNode.h"
 #include "Puzzle.h"
 #include <iostream>
 
 class BinaryTree {
   private:
-	BinaryNode *rootPtr;
+	BinaryNode *rootPtr = nullptr;
 	int count;
 	BinaryNode *_insertBST(BinaryNode *, BinaryNode *);
 	bool _deleteBST(const Puzzle &item, BinaryNode *node) const;
@@ -29,7 +29,7 @@ class BinaryTree {
 		else
 			return false;
 	}
-	void inorderTraversal(void visit(string key) /*nodePtr*/) const{
+	void inorderTraversal(void visit(string key) /*nodePtr*/) const {
 		_inorderTraversal(visit, rootPtr);
 	}
 	void indetedTree(void visit(string currPuzzle) /*nodePtr*/,

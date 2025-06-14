@@ -41,9 +41,9 @@ void listEntrys(const HashTable &hashTable, const BinaryTree &binaryTree);
 void writeToFile(const HashTable &hashTable, const BinaryTree &binaryTree);
 void statistics(const HashTable &hashTable, const BinaryTree &binaryTree);
 
-void getPuzzle(string key, Puzzle& puzzleOut);
+void getPuzzle(string key, Puzzle &puzzleOut);
 
-const HashTable* hash;
+const HashTable *hash;
 
 int main() {
 	string inputFile = "puzzles_database.txt";
@@ -205,7 +205,6 @@ bool loadPuzzles(HashTable &hashTable, BinaryTree &bst,
 	while (std::getline(file, line)) {
 		if (!line.empty())
 			lineCount++;
-		std::cout << "[DEBUG] Line count: " << lineCount << std::endl;
 	}
 
 	// reset file stream to the beginning
@@ -275,22 +274,16 @@ bool loadPuzzles(HashTable &hashTable, BinaryTree &bst,
 		std::stringstream movesSS(moves), themesSS(themes), tagsSS(openingTags);
 		std::string token;
 		while (std::getline(movesSS, token, ' ')) {
-			std::cout << "[DEBUG] Processing move token: " << token
-					  << std::endl;
 			if (!token.empty())
 				movesVec.push_back(token);
 		}
 
 		while (std::getline(themesSS, token, ' ')) {
-			std::cout << "[DEBUG] Processing theme token: " << token
-					  << std::endl;
 			if (!token.empty())
 				themesVec.push_back(token);
 		}
 
 		while (std::getline(tagsSS, token, ' ')) {
-			std::cout << "[DEBUG] Processing opening tag token: " << token
-					  << std::endl;
 			if (!token.empty())
 				openingTagsVec.push_back(token);
 		}
@@ -305,10 +298,11 @@ bool loadPuzzles(HashTable &hashTable, BinaryTree &bst,
 			hashTable.insert(puzzle);
 			std::cout << "[DEBUG] Successfully inserted into hash table: "
 					  << puzzle << std::endl;
+			std::cout << "[DEBUG] About to insert into BST: " << puzzle
+					  << std::endl;
 			bst.insertBST(puzzle);
-			std::cout
-				<< "[DEBUG] Successfully inserted into binary search tree: "
-				<< puzzle << std::endl;
+			std::cout << "[DEBUG] Successfully inserted into BST: " << puzzle
+					  << std::endl;
 			std::cout << "[DEBUG] Successfully processed line " << lineNum
 					  << std::endl;
 		} catch (const std::exception &e) {
@@ -378,18 +372,16 @@ bool writeDataFile(const HashTable &hashTable, const BinaryTree &BinaryTree,
 	// to do by file I/O person
 }
 
-void horiDisplay(string key) 
-{
+void horiDisplay(string key) {
 	Puzzle item;
-	getPuzzle(key,item);
+	getPuzzle(key, item);
 	std::cout << item << " ";
- }
+}
 
-void vertiDisplay(string key)
-{
+void vertiDisplay(string key) {
 	Puzzle item;
-	getPuzzle(key,item);
-	std::cout << item << std::endl; 
+	getPuzzle(key, item);
+	std::cout << item << std::endl;
 }
 
 void indentedDisplay(Puzzle &item, int level) {
@@ -437,8 +429,7 @@ void inputDataFromFile(HashTable &hashTable, BinaryTree &binaryTree) {
 void inputSingleEntry(HashTable &hashTable, BinaryTree &binaryTree) {}
 void deleteEntry(HashTable &hashTable, BinaryTree &binaryTree) {}
 void findEntry(const HashTable &hashTable, const BinaryTree &binaryTree) {}
-void listEntrys(const HashTable &hashTable,const BinaryTree &binaryTree) 
-{
+void listEntrys(const HashTable &hashTable, const BinaryTree &binaryTree) {
 	binaryTree.inorderTraversal(horiDisplay);
 }
 
@@ -470,8 +461,4 @@ void writeToFile(const HashTable &hashTable, const BinaryTree &binaryTree) {
 }
 void statistics(const HashTable &hashTable, const BinaryTree &binaryTree) {}
 
-
-void getPuzzle(string key, Puzzle& puzzleOut)
-{
-	hash->search(puzzleOut,key);
-}
+void getPuzzle(string key, Puzzle &puzzleOut) { hash->search(puzzleOut, key); }

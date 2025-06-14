@@ -1,22 +1,27 @@
 #include "BST.h"
 
 #include <iostream>
+#include <string>
 
 BinaryNode *BinaryTree::_insertBST(BinaryNode *nodePtr, BinaryNode *newPtr) {
-	BinaryNode *pwalk = nodePtr;
-	while (!pwalk->isLeaf()) {
-		// parent = pwalk;
-		if (pwalk->getKey() < newPtr->getKey())
-			pwalk = pwalk->getLeft();
-		else
-			pwalk = pwalk->getRight();
+	std::cout << "[DEBUG] Inserting: " << newPtr->getKey() << std::endl;
+	if (!nodePtr) {
+		std::cout << "[DEBUG] Inserted at empty node." << std::endl;
+		this->count++;
+		return newPtr;
 	}
-	if (newPtr->getKey() < pwalk->getKey())
-		pwalk->setLeft(newPtr);
-	else
-		pwalk->setRight(newPtr);
-	this->count++;
-	return newPtr;
+	if (newPtr->getKey() < nodePtr->getKey()) {
+		std::cout << "[DEBUG] Going left from node with key: "
+				  << nodePtr->getKey() << std::endl;
+		nodePtr->setLeft(_insertBST(nodePtr->getLeft(), newPtr));
+	} else {
+		std::cout << "[DEBUG] Going right from node with key: "
+				  << nodePtr->getKey() << std::endl;
+		nodePtr->setRight(_insertBST(nodePtr->getRight(), newPtr));
+	}
+	std::cout << "[DEBUG] Inserted: " << newPtr->getKey()
+			  << " at node with key: " << nodePtr->getKey() << std::endl;
+	return nodePtr;
 }
 
 bool BinaryTree::_deleteBST(const Puzzle & /*item*/,

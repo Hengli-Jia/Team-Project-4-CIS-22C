@@ -68,6 +68,43 @@ class Puzzle {
 	// for now that will be the puzzle id
 	string getKey() const { return _puzzleId; }
 
+	// copy assignment operator
+	Puzzle &operator=(const Puzzle &other) {
+		if (this != &other) {
+			std::cout << "[DEBUG] Copying Puzzle object." << std::endl;
+			std::cout << other._puzzleId << std::endl;
+			_puzzleId = other._puzzleId;
+			std::cout << "[DEBUG] Copying puzzle ID." << std::endl;
+			std::cout << other._fen << std::endl;
+			_fen = other._fen;
+			std::cout << "[DEBUG] Copying FEN." << std::endl;
+			_moves = other._moves;
+			std::cout << "[DEBUG] Copying moves." << std::endl;
+			_rating = other._rating;
+			std::cout << "[DEBUG] Copying rating, rating deviation, and "
+						 "popularity."
+					  << std::endl;
+			_ratingDeviation = other._ratingDeviation;
+			std::cout << "[DEBUG] Copying rating, rating deviation, and "
+						 "popularity."
+					  << std::endl;
+			_popularity = other._popularity;
+			std::cout << "[DEBUG] Copying rating, rating deviation, and "
+						 "popularity."
+					  << std::endl;
+			_nbPlays = other._nbPlays;
+			std::cout << "[DEBUG] Copying themes." << std::endl;
+			_themes = other._themes;
+			std::cout << "[DEBUG] Copying game URL." << std::endl;
+			_gameUrl = other._gameUrl;
+			std::cout << "[DEBUG] Copying moves, themes, and opening tags."
+					  << std::endl;
+			_openingTags = other._openingTags;
+		}
+		std::cout << "[DEBUG] Finished copying Puzzle object." << std::endl;
+		return *this;
+	}
+
 	friend std::ostream &operator<<(std::ostream &stream, const Puzzle &p) {
 		stream << p.puzzleId() << ',';
 		stream << p.fen() << ',';

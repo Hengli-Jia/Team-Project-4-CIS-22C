@@ -1,3 +1,6 @@
+#ifndef BINARYNODE_H
+#define BINARYNODE_H
+
 #include "Puzzle.h"
 
 #include <iostream>
@@ -43,3 +46,5 @@ BinaryNode::BinaryNode(const Puzzle &puzzle) {
 	this->right = nullptr;
 	this->index = -1;
 }
+
+#endif
