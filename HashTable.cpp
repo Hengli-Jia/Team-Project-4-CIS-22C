@@ -34,40 +34,21 @@ bool HashTable::insert(const Puzzle &item) {
 	int index = hashFunction(key);
 	int collisions = 0;
 
-	std::cout << "[DEBUG] Inserting item with key: " << key
-			  << " at index: " << index << std::endl;
-
 	for (int i = 0; i < capacity; ++i) {
-		std::cout << "[DEBUG] Checking index: " << (index + i) % capacity
-				  << std::endl;
 		int currentIndex = (index + i) % capacity;
 		if (table[currentIndex].getOccupied() != 1) {
-			std::cout << "[DEBUG] Found empty slot at index: " << currentIndex
-					  << std::endl;
 			table[currentIndex].setItem(item);
-			std::cout << "[DEBUG] Setting item at index: " << currentIndex
-					  << std::endl;
 			table[currentIndex].setOccupied(1);
-			std::cout << "[DEBUG] Setting occupied at index: " << currentIndex
-					  << std::endl;
 			table[currentIndex].setCollisions(collisions);
-			std::cout << "[DEBUG] Setting collisions at index: " << currentIndex
-					  << std::endl;
 			size++;
-			std::cout << "[DEBUG] Inserted item at index: " << currentIndex
-					  << ", total size: " << size << std::endl;
 			return true;
 		}
 		// If duplicate key, do not insert
 		if (table[currentIndex].getOccupied() == 1 &&
 			table[currentIndex].getItem().getKey() == key) {
-			std::cout << "[DEBUG] Duplicate key found at index: "
-					  << currentIndex << ", not inserting." << std::endl;
 			return false;
 		}
 		collisions++;
-		std::cout << "[DEBUG] Collision at index: " << currentIndex
-				  << ", total collisions: " << collisions << std::endl;
 	}
 	return false;
 }

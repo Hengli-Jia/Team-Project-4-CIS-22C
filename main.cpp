@@ -189,8 +189,6 @@ out:
 */
 bool loadPuzzles(HashTable &hashTable, BinaryTree &bst,
 				 const std::string &inputFile) {
-	std::cout << "[DEBUG] loadPuzzles() called with inputFile: " << inputFile
-			  << std::endl;
 	// open the input file
 	std::ifstream file(inputFile);
 	if (!file.is_open()) {
@@ -224,8 +222,6 @@ bool loadPuzzles(HashTable &hashTable, BinaryTree &bst,
 	while (!isPrime(hashSize))
 		++hashSize;
 
-	std::cout << "[DEBUG] Calculated hash size: " << hashSize << std::endl;
-
 	// recreate hashTable with new size
 	hashTable = HashTable(hashSize);
 
@@ -234,10 +230,11 @@ bool loadPuzzles(HashTable &hashTable, BinaryTree &bst,
 	std::getline(file, line); // skip header
 	while (std::getline(file, line)) {
 		lineNum++;
-		std::cout << "[DEBUG] Processing line " << lineNum << ": " << line
-				  << std::endl;
 		if (line.empty())
 			continue;
+
+		std::cout << "[DEBUG] Processing line " << lineNum << ": " << line
+				  << std::endl;
 
 		// parse the line into fields
 		std::stringstream ss(line);
@@ -264,8 +261,6 @@ bool loadPuzzles(HashTable &hashTable, BinaryTree &bst,
 		if (puzzleId.empty() || fen.empty() || moves.empty() ||
 			rating.empty() || ratingDeviation.empty() || popularity.empty() ||
 			nbPlays.empty() || themes.empty() || gameUrl.empty()) {
-			std::cout << "[DEBUG] Skipping malformed line " << lineNum
-					  << std::endl;
 			continue; // skip malformed line
 		}
 
@@ -293,26 +288,16 @@ bool loadPuzzles(HashTable &hashTable, BinaryTree &bst,
 						  std::stoi(ratingDeviation), std::stoi(popularity),
 						  std::stoi(nbPlays), themesVec, gameUrl,
 						  openingTagsVec);
-			std::cout << "[DEBUG] Successfully created Puzzle object: "
-					  << puzzle << std::endl;
+			std::cout << "[DEBUG] Inserting Puzzle to hashTable: " << std::endl;
 			hashTable.insert(puzzle);
-			std::cout << "[DEBUG] Successfully inserted into hash table: "
-					  << puzzle << std::endl;
-			std::cout << "[DEBUG] About to insert into BST: " << puzzle
-					  << std::endl;
+			std::cout << "[DEBUG] Inserting Puzzle to bst: " << std::endl;
 			bst.insertBST(puzzle);
-			std::cout << "[DEBUG] Successfully inserted into BST: " << puzzle
-					  << std::endl;
-			std::cout << "[DEBUG] Successfully processed line " << lineNum
-					  << std::endl;
 		} catch (const std::exception &e) {
 			std::cerr << "[ERROR] Failed to parse line " << lineNum << ": "
 					  << line << " with error: " << e.what() << std::endl;
 			continue; // skip line if conversion fails
 		}
 	}
-	std::cout << "[DEBUG] Finished processing input file." << std::endl;
-
 	file.close();
 
 	// save to file (in hash table sequence)
@@ -324,11 +309,7 @@ bool loadPuzzles(HashTable &hashTable, BinaryTree &bst,
 		outFileName += "_hashtable";
 	}
 	std::ofstream outFile(outFileName);
-	std::cout << "[DEBUG] Attempting to write output file: " << outFileName
-			  << std::endl;
 	if (outFile.is_open()) {
-		std::cout << "[DEBUG] Output file opened successfully. Writing data..."
-				  << std::endl;
 		// Write header
 		outFile << "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,"
 				   "NbPlays,Themes,GameUrl,OpeningTags\n";
@@ -341,8 +322,6 @@ bool loadPuzzles(HashTable &hashTable, BinaryTree &bst,
 				written++;
 			}
 		}
-		std::cout << "[DEBUG] Number of puzzles written: " << written
-				  << std::endl;
 		outFile.close();
 	} else {
 		std::cerr << "[ERROR] Could not open output file: " << outFileName

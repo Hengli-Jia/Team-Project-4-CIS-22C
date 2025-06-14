@@ -15,16 +15,16 @@ using std::vector;
 
 class Puzzle {
   private:
-	string _puzzleId;
-	string _fen;
-	vector<string> _moves;
-	int _rating;
-	int _ratingDeviation;
-	int _popularity;
-	int _nbPlays;
-	vector<string> _themes;
-	string _gameUrl;
-	vector<string> _openingTags;
+	string _puzzleId = "";
+	string _fen = "";
+	vector<string> _moves = {};
+	int _rating = 0;
+	int _ratingDeviation = 0;
+	int _popularity = 0;
+	int _nbPlays = 0;
+	vector<string> _themes = {};
+	string _gameUrl = "";
+	vector<string> _openingTags = {};
 
   public:
 	// constructors
@@ -70,38 +70,60 @@ class Puzzle {
 
 	// copy assignment operator
 	Puzzle &operator=(const Puzzle &other) {
+		std::cout << "[DEBUG] Puzzle copy source: "
+				  << "puzzleId='" << other._puzzleId << "', "
+				  << "fen='" << other._fen << "', moves=[";
+		for (size_t i = 0; i < other._moves.size(); ++i) {
+			if (i > 0)
+				std::cout << ' ';
+			std::cout << other._moves[i];
+		}
+		std::cout << "], rating=" << other._rating
+				  << ", ratingDeviation=" << other._ratingDeviation
+				  << ", popularity=" << other._popularity
+				  << ", nbPlays=" << other._nbPlays << ", themes=[";
+		for (size_t i = 0; i < other._themes.size(); ++i) {
+			if (i > 0)
+				std::cout << ' ';
+			std::cout << other._themes[i];
+		}
+		std::cout << "], gameUrl='" << other._gameUrl << "', openingTags=[";
+		for (size_t i = 0; i < other._openingTags.size(); ++i) {
+			if (i > 0)
+				std::cout << ' ';
+			std::cout << other._openingTags[i];
+		}
+		std::cout << "]" << std::endl;
 		if (this != &other) {
-			std::cout << "[DEBUG] Copying Puzzle object." << std::endl;
-			std::cout << other._puzzleId << std::endl;
+			std::cout << "[DEBUG] Original Puzzle ID: " << _puzzleId
+					  << std::endl;
 			_puzzleId = other._puzzleId;
-			std::cout << "[DEBUG] Copying puzzle ID." << std::endl;
-			std::cout << other._fen << std::endl;
+			std::cout << "[DEBUG] Assigned _puzzleId: " << _puzzleId
+					  << std::endl;
 			_fen = other._fen;
-			std::cout << "[DEBUG] Copying FEN." << std::endl;
+			std::cout << "[DEBUG] Assigned _fen: " << _fen << std::endl;
 			_moves = other._moves;
-			std::cout << "[DEBUG] Copying moves." << std::endl;
+			std::cout << "[DEBUG] Assigned _moves, size: " << _moves.size()
+					  << std::endl;
 			_rating = other._rating;
-			std::cout << "[DEBUG] Copying rating, rating deviation, and "
-						 "popularity."
-					  << std::endl;
+			std::cout << "[DEBUG] Assigned _rating: " << _rating << std::endl;
 			_ratingDeviation = other._ratingDeviation;
-			std::cout << "[DEBUG] Copying rating, rating deviation, and "
-						 "popularity."
-					  << std::endl;
+			std::cout << "[DEBUG] Assigned _ratingDeviation: "
+					  << _ratingDeviation << std::endl;
 			_popularity = other._popularity;
-			std::cout << "[DEBUG] Copying rating, rating deviation, and "
-						 "popularity."
+			std::cout << "[DEBUG] Assigned _popularity: " << _popularity
 					  << std::endl;
 			_nbPlays = other._nbPlays;
-			std::cout << "[DEBUG] Copying themes." << std::endl;
+			std::cout << "[DEBUG] Assigned _nbPlays: " << _nbPlays << std::endl;
 			_themes = other._themes;
-			std::cout << "[DEBUG] Copying game URL." << std::endl;
-			_gameUrl = other._gameUrl;
-			std::cout << "[DEBUG] Copying moves, themes, and opening tags."
+			std::cout << "[DEBUG] Assigned _themes, size: " << _themes.size()
 					  << std::endl;
+			_gameUrl = other._gameUrl;
+			std::cout << "[DEBUG] Assigned _gameUrl: " << _gameUrl << std::endl;
 			_openingTags = other._openingTags;
+			std::cout << "[DEBUG] Assigned _openingTags, size: "
+					  << _openingTags.size() << std::endl;
 		}
-		std::cout << "[DEBUG] Finished copying Puzzle object." << std::endl;
 		return *this;
 	}
 

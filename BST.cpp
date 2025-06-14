@@ -4,23 +4,15 @@
 #include <string>
 
 BinaryNode *BinaryTree::_insertBST(BinaryNode *nodePtr, BinaryNode *newPtr) {
-	std::cout << "[DEBUG] Inserting: " << newPtr->getKey() << std::endl;
 	if (!nodePtr) {
-		std::cout << "[DEBUG] Inserted at empty node." << std::endl;
 		this->count++;
 		return newPtr;
 	}
 	if (newPtr->getKey() < nodePtr->getKey()) {
-		std::cout << "[DEBUG] Going left from node with key: "
-				  << nodePtr->getKey() << std::endl;
 		nodePtr->setLeft(_insertBST(nodePtr->getLeft(), newPtr));
 	} else {
-		std::cout << "[DEBUG] Going right from node with key: "
-				  << nodePtr->getKey() << std::endl;
 		nodePtr->setRight(_insertBST(nodePtr->getRight(), newPtr));
 	}
-	std::cout << "[DEBUG] Inserted: " << newPtr->getKey()
-			  << " at node with key: " << nodePtr->getKey() << std::endl;
 	return nodePtr;
 }
 

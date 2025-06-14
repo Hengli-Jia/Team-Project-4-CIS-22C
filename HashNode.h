@@ -12,11 +12,7 @@ class HashNode {
 	HashNode(const Puzzle &anItem, int ocp, int nCol)
 		: item(anItem), occupied(ocp), collisions(nCol) {}
 
-	void setItem(const Puzzle &anItem) {
-		std::cout << "[DEBUG] Setting item in HashNode." << std::endl;
-		item = anItem;
-		std::cout << "[DEBUG] Item set to: " << item.getKey() << std::endl;
-	}
+	void setItem(const Puzzle &anItem) { item = anItem; }
 	void setOccupied(int ocp) { occupied = ocp; }
 	void setCollisions(int nCol) { collisions = nCol; }
 
