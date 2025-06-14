@@ -36,27 +36,44 @@ bool BinaryTree::_deleteBST(BinaryNode * delPtr, BinaryNode * nodePtr) const {
 	if (nodePtr -> isLeaf()) {
 		if (!parent)
 			this -> root = nullptr;
-		else if (nodePtr -> getKey() == item)
-			parent -> getLeft() = null
-		
+		else if (nodePtr -> getLeft () -> getKey() == delPtr -> getKey())
+			parent -> getLeft() = nullptr;
+		else
+			parent -> getRight() = nullptr;	
 	}
-	// Case 2: root with right child only
+	// Case 2: node with right child only
 	if (!nodePtr -> getLeft()) {
-		nodePtr = nodePtr -> getRight();
-		delete delPtr;
-		delete
+		if (!parent)
+			this -> root -> getRight() = nodePtr -> getRight();
+		else if (nodePtr -> getLeft() ->  getKey() == delPtr -> getKey())
+			parent -> getLeft() = nodePtr -> getLeft();
+		else
+			parent -> getRight() = nodePtr -> getRight();
+	}	
+	// Case 3: node with left child only
+	else if (!nodePtr -> getRight()) {
+		if (!parent)
+			this -> root -> getLeft() = nodePtr -> getLeft();
+		else if (nodePtr -> getLeft() ->  getKey() == delPtr -> getKey())
+			parent -> getLeft() = nodePtr -> getLeft();
+		else
+			parent -> getRight() = nodePtr -> getRight();
+	}	
+	// Case 4: node with two children
+	else {
+		BinaryNode* successor = nodePtr -> getRight();
+		while (successor -> getLeft()) {
+			successor = successor -> getLeft();	
+		}
+			nodePtr -> getItem() = successor -> getItem();
+			parent = nodePtr;
 	}
-		
-
-	// Case 3: root with left child only
-		
-	// Case 4: root with two children
 
 	
 	return true;
 		}
 	}
-	return false; // stubbed, returns false to silence warning
+	return false; // Node not found
 }
 
 void BinaryTree::_inorderTraversal(void visit(string key),
