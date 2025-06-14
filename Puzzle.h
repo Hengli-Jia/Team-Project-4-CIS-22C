@@ -1,8 +1,3 @@
-/*
- Puzzle: stores a chess puzzle with its information
- Author: Toma Yuen
-*/
-
 #ifndef PUZZLE_H
 #define PUZZLE_H
 
@@ -10,6 +5,7 @@
 #include <string>
 #include <vector>
 
+using std::ostream;
 using std::string;
 using std::vector;
 
@@ -93,7 +89,7 @@ class Puzzle {
 		return *this;
 	}
 
-	friend std::ostream &operator<<(std::ostream &stream, const Puzzle &p) {
+	friend ostream &operator<<(ostream &stream, const Puzzle &p) {
 		stream << p.puzzleId() << ',';
 		stream << p.fen() << ',';
 		for (size_t j = 0; j < p.moves().size(); ++j) {

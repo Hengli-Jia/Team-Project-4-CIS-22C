@@ -1,5 +1,5 @@
-#pragma once
-#include "BST.h"
+using std::function;
+using std::string;
 
 template <typename T>
 BinaryNode<T> *BST<T>::_insert(BinaryNode<T> *nodePtr, BinaryNode<T> *newPtr) {
@@ -19,8 +19,7 @@ BinaryNode<T> *BST<T>::_insert(BinaryNode<T> *nodePtr, BinaryNode<T> *newPtr) {
 }
 
 template <typename T>
-bool BST<T>::_delete(const std::string &key, BinaryNode<T> *nodePtr,
-					 bool &deleted) {
+bool BST<T>::_delete(const string &key, BinaryNode<T> *nodePtr, bool &deleted) {
 	if (!nodePtr)
 		return false;
 	if (key < nodePtr->getKey()) {
@@ -42,10 +41,8 @@ bool BST<T>::_delete(const std::string &key, BinaryNode<T> *nodePtr,
 			nodePtr = nodePtr->getLeft();
 			delete temp;
 		} else {
-			BinaryNode<T> *succParent = nodePtr;
 			BinaryNode<T> *succ = nodePtr->getRight();
 			while (succ->getLeft()) {
-				succParent = succ;
 				succ = succ->getLeft();
 			}
 			nodePtr->setKey(succ->getKey());
@@ -56,9 +53,8 @@ bool BST<T>::_delete(const std::string &key, BinaryNode<T> *nodePtr,
 }
 
 template <typename T>
-void BST<T>::_inorderTraversal(
-	const std::function<void(const std::string &)> &visit,
-	BinaryNode<T> *nodePtr) const {
+void BST<T>::_inorderTraversal(const function<void(const string &)> &visit,
+							   BinaryNode<T> *nodePtr) const {
 	if (nodePtr) {
 		_inorderTraversal(visit, nodePtr->getLeft());
 		visit(nodePtr->getKey());
@@ -67,9 +63,8 @@ void BST<T>::_inorderTraversal(
 }
 
 template <typename T>
-void BST<T>::_indentedTree(
-	const std::function<void(const std::string &, int)> &visit,
-	BinaryNode<T> *nodePtr, int level) const {
+void BST<T>::_indentedTree(const function<void(const string &, int)> &visit,
+						   BinaryNode<T> *nodePtr, int level) const {
 	if (nodePtr) {
 		_indentedTree(visit, nodePtr->getRight(), level + 1);
 		visit(nodePtr->getKey(), level);
@@ -91,7 +86,7 @@ template <typename T> bool BST<T>::insert(const T &inputData) {
 	return true;
 }
 
-template <typename T> bool BST<T>::remove(const std::string &key) {
+template <typename T> bool BST<T>::remove(const string &key) {
 	bool deleted = false;
 	_delete(key, rootPtr, deleted);
 	return deleted;
@@ -99,13 +94,13 @@ template <typename T> bool BST<T>::remove(const std::string &key) {
 
 template <typename T>
 void BST<T>::inorderTraversal(
-	const std::function<void(const std::string &)> &visit) const {
+	const function<void(const string &)> &visit) const {
 	_inorderTraversal(visit, rootPtr);
 }
 
 template <typename T>
 void BST<T>::indentedTree(
-	const std::function<void(const std::string &, int)> &visit) const {
+	const function<void(const string &, int)> &visit) const {
 	_indentedTree(visit, rootPtr, 0);
 }
 

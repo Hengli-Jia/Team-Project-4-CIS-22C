@@ -1,6 +1,9 @@
-#pragma once
-#include "HashTable.h"
 #include <iostream>
+
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::string;
 
 // Constructor: initializes the hash table with a given capacity
 template <typename T> HashTable<T>::HashTable(int initialCapacity) {
@@ -13,8 +16,7 @@ template <typename T> HashTable<T>::HashTable(int initialCapacity) {
 template <typename T> HashTable<T>::~HashTable() { delete[] table; }
 
 // Simple hash function for string keys
-template <typename T>
-int HashTable<T>::hashFunction(const std::string &key) const {
+template <typename T> int HashTable<T>::hashFunction(const string &key) const {
 	int hash = 1;
 	for (char c : key) {
 		hash = 31 * hash + static_cast<unsigned char>(c);
@@ -32,15 +34,15 @@ template <typename T> bool HashTable<T>::insert(const T &item) {
 	if (isFull()) {
 		rehash();
 	}
-	std::string key = item.getKey();
+	string key = item.getKey();
 	int index = hashFunction(key);
 	int collisions = 0;
 
 	for (int i = 0; i < capacity; ++i) {
 		int currentIndex = (index + i) % capacity;
 		if (currentIndex < 0 || currentIndex >= capacity) {
-			std::cerr << "[ERROR] Out-of-bounds index: " << currentIndex
-					  << " (capacity: " << capacity << ")" << std::endl;
+			cerr << "[ERROR] Out-of-bounds index: " << currentIndex
+				 << " (capacity: " << capacity << ")" << endl;
 			abort();
 		}
 		if (table[currentIndex].getOccupied() != 1) {
@@ -61,8 +63,7 @@ template <typename T> bool HashTable<T>::insert(const T &item) {
 }
 
 // Remove a Puzzle item by key, output the removed item
-template <typename T>
-bool HashTable<T>::remove(T &itemOut, const std::string &key) {
+template <typename T> bool HashTable<T>::remove(T &itemOut, const string &key) {
 	int index = hashFunction(key);
 
 	for (int i = 0; i < capacity; ++i) {
@@ -82,7 +83,7 @@ bool HashTable<T>::remove(T &itemOut, const std::string &key) {
 
 // Search for a Puzzle item by key, output the found item
 template <typename T>
-bool HashTable<T>::search(T &itemOut, const std::string &key) const {
+bool HashTable<T>::search(T &itemOut, const string &key) const {
 	int index = hashFunction(key);
 
 	for (int i = 0; i < capacity; ++i) {

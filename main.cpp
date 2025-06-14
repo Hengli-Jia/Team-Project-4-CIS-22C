@@ -2,8 +2,8 @@
  TODO: add members information and project description
 */
 
-#include "BST.cpp"
-#include "HashTable.cpp"
+#include "BST.h"
+#include "HashTable.h"
 #include "Puzzle.h"
 
 #include <cctype>
@@ -12,10 +12,10 @@
 #include <sstream>
 #include <vector>
 
-const int DEFAULT_HASH_SIZE = 53;
+using namespace std;
 
-HashTable<Puzzle>
-	*hash; // Toma: I don't think a global variable should be used like this
+HashTable<Puzzle> *globalHash; // Toma: I don't think a global variable should
+							   // be used like this
 
 // .............................................................................
 
@@ -60,7 +60,7 @@ int main() {
 	inputDataFile(hashTable, bst, inputFile);
 	outputDataFile(hashTable, outputFile);
 
-	hash = &hashTable;
+	globalHash = &hashTable;
 
 	menu();
 	char choice;
@@ -102,7 +102,7 @@ int main() {
 			displayTeamMembers();
 			break;
 		default:
-			std::cout << "Invalid choice. Please try again." << std::endl;
+			cout << "Invalid choice. Please try again.\n";
 			break;
 		}
 	} while (choice != 'E');
@@ -113,89 +113,89 @@ int main() {
 // MENU FUNCTION DEFINITIONS
 
 void menu() {
-	std::cout << "\nMenu Options:\n";
-	std::cout << "A - Add a new puzzle\n";
-	std::cout << "I - Input data from file\n";
-	std::cout << "D - Delete a puzzle\n";
-	std::cout << "F - Find a puzzle\n";
-	std::cout << "L - List sorted data\n";
-	std::cout << "O - Output data to file\n";
-	std::cout << "S - Show statistics\n";
-	std::cout << "H - Help (show this menu)\n";
-	std::cout << "E - Exit the program\n";
-	std::cout << "T - Display indented tree (hidden option)\n";
-	std::cout << "M - Display team members (hidden option)\n";
+	cout << "\nMenu Options:\n";
+	cout << "A - Add a new puzzle\n";
+	cout << "I - Input data from file\n";
+	cout << "D - Delete a puzzle\n";
+	cout << "F - Find a puzzle\n";
+	cout << "L - List sorted data\n";
+	cout << "O - Output data to file\n";
+	cout << "S - Show statistics\n";
+	cout << "H - Help (show this menu)\n";
+	cout << "E - Exit the program\n";
+	cout << "T - Display indented tree (hidden option)\n";
+	cout << "M - Display team members (hidden option)\n";
 }
 
 char menuInput() {
-	std::cout << "\nEnter your choice: ";
-	std::string input;
-	std::getline(std::cin, input);
+	cout << "\nEnter your choice: ";
+	string input;
+	getline(cin, input);
 
 	// skip leading whitespace and get first character
 	for (char ch : input) {
-		if (!std::isspace(static_cast<unsigned char>(ch))) {
-			return std::toupper(static_cast<unsigned char>(ch));
+		if (!isspace(static_cast<unsigned char>(ch))) {
+			return toupper(static_cast<unsigned char>(ch));
 		}
 	}
 	return '\0'; // no valid input
 }
 
 void addItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst) {
-	std::cout << "Add a new puzzle:\n";
-	std::cout << "Enter full line (CSV format) or leave blank to input fields "
-				 "one by one:\n";
-	std::string line;
-	std::getline(std::cin, line);
+	cout << "Add a new puzzle:\n";
+	cout << "Enter full line (CSV format) or leave blank to input fields "
+			"one by one:\n";
+	string line;
+	getline(cin, line);
 
-	std::string puzzleId, fen, moves, rating, ratingDeviation, popularity,
-		nbPlays, themes, gameUrl, openingTags;
+	string puzzleId, fen, moves, rating, ratingDeviation, popularity, nbPlays,
+		themes, gameUrl, openingTags;
 
 	bool valid = false;
 	while (!valid) {
 		if (!line.empty()) {
 			// Parse CSV line
-			std::stringstream ss(line);
-			std::getline(ss, puzzleId, ',');
-			std::getline(ss, fen, ',');
-			std::getline(ss, moves, ',');
-			std::getline(ss, rating, ',');
-			std::getline(ss, ratingDeviation, ',');
-			std::getline(ss, popularity, ',');
-			std::getline(ss, nbPlays, ',');
-			std::getline(ss, themes, ',');
-			std::getline(ss, gameUrl, ',');
+			stringstream ss(line);
+			getline(ss, puzzleId, ',');
+			getline(ss, fen, ',');
+			getline(ss, moves, ',');
+			getline(ss, rating, ',');
+			getline(ss, ratingDeviation, ',');
+			getline(ss, popularity, ',');
+			getline(ss, nbPlays, ',');
+			getline(ss, themes, ',');
+			getline(ss, gameUrl, ',');
 			if (!ss.eof())
-				std::getline(ss, openingTags, ',');
+				getline(ss, openingTags, ',');
 		} else {
-			std::cout << "PuzzleId: ";
-			std::getline(std::cin, puzzleId);
-			std::cout << "FEN: ";
-			std::getline(std::cin, fen);
-			std::cout << "Moves (space-separated): ";
-			std::getline(std::cin, moves);
-			std::cout << "Rating: ";
-			std::getline(std::cin, rating);
-			std::cout << "RatingDeviation: ";
-			std::getline(std::cin, ratingDeviation);
-			std::cout << "Popularity: ";
-			std::getline(std::cin, popularity);
-			std::cout << "NbPlays: ";
-			std::getline(std::cin, nbPlays);
-			std::cout << "Themes (space-separated): ";
-			std::getline(std::cin, themes);
-			std::cout << "GameUrl: ";
-			std::getline(std::cin, gameUrl);
-			std::cout << "OpeningTags (space-separated, optional): ";
-			std::getline(std::cin, openingTags);
+			cout << "PuzzleId: ";
+			getline(cin, puzzleId);
+			cout << "FEN: ";
+			getline(cin, fen);
+			cout << "Moves (space-separated): ";
+			getline(cin, moves);
+			cout << "Rating: ";
+			getline(cin, rating);
+			cout << "RatingDeviation: ";
+			getline(cin, ratingDeviation);
+			cout << "Popularity: ";
+			getline(cin, popularity);
+			cout << "NbPlays: ";
+			getline(cin, nbPlays);
+			cout << "Themes (space-separated): ";
+			getline(cin, themes);
+			cout << "GameUrl: ";
+			getline(cin, gameUrl);
+			cout << "OpeningTags (space-separated, optional): ";
+			getline(cin, openingTags);
 		}
 
 		// Validate required fields
 		if (puzzleId.empty() || fen.empty() || moves.empty() ||
 			rating.empty() || ratingDeviation.empty() || popularity.empty() ||
 			nbPlays.empty() || themes.empty() || gameUrl.empty()) {
-			std::cout << "[ERROR] One or more required fields are empty. "
-						 "Please re-enter.\n";
+			cout << "[ERROR] One or more required fields are empty. "
+					"Please re-enter.\n";
 			puzzleId.clear();
 			fen.clear();
 			moves.clear();
@@ -207,37 +207,37 @@ void addItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst) {
 			gameUrl.clear();
 			openingTags.clear();
 			line.clear();
-			std::cout << "Enter full line (CSV format) or leave blank to input "
-						 "fields one by one:\n";
-			std::getline(std::cin, line);
+			cout << "Enter full line (CSV format) or leave blank to input "
+					"fields one by one:\n";
+			getline(cin, line);
 			continue;
 		}
 
 		// Parse moves, themes, openingTags as vectors
-		auto split = [](const std::string &s) {
-			std::vector<std::string> v;
-			std::stringstream ss(s);
-			std::string item;
+		auto split = [](const string &s) {
+			vector<string> v;
+			stringstream ss(s);
+			string item;
 			while (ss >> item)
 				v.push_back(item);
 			return v;
 		};
-		std::vector<std::string> movesVec = split(moves);
-		std::vector<std::string> themesVec = split(themes);
-		std::vector<std::string> openingTagsVec = split(openingTags);
+		vector<string> movesVec = split(moves);
+		vector<string> themesVec = split(themes);
+		vector<string> openingTagsVec = split(openingTags);
 
 		// Validate integer fields
 		try {
-			int ratingInt = std::stoi(rating);
-			int ratingDevInt = std::stoi(ratingDeviation);
-			int popularityInt = std::stoi(popularity);
-			int nbPlaysInt = std::stoi(nbPlays);
+			int ratingInt = stoi(rating);
+			int ratingDevInt = stoi(ratingDeviation);
+			int popularityInt = stoi(popularity);
+			int nbPlaysInt = stoi(nbPlays);
 
 			// Check for duplicate puzzleId
 			Puzzle temp;
 			if (hashTable.search(temp, puzzleId)) {
-				std::cout << "[ERROR] PuzzleId already exists in the hash "
-							 "table. Please use a unique PuzzleId.\n";
+				cout << "[ERROR] PuzzleId already exists in the hash "
+						"table. Please use a unique PuzzleId.\n";
 				puzzleId.clear();
 				line.clear();
 				continue;
@@ -249,20 +249,20 @@ void addItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst) {
 
 			hashTable.insert(newPuzzle);
 			bst.insert(newPuzzle);
-			std::cout << "Puzzle added successfully!\n";
+			cout << "Puzzle added successfully!\n";
 			valid = true;
-		} catch (const std::invalid_argument &) {
-			std::cout << "[ERROR] One or more numeric fields are not valid "
-						 "integers. Please re-enter.\n";
+		} catch (const invalid_argument &) {
+			cout << "[ERROR] One or more numeric fields are not valid "
+					"integers. Please re-enter.\n";
 			rating.clear();
 			ratingDeviation.clear();
 			popularity.clear();
 			nbPlays.clear();
 			line.clear();
 			continue;
-		} catch (const std::out_of_range &) {
-			std::cout << "[ERROR] One or more numeric fields are out of range. "
-						 "Please re-enter.\n";
+		} catch (const out_of_range &) {
+			cout << "[ERROR] One or more numeric fields are out of range. "
+					"Please re-enter.\n";
 			rating.clear();
 			ratingDeviation.clear();
 			popularity.clear();
@@ -277,43 +277,43 @@ void inputDataFile(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst,
 				   string inputFile) {
 	// if inputFile is empty, prompt user for input
 	if (inputFile.empty()) {
-		std::cout << "Enter input file name: ";
-		std::getline(std::cin, inputFile);
+		cout << "Enter input file name: ";
+		getline(cin, inputFile);
 	}
 
 	// open the input file
-	std::ifstream file(inputFile);
+	ifstream file(inputFile);
 	if (!file.is_open()) {
-		std::cerr << "Failed to open input file: " << inputFile << std::endl;
+		cerr << "Failed to open input file: " << inputFile << endl;
 		return;
 	}
 
 	// read data and insert into hashTable and bst
-	std::string line;
+	string line;
 	int lineNum = 0;
-	std::getline(file, line); // skip header
-	while (std::getline(file, line)) {
+	getline(file, line); // skip header
+	while (getline(file, line)) {
 		lineNum++;
 		if (line.empty())
 			continue;
 
 		// parse the line into fields
-		std::stringstream ss(line);
-		std::string puzzleId, fen, moves, rating, ratingDeviation, popularity,
+		stringstream ss(line);
+		string puzzleId, fen, moves, rating, ratingDeviation, popularity,
 			nbPlays, themes, gameUrl, openingTags;
-		std::getline(ss, puzzleId, ',');
-		std::getline(ss, fen, ',');
-		std::getline(ss, moves, ',');
-		std::getline(ss, rating, ',');
-		std::getline(ss, ratingDeviation, ',');
-		std::getline(ss, popularity, ',');
-		std::getline(ss, nbPlays, ',');
-		std::getline(ss, themes, ',');
-		std::getline(ss, gameUrl, ',');
+		getline(ss, puzzleId, ',');
+		getline(ss, fen, ',');
+		getline(ss, moves, ',');
+		getline(ss, rating, ',');
+		getline(ss, ratingDeviation, ',');
+		getline(ss, popularity, ',');
+		getline(ss, nbPlays, ',');
+		getline(ss, themes, ',');
+		getline(ss, gameUrl, ',');
 
 		// openingTags is optional, so check if present
 		if (!ss.eof()) {
-			std::getline(ss, openingTags, ',');
+			getline(ss, openingTags, ',');
 		} else {
 			openingTags = "";
 		}
@@ -326,34 +326,33 @@ void inputDataFile(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst,
 		}
 
 		// parse moves, themes, openingTags as vectors
-		std::vector<std::string> movesVec, themesVec, openingTagsVec;
-		std::stringstream movesSS(moves), themesSS(themes), tagsSS(openingTags);
-		std::string token;
-		while (std::getline(movesSS, token, ' ')) {
+		vector<string> movesVec, themesVec, openingTagsVec;
+		stringstream movesSS(moves), themesSS(themes), tagsSS(openingTags);
+		string token;
+		while (getline(movesSS, token, ' ')) {
 			if (!token.empty())
 				movesVec.push_back(token);
 		}
 
-		while (std::getline(themesSS, token, ' ')) {
+		while (getline(themesSS, token, ' ')) {
 			if (!token.empty())
 				themesVec.push_back(token);
 		}
 
-		while (std::getline(tagsSS, token, ' ')) {
+		while (getline(tagsSS, token, ' ')) {
 			if (!token.empty())
 				openingTagsVec.push_back(token);
 		}
 
 		try {
-			Puzzle puzzle(puzzleId, fen, movesVec, std::stoi(rating),
-						  std::stoi(ratingDeviation), std::stoi(popularity),
-						  std::stoi(nbPlays), themesVec, gameUrl,
-						  openingTagsVec);
+			Puzzle puzzle(puzzleId, fen, movesVec, stoi(rating),
+						  stoi(ratingDeviation), stoi(popularity),
+						  stoi(nbPlays), themesVec, gameUrl, openingTagsVec);
 			hashTable.insert(puzzle);
 			bst.insert(puzzle);
-		} catch (const std::exception &e) {
-			std::cerr << "[ERROR] Failed to parse line " << lineNum << ": "
-					  << line << " with error: " << e.what() << std::endl;
+		} catch (const exception &e) {
+			cerr << "[ERROR] Failed to parse line " << lineNum << ": " << line
+				 << " with error: " << e.what() << endl;
 			continue; // skip line if conversion fails
 		}
 	}
@@ -361,19 +360,19 @@ void inputDataFile(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst,
 }
 
 void deleteItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst) {
-	std::cout << "Delete a puzzle by PuzzleId or FEN.\n";
-	std::string input;
-	std::cout << "Enter PuzzleId (leave blank to use FEN): ";
-	std::getline(std::cin, input);
-	std::string key = input;
+	cout << "Delete a puzzle by PuzzleId or FEN.\n";
+	string input;
+	cout << "Enter PuzzleId (leave blank to use FEN): ";
+	getline(cin, input);
+	string key = input;
 
 	if (key.empty()) {
-		std::cout << "Enter FEN: ";
-		std::getline(std::cin, key);
+		cout << "Enter FEN: ";
+		getline(cin, key);
 	}
 
 	if (key.empty()) {
-		std::cout << "[ERROR] No PuzzleId or FEN provided.\n";
+		cout << "[ERROR] No PuzzleId or FEN provided.\n";
 		return;
 	}
 
@@ -395,50 +394,50 @@ void deleteItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst) {
 	}
 
 	if (!foundById) {
-		std::cout << "[ERROR] Puzzle not found by PuzzleId or FEN.\n";
+		cout << "[ERROR] Puzzle not found by PuzzleId or FEN.\n";
 		return;
 	}
 
 	// Remove from hash table
 	if (hashTable.remove(found, found.getKey())) {
-		std::cout << "[INFO] Puzzle removed from hash table.\n";
+		cout << "[INFO] Puzzle removed from hash table.\n";
 	} else {
-		std::cout << "[WARN] Puzzle could not be removed from hash table.\n";
+		cout << "[WARN] Puzzle could not be removed from hash table.\n";
 	}
 
 	// Remove from BST
 	if (bst.remove(found.getKey())) {
-		std::cout << "[INFO] Puzzle removed from BST.\n";
+		cout << "[INFO] Puzzle removed from BST.\n";
 	} else {
-		std::cout << "[WARN] Puzzle could not be removed from BST.\n";
+		cout << "[WARN] Puzzle could not be removed from BST.\n";
 	}
 }
 
 void findItem() {
-	std::cout << "Find a puzzle by PuzzleId or FEN.\n";
-	std::string input;
-	std::cout << "Enter PuzzleId (leave blank to use FEN): ";
-	std::getline(std::cin, input);
-	std::string key = input;
+	cout << "Find a puzzle by PuzzleId or FEN.\n";
+	string input;
+	cout << "Enter PuzzleId (leave blank to use FEN): ";
+	getline(cin, input);
+	string key = input;
 
 	if (key.empty()) {
-		std::cout << "Enter FEN: ";
-		std::getline(std::cin, key);
+		cout << "Enter FEN: ";
+		getline(cin, key);
 	}
 
 	if (key.empty()) {
-		std::cout << "[ERROR] No PuzzleId or FEN provided.\n";
+		cout << "[ERROR] No PuzzleId or FEN provided.\n";
 		return;
 	}
 
 	// Try to find by PuzzleId first
 	Puzzle found;
-	bool foundById = hash->search(found, key);
+	bool foundById = globalHash->search(found, key);
 	if (!foundById) {
 		// Try to find by FEN (linear search)
-		for (int i = 0; i < hash->getCapacity(); ++i) {
-			if (hash->getOccupiedAt(i) == 1) {
-				Puzzle p = hash->getItemAt(i);
+		for (int i = 0; i < globalHash->getCapacity(); ++i) {
+			if (globalHash->getOccupiedAt(i) == 1) {
+				Puzzle p = globalHash->getItemAt(i);
 				if (p.fen() == key) {
 					found = p;
 					foundById = true;
@@ -449,23 +448,22 @@ void findItem() {
 	}
 
 	if (!foundById) {
-		std::cout << "[ERROR] Puzzle not found by PuzzleId or FEN.\n";
+		cout << "[ERROR] Puzzle not found by PuzzleId or FEN.\n";
 		return;
 	}
 
 	// Display the found puzzle
-	std::cout << "[INFO] Puzzle found:\n";
-	std::cout << found << std::endl;
+	cout << "[INFO] Puzzle found:\n";
+	cout << found << endl;
 }
 
 void listSorted(const BST<Puzzle> &bst) {
-	std::cout
-		<< "Listing all puzzles sorted by PuzzleId (BST inorder traversal):\n";
+	cout << "Listing all puzzles sorted by PuzzleId (BST inorder traversal):\n";
 	// Helper function to print each puzzle
-	auto printPuzzle = [](std::string key) {
+	auto printPuzzle = [](string key) {
 		Puzzle puzzleOut;
-		hash->search(puzzleOut, key);
-		std::cout << puzzleOut << std::endl;
+		globalHash->search(puzzleOut, key);
+		cout << puzzleOut << endl;
 	};
 	bst.inorderTraversal(printPuzzle);
 }
@@ -473,12 +471,12 @@ void listSorted(const BST<Puzzle> &bst) {
 void outputDataFile(const HashTable<Puzzle> &hashTable, string outputFile) {
 	// if outputFile is empty, prompt user for input
 	if (outputFile.empty()) {
-		std::cout << "Enter output file name: ";
-		std::getline(std::cin, outputFile);
+		cout << "Enter output file name: ";
+		getline(cin, outputFile);
 	}
 
 	// save to file (in hash table sequence)
-	std::ofstream outFile(outputFile);
+	ofstream outFile(outputFile);
 	if (outFile.is_open()) {
 		// Write header
 		outFile << "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,"
@@ -494,13 +492,12 @@ void outputDataFile(const HashTable<Puzzle> &hashTable, string outputFile) {
 		}
 		outFile.close();
 	} else {
-		std::cerr << "[ERROR] Could not open output file: " << outputFile
-				  << std::endl;
+		cerr << "[ERROR] Could not open output file: " << outputFile << endl;
 	}
 }
 void statistics(const HashTable<Puzzle> &hashTable) {
-	std::cout << "Hash Table Statistics:\n";
-	std::cout << "Load factor: " << hashTable.getLoadFactor() << "%\n";
+	cout << "Hash Table Statistics:\n";
+	cout << "Load factor: " << hashTable.getLoadFactor() << "%\n";
 
 	int totalCollisions = 0;
 	int longestCollisionPath = 0;
@@ -512,18 +509,18 @@ void statistics(const HashTable<Puzzle> &hashTable) {
 				longestCollisionPath = col;
 		}
 	}
-	std::cout << "Total collisions: " << totalCollisions << "\n";
-	std::cout << "Longest collision path: " << longestCollisionPath << "\n";
+	cout << "Total collisions: " << totalCollisions << "\n";
+	cout << "Longest collision path: " << longestCollisionPath << "\n";
 }
 
 char attemptExit() {
-	std::cout << "Confirm Exit(Y/N): ";
-	std::string input;
-	std::getline(std::cin, input);
+	cout << "Confirm Exit(Y/N): ";
+	string input;
+	getline(cin, input);
 
 	for (char ch : input) {
-		if (!std::isspace((unsigned char)ch))
-			return (std::toupper((unsigned char)ch) == 'Y') ? 'E' : '\0';
+		if (!isspace((unsigned char)ch))
+			return (toupper((unsigned char)ch) == 'Y') ? 'E' : '\0';
 	}
 
 	return '\0';
@@ -532,7 +529,7 @@ char attemptExit() {
 // HIDDEN MENU OPTIONS
 
 void displayIndentedTree(const BST<Puzzle> &bst) {
-	std::cout << "Indented BST (by PuzzleId):\n";
+	cout << "Indented BST (by PuzzleId):\n";
 	BinaryNode<Puzzle> *root = *(BinaryNode<Puzzle> **)(void *)&bst;
 	printIndentedTree(root, 0);
 }
@@ -546,21 +543,21 @@ void displayTeamMembers() {}
 int determineHashSize(string inputFile) {
 	// if inputFile is empty, prompt user for input
 	if (inputFile.empty()) {
-		std::cout << "Enter input file name: ";
-		std::getline(std::cin, inputFile);
+		cout << "Enter input file name: ";
+		getline(cin, inputFile);
 	}
 
 	// open the input file
-	std::ifstream file(inputFile);
+	ifstream file(inputFile);
 	if (!file.is_open()) {
-		std::cerr << "Failed to open input file: " << inputFile << std::endl;
+		cerr << "Failed to open input file: " << inputFile << endl;
 		return DEFAULT_HASH_SIZE;
 	}
 
-	std::string line;
+	string line;
 	int lineCount = 0;
-	std::getline(file, line); // skip header
-	while (std::getline(file, line)) {
+	getline(file, line); // skip header
+	while (getline(file, line)) {
 		++lineCount;
 	}
 	file.close(); // CLOSE after counting
@@ -568,7 +565,7 @@ int determineHashSize(string inputFile) {
 	// reopen the file for actual reading
 	file.open(inputFile);
 	if (!file.is_open()) {
-		std::cerr << "Failed to reopen input file: " << inputFile << std::endl;
+		cerr << "Failed to reopen input file: " << inputFile << endl;
 		return DEFAULT_HASH_SIZE;
 	}
 
@@ -599,9 +596,9 @@ static void printIndentedTree(BinaryNode<Puzzle> *node, int level) {
 		return;
 	printIndentedTree(node->getRight(), level + 1);
 	for (int i = 0; i < level; ++i)
-		std::cout << "  ";
+		cout << "  ";
 	Puzzle puzzleOut;
-	hash->search(puzzleOut, node->getKey());
-	std::cout << puzzleOut.puzzleId() << std::endl;
+	globalHash->search(puzzleOut, node->getKey());
+	cout << puzzleOut.puzzleId() << endl;
 	printIndentedTree(node->getLeft(), level + 1);
 }

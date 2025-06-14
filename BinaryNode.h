@@ -2,6 +2,7 @@
 #define BINARYNODE_H
 
 #include <string>
+
 using std::string;
 
 template <typename T> class BinaryNode {
@@ -33,4 +34,4 @@ template <typename T> class BinaryNode {
 	bool isLeaf() { return this->left == nullptr && this->right == nullptr; }
 };
 
-#endif // BINARYNODE_H
+#endif

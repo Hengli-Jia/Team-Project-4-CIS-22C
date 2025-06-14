@@ -3,6 +3,10 @@
 
 #include "HashNode.h"
 
+using std::string;
+
+const int DEFAULT_HASH_SIZE = 53;
+
 // HashTable definition
 template <typename T> class HashTable {
   private:
@@ -11,7 +15,7 @@ template <typename T> class HashTable {
 	int capacity;		// Size of the table
 
 	// Hash function for string keys
-	int hashFunction(const std::string &key) const;
+	int hashFunction(const string &key) const;
 	// Linear probing for collision resolution
 	int linearProbe(int hashcode) const;
 	// Rehash the table when load factor is too high
@@ -32,14 +36,16 @@ template <typename T> class HashTable {
 	// Insert an item into the hash table
 	bool insert(const T &item);
 	// Remove an item by key, output the removed item
-	bool remove(T &itemOut, const std::string &key);
+	bool remove(T &itemOut, const string &key);
 	// Search for an item by key, output the found item
-	bool search(T &itemOut, const std::string &key) const;
+	bool search(T &itemOut, const string &key) const;
 
 	// Add accessors for saving to file
 	int getOccupiedAt(int idx) const { return table[idx].getOccupied(); }
 	T getItemAt(int idx) const { return table[idx].getItem(); }
 	int getCollisionsAt(int idx) const { return table[idx].getCollisions(); }
 };
+
+#include "HashTable.cpp"
 
 #endif
