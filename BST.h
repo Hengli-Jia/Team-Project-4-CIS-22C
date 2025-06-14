@@ -2,7 +2,6 @@
 #define BST_H
 
 #include "BinaryNode.h"
-#include "Puzzle.h"
 #include <iostream>
 
 class BinaryTree {
