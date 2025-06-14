@@ -28,27 +28,50 @@ int HashTable::linearProbe(int hashcode) const {
 // Insert a Puzzle item into the hash table
 bool HashTable::insert(const Puzzle &item) {
 	if (isFull()) {
+		std::cout << "[DEBUG] Table is full, rehashing..." << std::endl;
 		rehash();
 	}
 	std::string key = item.getKey();
 	int index = hashFunction(key);
 	int collisions = 0;
 
+	std::cout << "[DEBUG] Inserting key: " << key
+			  << ", initial index: " << index << ", capacity: " << capacity
+			  << std::endl;
+
 	for (int i = 0; i < capacity; ++i) {
 		int currentIndex = (index + i) % capacity;
+		std::cout << "[DEBUG] Attempting to insert at index: " << currentIndex
+				  << std::endl;
+		if (currentIndex < 0 || currentIndex >= capacity) {
+			std::cerr << "[ERROR] Out-of-bounds index: " << currentIndex
+					  << " (capacity: " << capacity << ")" << std::endl;
+			abort();
+		}
 		if (table[currentIndex].getOccupied() != 1) {
+			std::cout << "[DEBUG] Setting item at index: " << currentIndex
+					  << ", HashNode address: " << &table[currentIndex]
+					  << std::endl;
 			table[currentIndex].setItem(item);
+			std::cout << "[DEBUG] Set item at index: " << currentIndex
+					  << std::endl;
 			table[currentIndex].setOccupied(1);
 			table[currentIndex].setCollisions(collisions);
 			size++;
+			std::cout << "[DEBUG] Inserted item at index: " << currentIndex
+					  << ", total size: " << size << std::endl;
 			return true;
 		}
 		// If duplicate key, do not insert
 		if (table[currentIndex].getOccupied() == 1 &&
 			table[currentIndex].getItem().getKey() == key) {
+			std::cout << "[DEBUG] Duplicate key found at index: "
+					  << currentIndex << ", not inserting." << std::endl;
 			return false;
 		}
 		collisions++;
+		std::cout << "[DEBUG] Collision at index: " << currentIndex
+				  << ", total collisions: " << collisions << std::endl;
 	}
 	return false;
 }

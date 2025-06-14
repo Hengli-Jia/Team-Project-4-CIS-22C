@@ -6,6 +6,10 @@
 #include <string>
 
 class HashNode {
+  private:
+	Puzzle item = Puzzle();
+	int occupied = 0;	// 1 -> occupied, 0 -> empty, -1 -> deleted
+	int collisions = 0; // number of collisions
   public:
 	HashNode() : occupied(0), collisions(0) {}
 	HashNode(const Puzzle &anItem) : item(anItem), occupied(1), collisions(0) {}
@@ -19,11 +23,6 @@ class HashNode {
 	Puzzle getItem() const { return item; }
 	int getOccupied() const { return occupied; }
 	int getCollisions() const { return collisions; }
-
-  private:
-	Puzzle item;
-	int occupied;	// 1 -> occupied, 0 -> empty, -1 -> deleted
-	int collisions; // number of collisions
 };
 
 #endif // HASHNODE_H

@@ -15,7 +15,7 @@ using std::vector;
 
 class Puzzle {
   private:
-	string _puzzleId = "";
+	string _puzzleId = "t";
 	string _fen = "";
 	vector<string> _moves = {};
 	int _rating = 0;
@@ -29,7 +29,7 @@ class Puzzle {
   public:
 	// constructors
 	Puzzle()
-		: _puzzleId(""), _fen(""), _moves({}), _rating(0), _ratingDeviation(0),
+		: _puzzleId("t"), _fen(""), _moves({}), _rating(0), _ratingDeviation(0),
 		  _popularity(0), _nbPlays(0), _themes({}), _gameUrl(""),
 		  _openingTags({}) {}
 	Puzzle(string puzzleId, string fen, vector<string> moves, int rating,
@@ -39,6 +39,17 @@ class Puzzle {
 		  _ratingDeviation(ratingDeviation), _popularity(popularity),
 		  _nbPlays(nbPlays), _themes(themes), _gameUrl(gameUrl),
 		  _openingTags(openingTags) {}
+
+	// copy constructor
+	Puzzle(const Puzzle &other)
+		: _puzzleId(other._puzzleId), _fen(other._fen), _moves(other._moves),
+		  _rating(other._rating), _ratingDeviation(other._ratingDeviation),
+		  _popularity(other._popularity), _nbPlays(other._nbPlays),
+		  _themes(other._themes), _gameUrl(other._gameUrl),
+		  _openingTags(other._openingTags) {
+		std::cout << "[DEBUG] Puzzle copy constructor called for ID: "
+				  << other._puzzleId << std::endl;
+	}
 
 	// setters
 	void setPuzzleId(const string &puzzleId) { _puzzleId = puzzleId; }
@@ -95,35 +106,23 @@ class Puzzle {
 		}
 		std::cout << "]" << std::endl;
 		if (this != &other) {
-			std::cout << "[DEBUG] Original Puzzle ID: " << _puzzleId
-					  << std::endl;
+			std::cout << "[DEBUG] Puzzle copy assignment for ID: " << _puzzleId
+					  << " to ID: " << other._puzzleId << std::endl;
 			_puzzleId = other._puzzleId;
-			std::cout << "[DEBUG] Assigned _puzzleId: " << _puzzleId
+			std::cout << "[DEBUG] Puzzle copy assignment for ID: " << _puzzleId
 					  << std::endl;
 			_fen = other._fen;
-			std::cout << "[DEBUG] Assigned _fen: " << _fen << std::endl;
 			_moves = other._moves;
-			std::cout << "[DEBUG] Assigned _moves, size: " << _moves.size()
-					  << std::endl;
 			_rating = other._rating;
-			std::cout << "[DEBUG] Assigned _rating: " << _rating << std::endl;
 			_ratingDeviation = other._ratingDeviation;
-			std::cout << "[DEBUG] Assigned _ratingDeviation: "
-					  << _ratingDeviation << std::endl;
 			_popularity = other._popularity;
-			std::cout << "[DEBUG] Assigned _popularity: " << _popularity
-					  << std::endl;
 			_nbPlays = other._nbPlays;
-			std::cout << "[DEBUG] Assigned _nbPlays: " << _nbPlays << std::endl;
 			_themes = other._themes;
-			std::cout << "[DEBUG] Assigned _themes, size: " << _themes.size()
-					  << std::endl;
 			_gameUrl = other._gameUrl;
-			std::cout << "[DEBUG] Assigned _gameUrl: " << _gameUrl << std::endl;
 			_openingTags = other._openingTags;
-			std::cout << "[DEBUG] Assigned _openingTags, size: "
-					  << _openingTags.size() << std::endl;
 		}
+		std::cout << "[DEBUG] Puzzle copy assignment complete for ID: "
+				  << _puzzleId << std::endl;
 		return *this;
 	}
 
