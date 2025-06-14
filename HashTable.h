@@ -2,13 +2,24 @@
 #define HASHTABLE_H
 
 #include "HashNode.h"
-#include <string>
 
 // HashTable definition
 class HashTable {
+  private:
+	HashNode *table; // Pointer to the array of hash nodes
+	int size;		 // Number of items in the table
+	int capacity;	 // Size of the table
+
+	// Hash function for string keys
+	int hashFunction(const std::string &key) const;
+	// Linear probing for collision resolution
+	int linearProbe(int hashcode) const;
+	// Rehash the table when load factor is too high
+	void rehash();
+
   public:
 	// Constructor: initializes the hash table with a given capacity
-	HashTable(int initialCapacity = 50);
+	HashTable(int initialCapacity = 211);
 	// Destructor: releases allocated memory
 	~HashTable();
 
@@ -28,18 +39,6 @@ class HashTable {
 	// Add accessors for saving to file
 	int getOccupiedAt(int idx) const { return table[idx].getOccupied(); }
 	Puzzle getItemAt(int idx) const { return table[idx].getItem(); }
-
-  private:
-	HashNode *table; // Pointer to the array of hash nodes
-	int size;		 // Number of items in the table
-	int capacity;	 // Size of the table
-
-	// Hash function for string keys
-	int hashFunction(const std::string &key) const;
-	// Linear probing for collision resolution
-	int linearProbe(int hashcode) const;
-	// Rehash the table when load factor is too high
-	void rehash();
 };
 
 #endif

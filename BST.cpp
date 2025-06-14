@@ -1,22 +1,19 @@
 #include "BST.h"
 
-#include <iostream>
-#include <string>
-
 BinaryNode *BinaryTree::_insertBST(BinaryNode *nodePtr, BinaryNode *newPtr) {
 	if (!nodePtr) {
-        this->count++;
-        return newPtr;
-    }
-    if (newPtr->getKey() < nodePtr->getKey()) {
-        nodePtr->setLeft(_insertBST(nodePtr->getLeft(), newPtr));
-    } else if (newPtr->getKey() > nodePtr->getKey()) {
-        nodePtr->setRight(_insertBST(nodePtr->getRight(), newPtr));
-    } else {
-        delete newPtr; 
-        return nodePtr;
-    }
-    return nodePtr;
+		this->count++;
+		return newPtr;
+	}
+	if (newPtr->getKey() < nodePtr->getKey()) {
+		nodePtr->setLeft(_insertBST(nodePtr->getLeft(), newPtr));
+	} else if (newPtr->getKey() > nodePtr->getKey()) {
+		nodePtr->setRight(_insertBST(nodePtr->getRight(), newPtr));
+	} else {
+		delete newPtr;
+		return nodePtr;
+	}
+	return nodePtr;
 }
 
 bool BinaryTree::_deleteBST(const Puzzle & /*item*/,

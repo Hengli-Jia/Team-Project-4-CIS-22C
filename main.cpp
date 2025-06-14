@@ -11,6 +11,8 @@
 #include <sstream>
 #include <vector>
 
+const int DEFAULT_HASH_SIZE = 211;
+
 HashTable
 	*hash; // Toma: I don't think a global variable should be used like this
 
@@ -26,7 +28,7 @@ void inputDataFile(HashTable &hashTable, BinaryTree &bst,
 void deleteItem(HashTable &hashTable, BinaryTree &bst);
 void findItem(const BinaryTree &bst);
 void printData(const BinaryTree &bst);
-void outputDataFile(const BinaryTree &bst, string inputFile = "");
+void outputDataFile(const HashTable &hashTable, string inputFile = "");
 void statistics(const HashTable &hashTable);
 char attemptExit();
 
@@ -39,6 +41,8 @@ void displayTeamMembers();
 
 // OTHER FUNCTION DECLARATIONS
 
+int determineHashSize(string inputFile = "");
+
 void hDisplay(const string &key, Puzzle &puzzleOut);
 void vDisplay(const string &key, Puzzle &puzzleOut);
 
@@ -49,16 +53,20 @@ void getPuzzle(const string &key, Puzzle &puzzleOut);
 // MAIN FUNCTION
 
 int main() {
+	string inputFile = "puzzles_database.txt";
+	string outputFile = "puzzles_database_hashtable.txt";
+
+	int hashSize = determineHashSize(inputFile);
+
 	// Initialize Hash Table and BST
-	HashTable hashTable;
+	HashTable hashTable(hashSize);
 	BinaryTree bst;
 
-	hash = &hashTable;
-
 	// File I/O
-	string inputFile = "puzzles_database.txt";
-	// inputDataFile(hashTable, bst, inputFile);
-	// outputDataFile(bst, inputFile);
+	inputDataFile(hashTable, bst, inputFile);
+	outputDataFile(hashTable, outputFile);
+
+	hash = &hashTable;
 
 	menu();
 	char choice;
@@ -82,7 +90,7 @@ int main() {
 			printData(bst);
 			break;
 		case 'O':
-			outputDataFile(bst);
+			outputDataFile(hashTable);
 			break;
 		case 'S':
 			statistics(hashTable);
@@ -155,45 +163,14 @@ void inputDataFile(HashTable &hashTable, BinaryTree &bst, string inputFile) {
 		return;
 	}
 
-	// count lines in the input file
-	std::string line;
-	int lineCount = 0;
-	std::getline(file, line); // skip header
-	while (std::getline(file, line)) {
-		if (!line.empty())
-			lineCount++;
-	}
-
-	// reset file stream to the beginning
-	file.clear();
-	file.seekg(0);
-
-	// determine hash size using a prime number
-	auto isPrime = [](int n) {
-		if (n < 2)
-			return false;
-		for (int i = 2; i * i <= n; ++i)
-			if (n % i == 0)
-				return false;
-		return true;
-	};
-	int hashSize = lineCount * 2;
-	while (!isPrime(hashSize))
-		++hashSize;
-
-	// recreate hashTable with new size
-	hashTable = HashTable(hashSize);
-
 	// read data and insert into hashTable and bst
+	std::string line;
 	int lineNum = 0;
 	std::getline(file, line); // skip header
 	while (std::getline(file, line)) {
 		lineNum++;
 		if (line.empty())
 			continue;
-
-		std::cout << "[DEBUG] Processing line " << lineNum << ": " << line
-				  << std::endl;
 
 		// parse the line into fields
 		std::stringstream ss(line);
@@ -247,9 +224,7 @@ void inputDataFile(HashTable &hashTable, BinaryTree &bst, string inputFile) {
 						  std::stoi(ratingDeviation), std::stoi(popularity),
 						  std::stoi(nbPlays), themesVec, gameUrl,
 						  openingTagsVec);
-			std::cout << "[DEBUG] Inserting Puzzle to hashTable: " << std::endl;
 			hashTable.insert(puzzle);
-			std::cout << "[DEBUG] Inserting Puzzle to bst: " << std::endl;
 			bst.insertBST(puzzle);
 		} catch (const std::exception &e) {
 			std::cerr << "[ERROR] Failed to parse line " << lineNum << ": "
@@ -259,12 +234,12 @@ void inputDataFile(HashTable &hashTable, BinaryTree &bst, string inputFile) {
 	}
 	file.close();
 }
+
 void deleteItem(HashTable &hashTable, BinaryTree &bst) {}
 void findItem(const BinaryTree &bst) {}
 void printData(const BinaryTree &bst) { /*bst.inorderTraversal(hDisplay);*/ }
 
-void outputDataFile(const BinaryTree &bst, string outputFile) {
-	/*
+void outputDataFile(const HashTable &hashTable, string outputFile) {
 	// if outputFile is empty, prompt user for input
 	if (outputFile.empty()) {
 		std::cout << "Enter output file name: ";
@@ -272,14 +247,7 @@ void outputDataFile(const BinaryTree &bst, string outputFile) {
 	}
 
 	// save to file (in hash table sequence)
-	std::string outFileName = outputFile;
-	size_t dotPos = outFileName.find_last_of('.');
-	if (dotPos != std::string::npos) {
-		outFileName.insert(dotPos, "_hashtable");
-	} else {
-		outFileName += "_hashtable";
-	}
-	std::ofstream outFile(outFileName);
+	std::ofstream outFile(outputFile);
 	if (outFile.is_open()) {
 		// Write header
 		outFile << "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,"
@@ -295,10 +263,9 @@ void outputDataFile(const BinaryTree &bst, string outputFile) {
 		}
 		outFile.close();
 	} else {
-		std::cerr << "[ERROR] Could not open output file: " << outFileName
+		std::cerr << "[ERROR] Could not open output file: " << outputFile
 				  << std::endl;
 	}
-	*/
 }
 void statistics(const HashTable &hashTable) {}
 
@@ -323,6 +290,56 @@ void displayTeamMembers() {}
 // .............................................................................
 
 // OTHER FUNCTION DEFINITIONS
+
+int determineHashSize(string inputFile) {
+	// if inputFile is empty, prompt user for input
+	if (inputFile.empty()) {
+		std::cout << "Enter input file name: ";
+		std::getline(std::cin, inputFile);
+	}
+
+	// open the input file
+	std::ifstream file(inputFile);
+	if (!file.is_open()) {
+		std::cerr << "Failed to open input file: " << inputFile << std::endl;
+		return DEFAULT_HASH_SIZE;
+	}
+
+	std::string line;
+	int lineCount = 0;
+	std::getline(file, line); // skip header
+	while (std::getline(file, line)) {
+		++lineCount;
+	}
+	file.close(); // CLOSE after counting
+
+	// reopen the file for actual reading
+	file.open(inputFile);
+	if (!file.is_open()) {
+		std::cerr << "Failed to reopen input file: " << inputFile << std::endl;
+		return DEFAULT_HASH_SIZE;
+	}
+
+	// determine hash size using a prime number
+	auto isPrime = [](int n) {
+		if (n <= 1)
+			return false;
+		if (n <= 3)
+			return true;
+		if (n % 2 == 0 || n % 3 == 0)
+			return false;
+		for (int i = 5; i * i <= n; i += 6) {
+			if (n % i == 0 || n % (i + 2) == 0)
+				return false;
+		}
+		return true;
+	};
+	int hashSize = lineCount * 2;
+	while (!isPrime(hashSize))
+		++hashSize;
+
+	return hashSize;
+}
 
 void hDisplay(const string &key, Puzzle &puzzleOut) {
 	getPuzzle(key, puzzleOut);

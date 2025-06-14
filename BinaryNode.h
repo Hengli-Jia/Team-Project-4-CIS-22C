@@ -3,8 +3,6 @@
 
 #include "Puzzle.h"
 
-#include <iostream>
-
 class BinaryNode {
   private:
 	Puzzle puzzle;

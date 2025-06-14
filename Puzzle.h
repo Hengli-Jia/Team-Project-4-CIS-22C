@@ -6,7 +6,6 @@
 #ifndef PUZZLE_H
 #define PUZZLE_H
 
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -15,21 +14,21 @@ using std::vector;
 
 class Puzzle {
   private:
-	string _puzzleId = "t";
-	string _fen = "";
-	vector<string> _moves = {};
-	int _rating = 0;
-	int _ratingDeviation = 0;
-	int _popularity = 0;
-	int _nbPlays = 0;
-	vector<string> _themes = {};
-	string _gameUrl = "";
-	vector<string> _openingTags = {};
+	string _puzzleId;
+	string _fen;
+	vector<string> _moves;
+	int _rating;
+	int _ratingDeviation;
+	int _popularity;
+	int _nbPlays;
+	vector<string> _themes;
+	string _gameUrl;
+	vector<string> _openingTags;
 
   public:
 	// constructors
 	Puzzle()
-		: _puzzleId("t"), _fen(""), _moves({}), _rating(0), _ratingDeviation(0),
+		: _puzzleId(""), _fen(""), _moves({}), _rating(0), _ratingDeviation(0),
 		  _popularity(0), _nbPlays(0), _themes({}), _gameUrl(""),
 		  _openingTags({}) {}
 	Puzzle(string puzzleId, string fen, vector<string> moves, int rating,
@@ -46,10 +45,7 @@ class Puzzle {
 		  _rating(other._rating), _ratingDeviation(other._ratingDeviation),
 		  _popularity(other._popularity), _nbPlays(other._nbPlays),
 		  _themes(other._themes), _gameUrl(other._gameUrl),
-		  _openingTags(other._openingTags) {
-		std::cout << "[DEBUG] Puzzle copy constructor called for ID: "
-				  << other._puzzleId << std::endl;
-	}
+		  _openingTags(other._openingTags) {}
 
 	// setters
 	void setPuzzleId(const string &puzzleId) { _puzzleId = puzzleId; }
@@ -81,36 +77,8 @@ class Puzzle {
 
 	// copy assignment operator
 	Puzzle &operator=(const Puzzle &other) {
-		std::cout << "[DEBUG] Puzzle copy source: "
-				  << "puzzleId='" << other._puzzleId << "', "
-				  << "fen='" << other._fen << "', moves=[";
-		for (size_t i = 0; i < other._moves.size(); ++i) {
-			if (i > 0)
-				std::cout << ' ';
-			std::cout << other._moves[i];
-		}
-		std::cout << "], rating=" << other._rating
-				  << ", ratingDeviation=" << other._ratingDeviation
-				  << ", popularity=" << other._popularity
-				  << ", nbPlays=" << other._nbPlays << ", themes=[";
-		for (size_t i = 0; i < other._themes.size(); ++i) {
-			if (i > 0)
-				std::cout << ' ';
-			std::cout << other._themes[i];
-		}
-		std::cout << "], gameUrl='" << other._gameUrl << "', openingTags=[";
-		for (size_t i = 0; i < other._openingTags.size(); ++i) {
-			if (i > 0)
-				std::cout << ' ';
-			std::cout << other._openingTags[i];
-		}
-		std::cout << "]" << std::endl;
 		if (this != &other) {
-			std::cout << "[DEBUG] Puzzle copy assignment for ID: " << _puzzleId
-					  << " to ID: " << other._puzzleId << std::endl;
 			_puzzleId = other._puzzleId;
-			std::cout << "[DEBUG] Puzzle copy assignment for ID: " << _puzzleId
-					  << std::endl;
 			_fen = other._fen;
 			_moves = other._moves;
 			_rating = other._rating;
@@ -121,8 +89,6 @@ class Puzzle {
 			_gameUrl = other._gameUrl;
 			_openingTags = other._openingTags;
 		}
-		std::cout << "[DEBUG] Puzzle copy assignment complete for ID: "
-				  << _puzzleId << std::endl;
 		return *this;
 	}
 

@@ -2,11 +2,9 @@
 #define BST_H
 
 #include "BinaryNode.h"
-#include <iostream>
 
-class BinaryTree
-{
-private:
+class BinaryTree {
+  private:
 	BinaryNode *rootPtr = nullptr;
 	int count;
 	BinaryNode *_insertBST(BinaryNode *, BinaryNode *);
@@ -15,39 +13,30 @@ private:
 	void _indetedTree(void visit(string key), BinaryNode *nodePtr,
 					  int level) const;
 
-public:
+  public:
 	bool isEmpty() { return count == 0; }
 	int getCount() { return count; }
-	bool insertBST(const Puzzle &inputPuzzle)
-	{
+	bool insertBST(const Puzzle &inputPuzzle) {
 		BinaryNode *newNode = new BinaryNode(inputPuzzle);
 		this->rootPtr = _insertBST(this->rootPtr, newNode);
 		return true;
 	}
-	bool deleteBST(const Puzzle &deletePuzzle)
-	{
+	bool deleteBST(const Puzzle &deletePuzzle) {
 		if (_deleteBST(deletePuzzle, this->rootPtr))
 			return true;
 		else
 			return false;
 	}
-	void inorderTraversal(void visit(string key) /*nodePtr*/) const
-	{
+	void inorderTraversal(void visit(string key) /*nodePtr*/) const {
 		_inorderTraversal(visit, rootPtr);
 	}
 	void indetedTree(void visit(string currPuzzle) /*nodePtr*/,
-					 int /*level*/) const
-	{
+					 int /*level*/) const {
 		_indetedTree(visit, rootPtr, 1);
 	}
-	~BinaryTree()
-	{
-		clear(rootPtr);
-	}
-	void clear(BinaryNode *node)
-	{
-		if (node)
-		{
+	~BinaryTree() { clear(rootPtr); }
+	void clear(BinaryNode *node) {
+		if (node) {
 			clear(node->getLeft());
 			clear(node->getRight());
 			delete node;
