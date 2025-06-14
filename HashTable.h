@@ -39,6 +39,7 @@ class HashTable {
 	// Add accessors for saving to file
 	int getOccupiedAt(int idx) const { return table[idx].getOccupied(); }
 	Puzzle getItemAt(int idx) const { return table[idx].getItem(); }
+	int getCollisionsAt(int idx) const { return table[idx].getCollisions(); }
 };
 
 #endif

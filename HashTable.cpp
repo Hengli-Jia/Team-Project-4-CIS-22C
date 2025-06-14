@@ -14,7 +14,7 @@ HashTable::~HashTable() { delete[] table; }
 int HashTable::hashFunction(const std::string &key) const {
 	int hash = 1;
 	for (char c : key) {
-		hash *= c;
+		hash = 31 * hash + static_cast<unsigned char>(c);
 	}
 	return hash % capacity;
 }

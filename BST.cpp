@@ -36,4 +36,5 @@ void BinaryTree::_indetedTree(void visit(string key), BinaryNode *nodePtr,
 		_indetedTree(visit, nodePtr->getRight(), level + 1);
 		_indetedTree(visit, nodePtr->getLeft(), level + 1);
 	}
+
 }

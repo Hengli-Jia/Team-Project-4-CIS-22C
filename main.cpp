@@ -26,8 +26,8 @@ void addItem(HashTable &hashTable, BinaryTree &bst);
 void inputDataFile(HashTable &hashTable, BinaryTree &bst,
 				   string inputFile = "");
 void deleteItem(HashTable &hashTable, BinaryTree &bst);
-void findItem(const BinaryTree &bst);
-void printData(const BinaryTree &bst);
+void findItem();
+void listSorted(const BinaryTree &bst);
 void outputDataFile(const HashTable &hashTable, string inputFile = "");
 void statistics(const HashTable &hashTable);
 char attemptExit();
@@ -37,16 +37,9 @@ char attemptExit();
 void displayIndentedTree(const BinaryTree &bst);
 void displayTeamMembers();
 
-// .............................................................................
-
-// OTHER FUNCTION DECLARATIONS
-
+// HELPER FUNCTION DECLARATIONS
 int determineHashSize(string inputFile = "");
-
-void hDisplay(const string &key, Puzzle &puzzleOut);
-void vDisplay(const string &key, Puzzle &puzzleOut);
-
-void getPuzzle(const string &key, Puzzle &puzzleOut);
+static void printIndentedTree(BinaryNode *node, int level);
 
 // .............................................................................
 
@@ -84,10 +77,10 @@ int main() {
 			deleteItem(hashTable, bst);
 			break;
 		case 'F':
-			findItem(bst);
+			findItem();
 			break;
-		case 'P':
-			printData(bst);
+		case 'L':
+			listSorted(bst);
 			break;
 		case 'O':
 			outputDataFile(hashTable);
@@ -124,7 +117,7 @@ void menu() {
 	std::cout << "I - Input data from file\n";
 	std::cout << "D - Delete a puzzle\n";
 	std::cout << "F - Find a puzzle\n";
-	std::cout << "P - Print all puzzles\n";
+	std::cout << "L - List sorted data\n";
 	std::cout << "O - Output data to file\n";
 	std::cout << "S - Show statistics\n";
 	std::cout << "H - Help (show this menu)\n";
@@ -147,7 +140,137 @@ char menuInput() {
 	return '\0'; // no valid input
 }
 
-void addItem(HashTable &hashTable, BinaryTree &bst) {}
+void addItem(HashTable &hashTable, BinaryTree &bst) {
+	std::cout << "Add a new puzzle:\n";
+	std::cout << "Enter full line (CSV format) or leave blank to input fields "
+				 "one by one:\n";
+	std::string line;
+	std::getline(std::cin, line);
+
+	std::string puzzleId, fen, moves, rating, ratingDeviation, popularity,
+		nbPlays, themes, gameUrl, openingTags;
+
+	bool valid = false;
+	while (!valid) {
+		if (!line.empty()) {
+			// Parse CSV line
+			std::stringstream ss(line);
+			std::getline(ss, puzzleId, ',');
+			std::getline(ss, fen, ',');
+			std::getline(ss, moves, ',');
+			std::getline(ss, rating, ',');
+			std::getline(ss, ratingDeviation, ',');
+			std::getline(ss, popularity, ',');
+			std::getline(ss, nbPlays, ',');
+			std::getline(ss, themes, ',');
+			std::getline(ss, gameUrl, ',');
+			if (!ss.eof())
+				std::getline(ss, openingTags, ',');
+		} else {
+			std::cout << "PuzzleId: ";
+			std::getline(std::cin, puzzleId);
+			std::cout << "FEN: ";
+			std::getline(std::cin, fen);
+			std::cout << "Moves (space-separated): ";
+			std::getline(std::cin, moves);
+			std::cout << "Rating: ";
+			std::getline(std::cin, rating);
+			std::cout << "RatingDeviation: ";
+			std::getline(std::cin, ratingDeviation);
+			std::cout << "Popularity: ";
+			std::getline(std::cin, popularity);
+			std::cout << "NbPlays: ";
+			std::getline(std::cin, nbPlays);
+			std::cout << "Themes (space-separated): ";
+			std::getline(std::cin, themes);
+			std::cout << "GameUrl: ";
+			std::getline(std::cin, gameUrl);
+			std::cout << "OpeningTags (space-separated, optional): ";
+			std::getline(std::cin, openingTags);
+		}
+
+		// Validate required fields
+		if (puzzleId.empty() || fen.empty() || moves.empty() ||
+			rating.empty() || ratingDeviation.empty() || popularity.empty() ||
+			nbPlays.empty() || themes.empty() || gameUrl.empty()) {
+			std::cout << "[ERROR] One or more required fields are empty. "
+						 "Please re-enter.\n";
+			puzzleId.clear();
+			fen.clear();
+			moves.clear();
+			rating.clear();
+			ratingDeviation.clear();
+			popularity.clear();
+			nbPlays.clear();
+			themes.clear();
+			gameUrl.clear();
+			openingTags.clear();
+			line.clear();
+			std::cout << "Enter full line (CSV format) or leave blank to input "
+						 "fields one by one:\n";
+			std::getline(std::cin, line);
+			continue;
+		}
+
+		// Parse moves, themes, openingTags as vectors
+		auto split = [](const std::string &s) {
+			std::vector<std::string> v;
+			std::stringstream ss(s);
+			std::string item;
+			while (ss >> item)
+				v.push_back(item);
+			return v;
+		};
+		std::vector<std::string> movesVec = split(moves);
+		std::vector<std::string> themesVec = split(themes);
+		std::vector<std::string> openingTagsVec = split(openingTags);
+
+		// Validate integer fields
+		try {
+			int ratingInt = std::stoi(rating);
+			int ratingDevInt = std::stoi(ratingDeviation);
+			int popularityInt = std::stoi(popularity);
+			int nbPlaysInt = std::stoi(nbPlays);
+
+			// Check for duplicate puzzleId
+			Puzzle temp;
+			if (hashTable.search(temp, puzzleId)) {
+				std::cout << "[ERROR] PuzzleId already exists in the hash "
+							 "table. Please use a unique PuzzleId.\n";
+				puzzleId.clear();
+				line.clear();
+				continue;
+			}
+
+			Puzzle newPuzzle(puzzleId, fen, movesVec, ratingInt, ratingDevInt,
+							 popularityInt, nbPlaysInt, themesVec, gameUrl,
+							 openingTagsVec);
+
+			hashTable.insert(newPuzzle);
+			bst.insertBST(newPuzzle);
+			std::cout << "Puzzle added successfully!\n";
+			valid = true;
+		} catch (const std::invalid_argument &) {
+			std::cout << "[ERROR] One or more numeric fields are not valid "
+						 "integers. Please re-enter.\n";
+			rating.clear();
+			ratingDeviation.clear();
+			popularity.clear();
+			nbPlays.clear();
+			line.clear();
+			continue;
+		} catch (const std::out_of_range &) {
+			std::cout << "[ERROR] One or more numeric fields are out of range. "
+						 "Please re-enter.\n";
+			rating.clear();
+			ratingDeviation.clear();
+			popularity.clear();
+			nbPlays.clear();
+			line.clear();
+			continue;
+		}
+	}
+}
 
 void inputDataFile(HashTable &hashTable, BinaryTree &bst, string inputFile) {
 	// if inputFile is empty, prompt user for input
@@ -235,9 +358,115 @@ void inputDataFile(HashTable &hashTable, BinaryTree &bst, string inputFile) {
 	file.close();
 }
 
-void deleteItem(HashTable &hashTable, BinaryTree &bst) {}
-void findItem(const BinaryTree &bst) {}
-void printData(const BinaryTree &bst) { /*bst.inorderTraversal(hDisplay);*/ }
+void deleteItem(HashTable &hashTable, BinaryTree &bst) {
+	std::cout << "Delete a puzzle by PuzzleId or FEN.\n";
+	std::string input;
+	std::cout << "Enter PuzzleId (leave blank to use FEN): ";
+	std::getline(std::cin, input);
+	std::string key = input;
+
+	if (key.empty()) {
+		std::cout << "Enter FEN: ";
+		std::getline(std::cin, key);
+	}
+
+	if (key.empty()) {
+		std::cout << "[ERROR] No PuzzleId or FEN provided.\n";
+		return;
+	}
+
+	// Try to find by PuzzleId first
+	Puzzle found;
+	bool foundById = hashTable.search(found, key);
+	if (!foundById) {
+		// Try to find by FEN (linear search)
+		for (int i = 0; i < hashTable.getCapacity(); ++i) {
+			if (hashTable.getOccupiedAt(i) == 1) {
+				Puzzle p = hashTable.getItemAt(i);
+				if (p.fen() == key) {
+					found = p;
+					foundById = true;
+					break;
+				}
+			}
+		}
+	}
+
+	if (!foundById) {
+		std::cout << "[ERROR] Puzzle not found by PuzzleId or FEN.\n";
+		return;
+	}
+
+	// Remove from hash table
+	if (hashTable.remove(found, found.getKey())) {
+		std::cout << "[INFO] Puzzle removed from hash table.\n";
+	} else {
+		std::cout << "[WARN] Puzzle could not be removed from hash table.\n";
+	}
+
+	// Remove from BST
+	if (bst.deleteBST(found)) {
+		std::cout << "[INFO] Puzzle removed from BST.\n";
+	} else {
+		std::cout << "[WARN] Puzzle could not be removed from BST.\n";
+	}
+}
+
+void findItem() {
+	std::cout << "Find a puzzle by PuzzleId or FEN.\n";
+	std::string input;
+	std::cout << "Enter PuzzleId (leave blank to use FEN): ";
+	std::getline(std::cin, input);
+	std::string key = input;
+
+	if (key.empty()) {
+		std::cout << "Enter FEN: ";
+		std::getline(std::cin, key);
+	}
+
+	if (key.empty()) {
+		std::cout << "[ERROR] No PuzzleId or FEN provided.\n";
+		return;
+	}
+
+	// Try to find by PuzzleId first
+	Puzzle found;
+	bool foundById = hash->search(found, key);
+	if (!foundById) {
+		// Try to find by FEN (linear search)
+		for (int i = 0; i < hash->getCapacity(); ++i) {
+			if (hash->getOccupiedAt(i) == 1) {
+				Puzzle p = hash->getItemAt(i);
+				if (p.fen() == key) {
+					found = p;
+					foundById = true;
+					break;
+				}
+			}
+		}
+	}
+
+	if (!foundById) {
+		std::cout << "[ERROR] Puzzle not found by PuzzleId or FEN.\n";
+		return;
+	}
+
+	// Display the found puzzle
+	std::cout << "[INFO] Puzzle found:\n";
+	std::cout << found << std::endl;
+}
+
+void listSorted(const BinaryTree &bst) {
+	std::cout
+		<< "Listing all puzzles sorted by PuzzleId (BST inorder traversal):\n";
+	// Helper function to print each puzzle
+	auto printPuzzle = [](std::string key) {
+		Puzzle puzzleOut;
+		hash->search(puzzleOut, key);
+		std::cout << puzzleOut << std::endl;
+	};
+	bst.inorderTraversal(printPuzzle);
+}
 
 void outputDataFile(const HashTable &hashTable, string outputFile) {
 	// if outputFile is empty, prompt user for input
@@ -267,7 +496,23 @@ void outputDataFile(const HashTable &hashTable, string outputFile) {
 				  << std::endl;
 	}
 }
-void statistics(const HashTable &hashTable) {}
+void statistics(const HashTable &hashTable) {
+	std::cout << "Hash Table Statistics:\n";
+	std::cout << "Load factor: " << hashTable.getLoadFactor() << "%\n";
+
+	int totalCollisions = 0;
+	int longestCollisionPath = 0;
+	for (int i = 0; i < hashTable.getCapacity(); ++i) {
+		if (hashTable.getOccupiedAt(i) == 1) {
+			int col = hashTable.getCollisionsAt(i);
+			totalCollisions += col;
+			if (col > longestCollisionPath)
+				longestCollisionPath = col;
+		}
+	}
+	std::cout << "Total collisions: " << totalCollisions << "\n";
+	std::cout << "Longest collision path: " << longestCollisionPath << "\n";
+}
 
 char attemptExit() {
 	std::cout << "Confirm Exit(Y/N): ";
@@ -284,7 +529,12 @@ char attemptExit() {
 
 // HIDDEN MENU OPTIONS
 
-void displayIndentedTree(const BinaryTree &bst) {}
+void displayIndentedTree(const BinaryTree &bst) {
+	std::cout << "Indented BST (by PuzzleId):\n";
+	BinaryNode *root = *(BinaryNode **)(void *)&bst;
+	printIndentedTree(root, 0);
+}
+
 void displayTeamMembers() {}
 
 // .............................................................................
@@ -341,15 +591,15 @@ int determineHashSize(string inputFile) {
 	return hashSize;
 }
 
-void hDisplay(const string &key, Puzzle &puzzleOut) {
-	getPuzzle(key, puzzleOut);
-	std::cout << puzzleOut << " ";
-}
-void vDisplay(const string &key, Puzzle &puzzleOut) {
-	getPuzzle(key, puzzleOut);
-	std::cout << puzzleOut << std::endl;
-}
-
-void getPuzzle(const string &key, Puzzle &puzzleOut) {
-	hash->search(puzzleOut, key);
+// Helper for indented BST display
+static void printIndentedTree(BinaryNode *node, int level) {
+	if (!node)
+		return;
+	printIndentedTree(node->getRight(), level + 1);
+	for (int i = 0; i < level; ++i)
+		std::cout << "  ";
+	Puzzle puzzleOut;
+	hash->search(puzzleOut, node->getKey());
+	std::cout << puzzleOut.puzzleId() << std::endl;
+	printIndentedTree(node->getLeft(), level + 1);
 }
