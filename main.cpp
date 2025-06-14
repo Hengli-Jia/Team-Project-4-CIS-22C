@@ -4,6 +4,7 @@
 
 #include "BST.cpp"
 #include "HashTable.cpp"
+#include "Puzzle.h"
 
 #include <cctype>
 #include <fstream>
@@ -13,7 +14,7 @@
 
 const int DEFAULT_HASH_SIZE = 53;
 
-HashTable
+HashTable<Puzzle>
 	*hash; // Toma: I don't think a global variable should be used like this
 
 // .............................................................................
@@ -22,23 +23,24 @@ HashTable
 
 void menu();
 char menuInput();
-void addItem(HashTable &hashTable, BST &bst);
-void inputDataFile(HashTable &hashTable, BST &bst, string inputFile = "");
-void deleteItem(HashTable &hashTable, BST &bst);
+void addItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst);
+void inputDataFile(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst,
+				   string inputFile = "");
+void deleteItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst);
 void findItem();
-void listSorted(const BST &bst);
-void outputDataFile(const HashTable &hashTable, string inputFile = "");
-void statistics(const HashTable &hashTable);
+void listSorted(const BST<Puzzle> &bst);
+void outputDataFile(const HashTable<Puzzle> &hashTable, string inputFile = "");
+void statistics(const HashTable<Puzzle> &hashTable);
 char attemptExit();
 
 // HIDDEN MENU OPTIONS
 
-void displayIndentedTree(const BST &bst);
+void displayIndentedTree(const BST<Puzzle> &bst);
 void displayTeamMembers();
 
 // HELPER FUNCTION DECLARATIONS
 int determineHashSize(string inputFile = "");
-static void printIndentedTree(BinaryNode *node, int level);
+static void printIndentedTree(BinaryNode<Puzzle> *node, int level);
 
 // .............................................................................
 
@@ -51,8 +53,8 @@ int main() {
 	int hashSize = determineHashSize(inputFile);
 
 	// Initialize Hash Table and BST
-	HashTable hashTable(hashSize);
-	BST bst;
+	HashTable<Puzzle> hashTable(hashSize);
+	BST<Puzzle> bst;
 
 	// File I/O
 	inputDataFile(hashTable, bst, inputFile);
@@ -139,7 +141,7 @@ char menuInput() {
 	return '\0'; // no valid input
 }
 
-void addItem(HashTable &hashTable, BST &bst) {
+void addItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst) {
 	std::cout << "Add a new puzzle:\n";
 	std::cout << "Enter full line (CSV format) or leave blank to input fields "
 				 "one by one:\n";
@@ -271,7 +273,8 @@ void addItem(HashTable &hashTable, BST &bst) {
 	}
 }
 
-void inputDataFile(HashTable &hashTable, BST &bst, string inputFile) {
+void inputDataFile(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst,
+				   string inputFile) {
 	// if inputFile is empty, prompt user for input
 	if (inputFile.empty()) {
 		std::cout << "Enter input file name: ";
@@ -357,7 +360,7 @@ void inputDataFile(HashTable &hashTable, BST &bst, string inputFile) {
 	file.close();
 }
 
-void deleteItem(HashTable &hashTable, BST &bst) {
+void deleteItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst) {
 	std::cout << "Delete a puzzle by PuzzleId or FEN.\n";
 	std::string input;
 	std::cout << "Enter PuzzleId (leave blank to use FEN): ";
@@ -455,7 +458,7 @@ void findItem() {
 	std::cout << found << std::endl;
 }
 
-void listSorted(const BST &bst) {
+void listSorted(const BST<Puzzle> &bst) {
 	std::cout
 		<< "Listing all puzzles sorted by PuzzleId (BST inorder traversal):\n";
 	// Helper function to print each puzzle
@@ -467,7 +470,7 @@ void listSorted(const BST &bst) {
 	bst.inorderTraversal(printPuzzle);
 }
 
-void outputDataFile(const HashTable &hashTable, string outputFile) {
+void outputDataFile(const HashTable<Puzzle> &hashTable, string outputFile) {
 	// if outputFile is empty, prompt user for input
 	if (outputFile.empty()) {
 		std::cout << "Enter output file name: ";
@@ -495,7 +498,7 @@ void outputDataFile(const HashTable &hashTable, string outputFile) {
 				  << std::endl;
 	}
 }
-void statistics(const HashTable &hashTable) {
+void statistics(const HashTable<Puzzle> &hashTable) {
 	std::cout << "Hash Table Statistics:\n";
 	std::cout << "Load factor: " << hashTable.getLoadFactor() << "%\n";
 
@@ -528,9 +531,9 @@ char attemptExit() {
 
 // HIDDEN MENU OPTIONS
 
-void displayIndentedTree(const BST &bst) {
+void displayIndentedTree(const BST<Puzzle> &bst) {
 	std::cout << "Indented BST (by PuzzleId):\n";
-	BinaryNode *root = *(BinaryNode **)(void *)&bst;
+	BinaryNode<Puzzle> *root = *(BinaryNode<Puzzle> **)(void *)&bst;
 	printIndentedTree(root, 0);
 }
 
@@ -591,7 +594,7 @@ int determineHashSize(string inputFile) {
 }
 
 // Helper for indented BST display
-static void printIndentedTree(BinaryNode *node, int level) {
+static void printIndentedTree(BinaryNode<Puzzle> *node, int level) {
 	if (!node)
 		return;
 	printIndentedTree(node->getRight(), level + 1);

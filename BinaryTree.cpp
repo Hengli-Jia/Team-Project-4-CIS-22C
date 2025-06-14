@@ -1,6 +1,7 @@
+#pragma once
 #include "BinaryTree.h"
 
-void BinaryTree::_clear(BinaryNode *node) {
+template <typename T> void BinaryTree<T>::_clear(BinaryNode<T> *node) {
 	if (node) {
 		_clear(node->getLeft());
 		_clear(node->getRight());
@@ -8,7 +9,7 @@ void BinaryTree::_clear(BinaryNode *node) {
 	}
 }
 
-void BinaryTree::clear() {
+template <typename T> void BinaryTree<T>::clear() {
 	_clear(rootPtr);
 	rootPtr = nullptr;
 	count = 0;

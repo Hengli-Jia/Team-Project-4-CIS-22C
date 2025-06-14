@@ -1,6 +1,8 @@
+#pragma once
 #include "BST.h"
 
-BinaryNode *BST::_insert(BinaryNode *nodePtr, BinaryNode *newPtr) {
+template <typename T>
+BinaryNode<T> *BST<T>::_insert(BinaryNode<T> *nodePtr, BinaryNode<T> *newPtr) {
 	if (!nodePtr) {
 		++count;
 		return newPtr;
@@ -16,7 +18,9 @@ BinaryNode *BST::_insert(BinaryNode *nodePtr, BinaryNode *newPtr) {
 	return nodePtr;
 }
 
-bool BST::_delete(const std::string &key, BinaryNode *nodePtr, bool &deleted) {
+template <typename T>
+bool BST<T>::_delete(const std::string &key, BinaryNode<T> *nodePtr,
+					 bool &deleted) {
 	if (!nodePtr)
 		return false;
 	if (key < nodePtr->getKey()) {
@@ -24,24 +28,22 @@ bool BST::_delete(const std::string &key, BinaryNode *nodePtr, bool &deleted) {
 	} else if (key > nodePtr->getKey()) {
 		return _delete(key, nodePtr->getRight(), deleted);
 	} else {
-		// Node found
 		deleted = true;
 		--count;
 		if (!nodePtr->getLeft() && !nodePtr->getRight()) {
 			delete nodePtr;
 			nodePtr = nullptr;
 		} else if (!nodePtr->getLeft()) {
-			BinaryNode *temp = nodePtr;
+			BinaryNode<T> *temp = nodePtr;
 			nodePtr = nodePtr->getRight();
 			delete temp;
 		} else if (!nodePtr->getRight()) {
-			BinaryNode *temp = nodePtr;
+			BinaryNode<T> *temp = nodePtr;
 			nodePtr = nodePtr->getLeft();
 			delete temp;
 		} else {
-			// Two children: find inorder successor
-			BinaryNode *succParent = nodePtr;
-			BinaryNode *succ = nodePtr->getRight();
+			BinaryNode<T> *succParent = nodePtr;
+			BinaryNode<T> *succ = nodePtr->getRight();
 			while (succ->getLeft()) {
 				succParent = succ;
 				succ = succ->getLeft();
@@ -53,9 +55,10 @@ bool BST::_delete(const std::string &key, BinaryNode *nodePtr, bool &deleted) {
 	}
 }
 
-void BST::_inorderTraversal(
+template <typename T>
+void BST<T>::_inorderTraversal(
 	const std::function<void(const std::string &)> &visit,
-	BinaryNode *nodePtr) const {
+	BinaryNode<T> *nodePtr) const {
 	if (nodePtr) {
 		_inorderTraversal(visit, nodePtr->getLeft());
 		visit(nodePtr->getKey());
@@ -63,9 +66,10 @@ void BST::_inorderTraversal(
 	}
 }
 
-void BST::_indentedTree(
+template <typename T>
+void BST<T>::_indentedTree(
 	const std::function<void(const std::string &, int)> &visit,
-	BinaryNode *nodePtr, int level) const {
+	BinaryNode<T> *nodePtr, int level) const {
 	if (nodePtr) {
 		_indentedTree(visit, nodePtr->getRight(), level + 1);
 		visit(nodePtr->getKey(), level);
@@ -73,7 +77,7 @@ void BST::_indentedTree(
 	}
 }
 
-void BST::_clear(BinaryNode *node) {
+template <typename T> void BST<T>::_clear(BinaryNode<T> *node) {
 	if (node) {
 		_clear(node->getLeft());
 		_clear(node->getRight());
@@ -81,29 +85,31 @@ void BST::_clear(BinaryNode *node) {
 	}
 }
 
-bool BST::insert(const Puzzle &inputPuzzle) {
-	BinaryNode *newNode = new BinaryNode(inputPuzzle);
+template <typename T> bool BST<T>::insert(const T &inputData) {
+	BinaryNode<T> *newNode = new BinaryNode<T>(inputData);
 	rootPtr = _insert(rootPtr, newNode);
 	return true;
 }
 
-bool BST::remove(const std::string &key) {
+template <typename T> bool BST<T>::remove(const std::string &key) {
 	bool deleted = false;
 	_delete(key, rootPtr, deleted);
 	return deleted;
 }
 
-void BST::inorderTraversal(
+template <typename T>
+void BST<T>::inorderTraversal(
 	const std::function<void(const std::string &)> &visit) const {
 	_inorderTraversal(visit, rootPtr);
 }
 
-void BST::indentedTree(
+template <typename T>
+void BST<T>::indentedTree(
 	const std::function<void(const std::string &, int)> &visit) const {
 	_indentedTree(visit, rootPtr, 0);
 }
 
-void BST::clear() {
+template <typename T> void BST<T>::clear() {
 	_clear(rootPtr);
 	rootPtr = nullptr;
 	count = 0;

@@ -1,14 +1,13 @@
-#ifndef BinaryNode_H
-#define BinaryNode_H
+#ifndef BINARYTREE_H
+#define BINARYTREE_H
 
 #include "BinaryNode.h"
-#include <string>
 
-class BinaryTree {
+template <typename T> class BinaryTree {
   private:
-	BinaryNode *rootPtr = nullptr;
+	BinaryNode<T> *rootPtr = nullptr;
 	int count = 0;
-	void _clear(BinaryNode *node);
+	void _clear(BinaryNode<T> *node);
 
   public:
 	BinaryTree() = default;
@@ -17,5 +16,7 @@ class BinaryTree {
 	int getCount() const { return count; }
 	void clear();
 };
+
+#include "BinaryTree.cpp"
 
 #endif

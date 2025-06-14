@@ -1,30 +1,29 @@
 #ifndef BST_H
 #define BST_H
 
-#include "BinaryNode.h"
+#include "BinaryTree.cpp"
 #include <functional>
-#include <string>
 
-class BST {
+template <typename T> class BST {
   private:
-	BinaryNode *rootPtr = nullptr;
+	BinaryNode<T> *rootPtr = nullptr;
 	int count = 0;
-	BinaryNode *_insert(BinaryNode *, BinaryNode *);
-	bool _delete(const std::string &key, BinaryNode *, bool &);
+	BinaryNode<T> *_insert(BinaryNode<T> *, BinaryNode<T> *);
+	bool _delete(const std::string &key, BinaryNode<T> *, bool &);
 	void
 	_inorderTraversal(const std::function<void(const std::string &)> &visit,
-					  BinaryNode *nodePtr) const;
+					  BinaryNode<T> *nodePtr) const;
 	void
 	_indentedTree(const std::function<void(const std::string &, int)> &visit,
-				  BinaryNode *nodePtr, int level) const;
-	void _clear(BinaryNode *node);
+				  BinaryNode<T> *nodePtr, int level) const;
+	void _clear(BinaryNode<T> *node);
 
   public:
 	BST() = default;
 	~BST() { _clear(rootPtr); }
 	bool isEmpty() const { return count == 0; }
 	int getCount() const { return count; }
-	bool insert(const Puzzle &inputPuzzle);
+	bool insert(const T &inputData);
 	bool remove(const std::string &key);
 	void inorderTraversal(
 		const std::function<void(const std::string &)> &visit) const;
@@ -32,5 +31,7 @@ class BST {
 		const std::function<void(const std::string &, int)> &visit) const;
 	void clear();
 };
+
+#include "BST.cpp"
 
 #endif

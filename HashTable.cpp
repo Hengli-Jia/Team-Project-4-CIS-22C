@@ -1,17 +1,20 @@
+#pragma once
 #include "HashTable.h"
+#include <iostream>
 
 // Constructor: initializes the hash table with a given capacity
-HashTable::HashTable(int initialCapacity) {
+template <typename T> HashTable<T>::HashTable(int initialCapacity) {
 	capacity = initialCapacity;
 	size = 0;
-	table = new HashNode[capacity];
+	table = new HashNode<T>[capacity];
 }
 
 // Destructor: releases allocated memory
-HashTable::~HashTable() { delete[] table; }
+template <typename T> HashTable<T>::~HashTable() { delete[] table; }
 
 // Simple hash function for string keys
-int HashTable::hashFunction(const std::string &key) const {
+template <typename T>
+int HashTable<T>::hashFunction(const std::string &key) const {
 	int hash = 1;
 	for (char c : key) {
 		hash = 31 * hash + static_cast<unsigned char>(c);
@@ -20,12 +23,12 @@ int HashTable::hashFunction(const std::string &key) const {
 }
 
 // Linear probing for collision resolution
-int HashTable::linearProbe(int hashcode) const {
+template <typename T> int HashTable<T>::linearProbe(int hashcode) const {
 	return (hashcode + 1) % capacity;
 }
 
 // Insert a Puzzle item into the hash table
-bool HashTable::insert(const Puzzle &item) {
+template <typename T> bool HashTable<T>::insert(const T &item) {
 	if (isFull()) {
 		rehash();
 	}
@@ -58,7 +61,8 @@ bool HashTable::insert(const Puzzle &item) {
 }
 
 // Remove a Puzzle item by key, output the removed item
-bool HashTable::remove(Puzzle &itemOut, const std::string &key) {
+template <typename T>
+bool HashTable<T>::remove(T &itemOut, const std::string &key) {
 	int index = hashFunction(key);
 
 	for (int i = 0; i < capacity; ++i) {
@@ -77,7 +81,8 @@ bool HashTable::remove(Puzzle &itemOut, const std::string &key) {
 }
 
 // Search for a Puzzle item by key, output the found item
-bool HashTable::search(Puzzle &itemOut, const std::string &key) const {
+template <typename T>
+bool HashTable<T>::search(T &itemOut, const std::string &key) const {
 	int index = hashFunction(key);
 
 	for (int i = 0; i < capacity; ++i) {
@@ -92,12 +97,13 @@ bool HashTable::search(Puzzle &itemOut, const std::string &key) const {
 	}
 	return false;
 }
+
 // Rehash the table when load factor is too high
-void HashTable::rehash() {
+template <typename T> void HashTable<T>::rehash() {
 	int oldCapacity = capacity;
 	capacity *= 2;
-	HashNode *oldTable = table;
-	table = new HashNode[capacity];
+	HashNode<T> *oldTable = table;
+	table = new HashNode<T>[capacity];
 	size = 0;
 
 	for (int i = 0; i < oldCapacity; ++i) {

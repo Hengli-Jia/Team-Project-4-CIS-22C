@@ -4,11 +4,11 @@
 #include "HashNode.h"
 
 // HashTable definition
-class HashTable {
+template <typename T> class HashTable {
   private:
-	HashNode *table; // Pointer to the array of hash nodes
-	int size;		 // Number of items in the table
-	int capacity;	 // Size of the table
+	HashNode<T> *table; // Pointer to the array of hash nodes
+	int size;			// Number of items in the table
+	int capacity;		// Size of the table
 
 	// Hash function for string keys
 	int hashFunction(const std::string &key) const;
@@ -16,6 +16,7 @@ class HashTable {
 	int linearProbe(int hashcode) const;
 	// Rehash the table when load factor is too high
 	void rehash();
+	bool isFull() const { return size == capacity; }
 
   public:
 	// Constructor: initializes the hash table with a given capacity
@@ -27,18 +28,17 @@ class HashTable {
 	int getCapacity() const { return capacity; }
 	double getLoadFactor() const { return 100.0 * size / capacity; }
 	bool isEmpty() const { return size == 0; }
-	bool isFull() const { return size == capacity; }
 
-	// Insert a Puzzle item into the hash table
-	bool insert(const Puzzle &item);
-	// Remove a Puzzle item by key, output the removed item
-	bool remove(Puzzle &itemOut, const std::string &key);
-	// Search for a Puzzle item by key, output the found item
-	bool search(Puzzle &itemOut, const std::string &key) const;
+	// Insert an item into the hash table
+	bool insert(const T &item);
+	// Remove an item by key, output the removed item
+	bool remove(T &itemOut, const std::string &key);
+	// Search for an item by key, output the found item
+	bool search(T &itemOut, const std::string &key) const;
 
 	// Add accessors for saving to file
 	int getOccupiedAt(int idx) const { return table[idx].getOccupied(); }
-	Puzzle getItemAt(int idx) const { return table[idx].getItem(); }
+	T getItemAt(int idx) const { return table[idx].getItem(); }
 	int getCollisionsAt(int idx) const { return table[idx].getCollisions(); }
 };
 
