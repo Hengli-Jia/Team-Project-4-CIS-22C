@@ -16,23 +16,26 @@ BinaryNode *BinaryTree::_insertBST(BinaryNode *nodePtr, BinaryNode *newPtr) {
 	return nodePtr;
 }
 
-BinaryNode* BinaryTree::_deleteBST(BinaryNode* delPtr, BinaryNode * nodePtr) const {
+bool BinaryTree::_deleteBST(BinaryNode* delPtr, BinaryNode * nodePtr) const {
 	if (!nodePtr) 
 		return nodePtr;
-	string ID = item -> getKey()
-	if (ID < nodePtr -> getKey()) 
-		nodePtr -> getLeft() = _deleteBST(item, nodePtr -> getLeft());
-	else if ( ID > nodePtr -> getKey())
-		nodePtr -> getRight() = _deleteBST(item, nodePtr -> getRight());
+	if (delPtr -> getKey() < nodePtr -> getKey()) 
+		nodePtr -> getLeft() = _deleteBST(delPtr, nodePtr -> getLeft());
+	else if ( delPtr -> getKey() > nodePtr -> getKey())
+		nodePtr -> getRight() = _deleteBST(delPtr, nodePtr -> getRight());
 	// Found the node
 	else {
 	//Case 1: Leaf node
 	if (nodePtr -> isLeaf()) {
-		delete nodePtr;
-		return nullPtr
+		delete delPtr;
+		return nodePtr;
 	}
 	// Case 2: root with right child only
-	if (nodePtr -> getLEft
+	if (!nodePtr -> getLeft()) {
+		nodePtr = nodePtr -> getRight();
+		delete
+	}
+		
 
 	// Case 3: root with left child only
 		
