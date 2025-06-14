@@ -12,7 +12,7 @@ BinaryNode *BinaryTree::_insertBST(BinaryNode *nodePtr, BinaryNode *newPtr) {
 		nodePtr->setLeft(_insertBST(nodePtr->getLeft(), newPtr));
 	} else {
 		nodePtr->setRight(_insertBST(nodePtr->getRight(), newPtr));
-	}
+	} 
 	return nodePtr;
 }
 
