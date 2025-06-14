@@ -19,7 +19,7 @@ class BinaryNode {
 		key = "";
 		index = -1;
 	}
-	BinaryNode(BinaryNode *left, BinaryNode *right, int key, int index) {
+	BinaryNode(BinaryNode *left, BinaryNode *right, string key, int index) {
 		this->left = left;
 		this->right = right;
 		this->key = key;
