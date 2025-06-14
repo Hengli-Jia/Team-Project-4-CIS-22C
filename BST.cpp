@@ -16,21 +16,29 @@ BinaryNode *BinaryTree::_insertBST(BinaryNode *nodePtr, BinaryNode *newPtr) {
 	return nodePtr;
 }
 
-bool BinaryTree::_deleteBST(BinaryNode* delPtr, BinaryNode * nodePtr) const {
-	
+bool BinaryTree::_deleteBST(BinaryNode * delPtr, BinaryNode * nodePtr) const {
+	BinaryNode* parent = nullptr;
+	// Empty tree
 	if (!nodePtr) 
-		return nodePtr;
+		return false;
+	
+	while (nodePtr) {
 	if (delPtr -> getKey() < nodePtr -> getKey()) 
-		nodePtr -> getLeft() = _deleteBST(delPtr, nodePtr -> getLeft());
+		parent = nodePtr;
+		nodePtr = nodePtr -> getLeft();
 	else if ( delPtr -> getKey() > nodePtr -> getKey())
-		nodePtr -> getRight() = _deleteBST(delPtr, nodePtr -> getRight());
+		parent = nodePtr;
+		nodePtr = nodePtr -> getRight();
+	
 	// Found the node
 	else {
-	//Case 1: Leaf node
+	//Case 1: Leaf node		
 	if (nodePtr -> isLeaf()) {
-		delete delPtr;
-		delete nodePtr;
-		return true;
+		if (!parent)
+			this -> root = nullptr;
+		else if (nodePtr -> getKey() == item)
+			parent -> getLeft() = null
+		
 	}
 	// Case 2: root with right child only
 	if (!nodePtr -> getLeft()) {
@@ -47,6 +55,7 @@ bool BinaryTree::_deleteBST(BinaryNode* delPtr, BinaryNode * nodePtr) const {
 	
 	return true;
 		}
+	}
 	return false; // stubbed, returns false to silence warning
 }
 
