@@ -35,7 +35,7 @@ bool BinaryTree::_deleteBST(BinaryNode * delPtr, BinaryNode * nodePtr) const {
 	//Case 1: Leaf node		
 	if (nodePtr -> isLeaf()) {
 		if (!parent)
-			this -> root = nullptr;
+			this -> rootPtr = nullptr;
 		else if (nodePtr -> getLeft () -> getKey() == delPtr -> getKey())
 			parent -> getLeft() = nullptr;
 		else
@@ -44,7 +44,7 @@ bool BinaryTree::_deleteBST(BinaryNode * delPtr, BinaryNode * nodePtr) const {
 	// Case 2: node with right child only
 	if (!nodePtr -> getLeft()) {
 		if (!parent)
-			this -> root -> getRight() = nodePtr -> getRight();
+			this -> rootPtr -> getRight() = nodePtr -> getRight();
 		else if (nodePtr -> getLeft() ->  getKey() == delPtr -> getKey())
 			parent -> getLeft() = nodePtr -> getLeft();
 		else
@@ -53,7 +53,7 @@ bool BinaryTree::_deleteBST(BinaryNode * delPtr, BinaryNode * nodePtr) const {
 	// Case 3: node with left child only
 	else if (!nodePtr -> getRight()) {
 		if (!parent)
-			this -> root -> getLeft() = nodePtr -> getLeft();
+			this -> rootPtr -> getLeft() = nodePtr -> getLeft();
 		else if (nodePtr -> getLeft() ->  getKey() == delPtr -> getKey())
 			parent -> getLeft() = nodePtr -> getLeft();
 		else
