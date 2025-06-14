@@ -334,6 +334,7 @@ bool loadPuzzles(HashTable &hashTable, BinaryTree &bst,
 bool inputDataFile(HashTable &hashTable, BinaryTree &binaryTree,
 				   string inputFile) {
 	// Todo by file I/O person
+	return false;
 }
 
 /*
@@ -349,6 +350,7 @@ out:
 bool writeDataFile(const HashTable &hashTable, const BinaryTree &BinaryTree,
 				   string outputFile) {
 	// to do by file I/O person
+	return false;
 }
 
 void horiDisplay(string key) {
