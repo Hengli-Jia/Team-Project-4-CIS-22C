@@ -7,6 +7,7 @@
 #include "Puzzle.h"
 
 #include <cctype>
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -275,6 +276,9 @@ void addItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl) {
 
 void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl,
 				   string inputFile) {
+	using namespace std::chrono;
+	auto start = high_resolution_clock::now();
+
 	// if inputFile is empty, prompt user for input
 	if (inputFile.empty()) {
 		cout << "Enter input file name: ";
@@ -293,6 +297,11 @@ void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl,
 	int lineNum = 0;
 	getline(file, line); // skip header
 	while (getline(file, line)) {
+		if ((lineNum + 1) % 10000 == 0) {
+			cout << "Processing line " << lineNum + 1 << ": " << line << endl;
+			cout << "Current hash table size: " << hashTable.getCapacity()
+				 << endl;
+		}
 		lineNum++;
 		if (line.empty())
 			continue;
@@ -357,6 +366,9 @@ void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl,
 		}
 	}
 	file.close();
+	auto end = high_resolution_clock::now();
+	double seconds = duration_cast<duration<double>>(end - start).count();
+	cout << "[INFO] inputDataFile completed in " << seconds << " seconds.\n";
 }
 
 void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl) {

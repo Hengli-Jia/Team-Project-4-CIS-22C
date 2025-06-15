@@ -21,6 +21,9 @@ template <typename T> class HashTable {
 	// Rehash the table when load factor is too high
 	void rehash();
 	bool isFull() const { return size == capacity; }
+	// Helper to find next prime number >= n
+	int nextPrime(int n) const;
+	bool isPrime(int n) const;
 
   public:
 	// Constructor: initializes the hash table with a given capacity

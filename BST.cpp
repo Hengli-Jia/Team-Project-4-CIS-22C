@@ -1,3 +1,6 @@
+#pragma once
+#include "BST.h"
+
 using std::function;
 using std::string;
 

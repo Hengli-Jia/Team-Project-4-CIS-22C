@@ -1,3 +1,7 @@
+#pragma once
+#include "HashTable.h"
+
+#include <cmath> // Include cmath for sqrt function
 #include <iostream>
 
 using std::cerr;
@@ -29,9 +33,40 @@ template <typename T> int HashTable<T>::linearProbe(int hashcode) const {
 	return (hashcode + 1) % capacity;
 }
 
+template <typename T> bool HashTable<T>::isPrime(int n) const {
+	if (n <= 1)
+		return false;
+	if (n <= 3)
+		return true;
+	if (n % 2 == 0 || n % 3 == 0)
+		return false;
+	if (n % 5 == 0 && n != 5)
+		return false;
+	if (n % 7 == 0 && n != 7)
+		return false;
+	int limit = static_cast<int>(sqrt(n)) + 1;
+	for (int i = 11; i <= limit; i += 2) {
+		if (n % i == 0)
+			return false;
+	}
+	return true;
+}
+
+// Find next prime >= n
+template <typename T> int HashTable<T>::nextPrime(int n) const {
+	if (n <= 2)
+		return 2;
+	if (n % 2 == 0)
+		++n;
+	while (!isPrime(n))
+		n += 2;
+	return n;
+}
+
 // Insert a Puzzle item into the hash table
 template <typename T> bool HashTable<T>::insert(const T &item) {
-	if (isFull()) {
+	// Rehash if load factor >= 75%
+	if (getLoadFactor() >= 75.0) {
 		rehash();
 	}
 	string key = item.getKey();
@@ -102,14 +137,28 @@ bool HashTable<T>::search(T &itemOut, const string &key) const {
 // Rehash the table when load factor is too high
 template <typename T> void HashTable<T>::rehash() {
 	int oldCapacity = capacity;
-	capacity *= 2;
+	int newCapacity = nextPrime(capacity * 2);
 	HashNode<T> *oldTable = table;
-	table = new HashNode<T>[capacity];
+	table = new HashNode<T>[newCapacity];
+	capacity = newCapacity;
 	size = 0;
 
 	for (int i = 0; i < oldCapacity; ++i) {
 		if (oldTable[i].getOccupied() == 1) {
-			insert(oldTable[i].getItem());
+			// optimized insertion for rehashing
+			const T &item = oldTable[i].getItem();
+			string key = item.getKey();
+			int index = hashFunction(key) % capacity;
+			// Linear probing for placement in new table
+			int collisions = 0;
+			while (table[index].getOccupied() == 1) {
+				index = (index + 1) % capacity;
+				++collisions;
+			}
+			table[index].setItem(item);
+			table[index].setOccupied(1);
+			table[index].setCollisions(collisions);
+			size++;
 		}
 	}
 	delete[] oldTable;

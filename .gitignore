@@ -2,4 +2,4 @@
 *.exe
 .clang-format
 main.exe
-
+output/
