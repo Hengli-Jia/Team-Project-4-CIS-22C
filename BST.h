@@ -3,14 +3,13 @@
 
 #include "BinaryTree.h"
 #include <functional>
-
 using std::function;
 using std::string;
 
-template <typename T> class BST {
-  private:
-	BinaryNode<T> *rootPtr = nullptr;
-	int count = 0;
+template <typename T> class BST : public BinaryTree<T> {
+  protected:
+	using BinaryTree<T>::rootPtr;
+	using BinaryTree<T>::count;
 	BinaryNode<T> *_insert(BinaryNode<T> *, BinaryNode<T> *);
 	bool _delete(const string &key, BinaryNode<T> *, bool &);
 	void _inorderTraversal(const function<void(const string &)> &visit,
@@ -21,9 +20,7 @@ template <typename T> class BST {
 
   public:
 	BST() = default;
-	~BST() { _clear(rootPtr); }
-	bool isEmpty() const { return count == 0; }
-	int getCount() const { return count; }
+	virtual ~BST() { this->_clear(rootPtr); }
 	bool insert(const T &inputData);
 	bool remove(const string &key);
 	void inorderTraversal(const function<void(const string &)> &visit) const;

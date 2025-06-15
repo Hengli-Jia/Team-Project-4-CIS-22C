@@ -2,7 +2,7 @@
  TODO: add members information and project description
 */
 
-#include "BST.h"
+#include "AVL.h"
 #include "HashTable.h"
 #include "Puzzle.h"
 
@@ -23,19 +23,19 @@ HashTable<Puzzle> *globalHash; // Toma: I don't think a global variable should
 
 void menu();
 char menuInput();
-void addItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst);
-void inputDataFile(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst,
+void addItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl);
+void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl,
 				   string inputFile = "");
-void deleteItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst);
+void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl);
 void findItem();
-void listSorted(const BST<Puzzle> &bst);
+void listSorted(const AVL<Puzzle> &avl);
 void outputDataFile(const HashTable<Puzzle> &hashTable, string inputFile = "");
 void statistics(const HashTable<Puzzle> &hashTable);
 char attemptExit();
 
 // HIDDEN MENU OPTIONS
 
-void displayIndentedTree(const BST<Puzzle> &bst);
+void displayIndentedTree(const AVL<Puzzle> &avl);
 void displayTeamMembers();
 
 // HELPER FUNCTION DECLARATIONS
@@ -52,12 +52,12 @@ int main() {
 
 	int hashSize = determineHashSize(inputFile);
 
-	// Initialize Hash Table and BST
+	// Initialize Hash Table and AVL
 	HashTable<Puzzle> hashTable(hashSize);
-	BST<Puzzle> bst;
+	AVL<Puzzle> avl;
 
 	// File I/O
-	inputDataFile(hashTable, bst, inputFile);
+	inputDataFile(hashTable, avl, inputFile);
 	outputDataFile(hashTable, outputFile);
 
 	globalHash = &hashTable;
@@ -69,19 +69,19 @@ int main() {
 		choice = menuInput();
 		switch (choice) {
 		case 'A':
-			addItem(hashTable, bst);
+			addItem(hashTable, avl);
 			break;
 		case 'I':
-			inputDataFile(hashTable, bst);
+			inputDataFile(hashTable, avl);
 			break;
 		case 'D':
-			deleteItem(hashTable, bst);
+			deleteItem(hashTable, avl);
 			break;
 		case 'F':
 			findItem();
 			break;
 		case 'L':
-			listSorted(bst);
+			listSorted(avl);
 			break;
 		case 'O':
 			outputDataFile(hashTable);
@@ -96,7 +96,7 @@ int main() {
 			choice = attemptExit();
 			break;
 		case 'T': // hidden option: display indented tree
-			displayIndentedTree(bst);
+			displayIndentedTree(avl);
 			break;
 		case 'M': // hidden option: display team members
 			displayTeamMembers();
@@ -141,7 +141,7 @@ char menuInput() {
 	return '\0'; // no valid input
 }
 
-void addItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst) {
+void addItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl) {
 	cout << "Add a new puzzle:\n";
 	cout << "Enter full line (CSV format) or leave blank to input fields "
 			"one by one:\n";
@@ -248,7 +248,7 @@ void addItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst) {
 							 openingTagsVec);
 
 			hashTable.insert(newPuzzle);
-			bst.insert(newPuzzle);
+			avl.insert(newPuzzle);
 			cout << "Puzzle added successfully!\n";
 			valid = true;
 		} catch (const invalid_argument &) {
@@ -273,7 +273,7 @@ void addItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst) {
 	}
 }
 
-void inputDataFile(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst,
+void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl,
 				   string inputFile) {
 	// if inputFile is empty, prompt user for input
 	if (inputFile.empty()) {
@@ -288,7 +288,7 @@ void inputDataFile(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst,
 		return;
 	}
 
-	// read data and insert into hashTable and bst
+	// read data and insert into hashTable and avl
 	string line;
 	int lineNum = 0;
 	getline(file, line); // skip header
@@ -349,7 +349,7 @@ void inputDataFile(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst,
 						  stoi(ratingDeviation), stoi(popularity),
 						  stoi(nbPlays), themesVec, gameUrl, openingTagsVec);
 			hashTable.insert(puzzle);
-			bst.insert(puzzle);
+			avl.insert(puzzle);
 		} catch (const exception &e) {
 			cerr << "[ERROR] Failed to parse line " << lineNum << ": " << line
 				 << " with error: " << e.what() << endl;
@@ -359,7 +359,7 @@ void inputDataFile(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst,
 	file.close();
 }
 
-void deleteItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst) {
+void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl) {
 	cout << "Delete a puzzle by PuzzleId or FEN.\n";
 	string input;
 	cout << "Enter PuzzleId (leave blank to use FEN): ";
@@ -405,11 +405,11 @@ void deleteItem(HashTable<Puzzle> &hashTable, BST<Puzzle> &bst) {
 		cout << "[WARN] Puzzle could not be removed from hash table.\n";
 	}
 
-	// Remove from BST
-	if (bst.remove(found.getKey())) {
-		cout << "[INFO] Puzzle removed from BST.\n";
+	// Remove from AVL
+	if (avl.remove(found.getKey())) {
+		cout << "[INFO] Puzzle removed from AVL.\n";
 	} else {
-		cout << "[WARN] Puzzle could not be removed from BST.\n";
+		cout << "[WARN] Puzzle could not be removed from AVL.\n";
 	}
 }
 
@@ -457,15 +457,15 @@ void findItem() {
 	cout << found << endl;
 }
 
-void listSorted(const BST<Puzzle> &bst) {
-	cout << "Listing all puzzles sorted by PuzzleId (BST inorder traversal):\n";
+void listSorted(const AVL<Puzzle> &avl) {
+	cout << "Listing all puzzles sorted by PuzzleId (AVL inorder traversal):\n";
 	// Helper function to print each puzzle
 	auto printPuzzle = [](string key) {
 		Puzzle puzzleOut;
 		globalHash->search(puzzleOut, key);
 		cout << puzzleOut << endl;
 	};
-	bst.inorderTraversal(printPuzzle);
+	avl.inorderTraversal(printPuzzle);
 }
 
 void outputDataFile(const HashTable<Puzzle> &hashTable, string outputFile) {
@@ -528,10 +528,9 @@ char attemptExit() {
 
 // HIDDEN MENU OPTIONS
 
-void displayIndentedTree(const BST<Puzzle> &bst) {
-	cout << "Indented BST (by PuzzleId):\n";
-	BinaryNode<Puzzle> *root = *(BinaryNode<Puzzle> **)(void *)&bst;
-	printIndentedTree(root, 0);
+void displayIndentedTree(const AVL<Puzzle> &avl) {
+	cout << "Indented AVL (by PuzzleId):\n";
+	printIndentedTree(avl.getRoot(), 0);
 }
 
 void displayTeamMembers() {}
@@ -590,15 +589,16 @@ int determineHashSize(string inputFile) {
 	return hashSize;
 }
 
-// Helper for indented BST display
+// Helper for indented AVL display
 static void printIndentedTree(BinaryNode<Puzzle> *node, int level) {
 	if (!node)
 		return;
-	printIndentedTree(node->getRight(), level + 1);
 	for (int i = 0; i < level; ++i)
-		cout << "  ";
+		cout << ".";
+	cout << (level + 1) << ").";
 	Puzzle puzzleOut;
 	globalHash->search(puzzleOut, node->getKey());
-	cout << puzzleOut.puzzleId() << endl;
+	cout << " " << puzzleOut.puzzleId() << endl;
 	printIndentedTree(node->getLeft(), level + 1);
+	printIndentedTree(node->getRight(), level + 1);
 }

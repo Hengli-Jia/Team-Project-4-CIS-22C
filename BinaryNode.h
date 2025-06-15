@@ -2,7 +2,6 @@
 #define BINARYNODE_H
 
 #include <string>
-
 using std::string;
 
 template <typename T> class BinaryNode {

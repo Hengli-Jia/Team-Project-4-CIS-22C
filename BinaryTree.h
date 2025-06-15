@@ -4,17 +4,18 @@
 #include "BinaryNode.h"
 
 template <typename T> class BinaryTree {
-  private:
+  protected:
 	BinaryNode<T> *rootPtr = nullptr;
 	int count = 0;
 	void _clear(BinaryNode<T> *node);
 
   public:
 	BinaryTree() = default;
-	~BinaryTree() { _clear(rootPtr); }
+	virtual ~BinaryTree() { _clear(rootPtr); }
 	bool isEmpty() const { return count == 0; }
 	int getCount() const { return count; }
 	void clear();
+	BinaryNode<T> *getRoot() const { return rootPtr; }
 };
 
 template <typename T> void BinaryTree<T>::_clear(BinaryNode<T> *node) {
