@@ -75,7 +75,8 @@ void BST<T>::_indentedTree(const function<void(const string &, int)> &visit,
 	}
 }
 
-template <typename T> void BST<T>::_clear(BinaryNode<T> *node) {
+template <typename T> 
+void BST<T>::_clear(BinaryNode<T> *node) {
 	if (node) {
 		_clear(node->getLeft());
 		_clear(node->getRight());
@@ -83,13 +84,15 @@ template <typename T> void BST<T>::_clear(BinaryNode<T> *node) {
 	}
 }
 
-template <typename T> bool BST<T>::insert(const T &inputData) {
+template <typename T> 
+bool BST<T>::insert(const T &inputData) {
 	BinaryNode<T> *newNode = new BinaryNode<T>(inputData);
 	rootPtr = _insert(rootPtr, newNode);
 	return true;
 }
 
-template <typename T> bool BST<T>::remove(const string &key) {
+template <typename T> 
+bool BST<T>::remove(const string &key) {
 	bool deleted = false;
 	_delete(key, rootPtr, deleted);
 	return deleted;
@@ -107,7 +110,8 @@ void BST<T>::indentedTree(
 	_indentedTree(visit, rootPtr, 0);
 }
 
-template <typename T> void BST<T>::clear() {
+template <typename T> 
+void BST<T>::clear() {
 	_clear(rootPtr);
 	rootPtr = nullptr;
 	count = 0;
