@@ -5,6 +5,7 @@
 #include "AVL.h"
 #include "HashTable.h"
 #include "Puzzle.h"
+#include "Stack.h"
 
 #include <cctype>
 #include <chrono>
@@ -27,7 +28,8 @@ char menuInput();
 void addItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl);
 void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl,
 				   string inputFile = "");
-void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl);
+void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl, Stack<Puzzle>& deleteStack);
+void undoDelete(HashTable<Puzzle>& hashTable, AVL<Puzzle>& avl, Stack<Puzzle>& deleteStack);
 void findItem();
 void listSorted(const AVL<Puzzle> &avl);
 void outputDataFile(const HashTable<Puzzle> &hashTable, string inputFile = "");
@@ -53,9 +55,10 @@ int main() {
 
 	int hashSize = determineHashSize(inputFile);
 
-	// Initialize Hash Table and AVL
+	// Initialize Hash Table， AVL and Stack
 	HashTable<Puzzle> hashTable(hashSize);
 	AVL<Puzzle> avl;
+	Stack<Puzzle> deleteStack;
 
 	// File I/O
 	inputDataFile(hashTable, avl, inputFile);
@@ -76,8 +79,11 @@ int main() {
 			inputDataFile(hashTable, avl);
 			break;
 		case 'D':
-			deleteItem(hashTable, avl);
+			deleteItem(hashTable, avl, deleteStack);
 			break;
+		case 'U': // For undo delete
+    		undoDelete(hashTable, avl, deleteStack);
+    		break;
 		case 'F':
 			findItem();
 			break;
@@ -118,6 +124,7 @@ void menu() {
 	cout << "A - Add a new puzzle\n";
 	cout << "I - Input data from file\n";
 	cout << "D - Delete a puzzle\n";
+	cout << "U - Undo last deletion\n";
 	cout << "F - Find a puzzle\n";
 	cout << "L - List sorted data\n";
 	cout << "O - Output data to file\n";
@@ -371,7 +378,7 @@ void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl,
 	cout << "[INFO] inputDataFile completed in " << seconds << " seconds.\n";
 }
 
-void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl) {
+void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl, Stack<Puzzle>& deleteStack) {
 	cout << "Delete a puzzle by PuzzleId or FEN.\n";
 	string input;
 	cout << "Enter PuzzleId (leave blank to use FEN): ";
@@ -423,8 +430,25 @@ void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl) {
 	} else {
 		cout << "[WARN] Puzzle could not be removed from AVL.\n";
 	}
+
+	// Push to deleteStack
+	if (deleteStack.push(found)) {
+    	cout << "[INFO] Puzzle pushed to deleteStack for undo.\n";
+	} else {
+    	cout << "[WARN] deleteStack is full, cannot store deleted puzzle.\n";
+	}	
 }
 
+void undoDelete(HashTable<Puzzle>& hashTable, AVL<Puzzle>& avl, Stack<Puzzle>& deleteStack) {
+    Puzzle lastDeleted;
+    if (deleteStack.pop(lastDeleted)) {
+        hashTable.insert(lastDeleted);
+        avl.insert(lastDeleted);
+        std::cout << "Undo successful. Puzzle restored.\n";
+    } else {
+        std::cout << "No deletion to undo.\n";
+    }
+}
 void findItem() {
 	cout << "Find a puzzle by PuzzleId or FEN.\n";
 	string input;
