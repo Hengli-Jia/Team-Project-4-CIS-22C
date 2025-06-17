@@ -99,14 +99,12 @@ bool BST<T>::remove(const string &key) {
 }
 
 template <typename T>
-void BST<T>::inorderTraversal(
-	const function<void(const string &)> &visit) const {
+void BST<T>::inorderTraversal(const function<void(const string &)> &visit) const {
 	_inorderTraversal(visit, rootPtr);
 }
 
 template <typename T>
-void BST<T>::indentedTree(
-	const function<void(const string &, int)> &visit) const {
+void BST<T>::indentedTree(const function<void(const string &, int)> &visit) const {
 	_indentedTree(visit, rootPtr, 0);
 }
 
