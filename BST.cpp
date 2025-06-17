@@ -32,7 +32,7 @@ bool BST<T>::_delete(const string &key, BinaryNode<T> *nodePtr, bool &deleted) {
 	} else {
 		deleted = true;
 		--count;
-		if (!nodePtr->getLeft() && !nodePtr->getRight()) {
+		if (nodePtr -> isLeaf()) {
 			delete nodePtr;
 			nodePtr = nullptr;
 		} else if (!nodePtr->getLeft()) {
