@@ -25,14 +25,16 @@ HashTable<Puzzle> *globalHash; // Toma: I don't think a global variable should
 
 void menu();
 char menuInput();
+
+void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl, string inputFile = "");
+void outputDataFile(const HashTable<Puzzle> &hashTable, string inputFile = "");
+
 void addItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl);
-void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl,
-				   string inputFile = "");
 void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl, Stack<Puzzle>& deleteStack);
 void undoDelete(HashTable<Puzzle>& hashTable, AVL<Puzzle>& avl, Stack<Puzzle>& deleteStack);
 void findItem();
+
 void listSorted(const AVL<Puzzle> &avl);
-void outputDataFile(const HashTable<Puzzle> &hashTable, string inputFile = "");
 void statistics(const HashTable<Puzzle> &hashTable);
 char attemptExit();
 
@@ -72,11 +74,14 @@ int main() {
 	do {
 		choice = menuInput();
 		switch (choice) {
-		case 'A':
-			addItem(hashTable, avl);
-			break;
 		case 'I':
 			inputDataFile(hashTable, avl);
+			break;
+		case 'O':
+			outputDataFile(hashTable);
+			break;
+		case 'A':
+			addItem(hashTable, avl);
 			break;
 		case 'D':
 			deleteItem(hashTable, avl, deleteStack);
@@ -89,9 +94,6 @@ int main() {
 			break;
 		case 'L':
 			listSorted(avl);
-			break;
-		case 'O':
-			outputDataFile(hashTable);
 			break;
 		case 'S':
 			statistics(hashTable);
@@ -121,13 +123,13 @@ int main() {
 
 void menu() {
 	cout << "\nMenu Options:\n";
-	cout << "A - Add a new puzzle\n";
 	cout << "I - Input data from file\n";
+	cout << "O - Output data to file\n";
+	cout << "A - Add a new puzzle\n";
 	cout << "D - Delete a puzzle\n";
 	cout << "U - Undo last deletion\n";
 	cout << "F - Find a puzzle\n";
 	cout << "L - List sorted data\n";
-	cout << "O - Output data to file\n";
 	cout << "S - Show statistics\n";
 	cout << "H - Help (show this menu)\n";
 	cout << "E - Exit the program\n";
@@ -147,6 +149,130 @@ char menuInput() {
 		}
 	}
 	return '\0'; // no valid input
+}
+void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl,
+				   string inputFile) {
+	using namespace std::chrono;
+	auto start = high_resolution_clock::now();
+
+	// if inputFile is empty, prompt user for input
+	if (inputFile.empty()) {
+		cout << "Enter input file name: ";
+		getline(cin, inputFile);
+	}
+
+	// open the input file
+	ifstream file(inputFile);
+	if (!file.is_open()) {
+		cerr << "Failed to open input file: " << inputFile << endl;
+		return;
+	}
+
+	// read data and insert into hashTable and avl
+	string line;
+	int lineNum = 0;
+	getline(file, line); // skip header
+	while (getline(file, line)) {
+		if ((lineNum + 1) % 10000 == 0) {
+			cout << "Processing line " << lineNum + 1 << ": " << line << endl;
+			cout << "Current hash table size: " << hashTable.getCapacity()
+				 << endl;
+		}
+		lineNum++;
+		if (line.empty())
+			continue;
+
+		// parse the line into fields
+		stringstream ss(line);
+		string puzzleId, fen, moves, rating, ratingDeviation, popularity,
+			nbPlays, themes, gameUrl, openingTags;
+		getline(ss, puzzleId, ',');
+		getline(ss, fen, ',');
+		getline(ss, moves, ',');
+		getline(ss, rating, ',');
+		getline(ss, ratingDeviation, ',');
+		getline(ss, popularity, ',');
+		getline(ss, nbPlays, ',');
+		getline(ss, themes, ',');
+		getline(ss, gameUrl, ',');
+
+		// openingTags is optional, so check if present
+		if (!ss.eof()) {
+			getline(ss, openingTags, ',');
+		} else {
+			openingTags = "";
+		}
+
+		// validate required fields (first 9 fields must not be empty)
+		if (puzzleId.empty() || fen.empty() || moves.empty() ||
+			rating.empty() || ratingDeviation.empty() || popularity.empty() ||
+			nbPlays.empty() || themes.empty() || gameUrl.empty()) {
+			continue; // skip malformed line
+		}
+
+		// parse moves, themes, openingTags as vectors
+		vector<string> movesVec, themesVec, openingTagsVec;
+		stringstream movesSS(moves), themesSS(themes), tagsSS(openingTags);
+		string token;
+		while (getline(movesSS, token, ' ')) {
+			if (!token.empty())
+				movesVec.push_back(token);
+		}
+
+		while (getline(themesSS, token, ' ')) {
+			if (!token.empty())
+				themesVec.push_back(token);
+		}
+
+		while (getline(tagsSS, token, ' ')) {
+			if (!token.empty())
+				openingTagsVec.push_back(token);
+		}
+
+		try {
+			Puzzle puzzle(puzzleId, fen, movesVec, stoi(rating),
+						  stoi(ratingDeviation), stoi(popularity),
+						  stoi(nbPlays), themesVec, gameUrl, openingTagsVec);
+			hashTable.insert(puzzle);
+			avl.insert(puzzle);
+		} catch (const exception &e) {
+			cerr << "[ERROR] Failed to parse line " << lineNum << ": " << line
+				 << " with error: " << e.what() << endl;
+			continue; // skip line if conversion fails
+		}
+	}
+	file.close();
+	auto end = high_resolution_clock::now();
+	double seconds = duration_cast<duration<double>>(end - start).count();
+	cout << "[INFO] inputDataFile completed in " << seconds << " seconds.\n";
+}
+
+void outputDataFile(const HashTable<Puzzle> &hashTable, string outputFile) {
+	// if outputFile is empty, prompt user for input
+	if (outputFile.empty()) {
+		cout << "Enter output file name: ";
+		getline(cin, outputFile);
+	}
+
+	// save to file (in hash table sequence)
+	ofstream outFile(outputFile);
+	if (outFile.is_open()) {
+		// Write header
+		outFile << "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,"
+				   "NbPlays,Themes,GameUrl,OpeningTags\n";
+		int written = 0;
+		for (int i = 0; i < hashTable.getCapacity(); i++) {
+			Puzzle item;
+			if (hashTable.getOccupiedAt(i) == 1) {
+				item = hashTable.getItemAt(i);
+				outFile << item << '\n';
+				written++;
+			}
+		}
+		outFile.close();
+	} else {
+		cerr << "[ERROR] Could not open output file: " << outputFile << endl;
+	}
 }
 
 void addItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl) {
@@ -281,102 +407,6 @@ void addItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl) {
 	}
 }
 
-void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl,
-				   string inputFile) {
-	using namespace std::chrono;
-	auto start = high_resolution_clock::now();
-
-	// if inputFile is empty, prompt user for input
-	if (inputFile.empty()) {
-		cout << "Enter input file name: ";
-		getline(cin, inputFile);
-	}
-
-	// open the input file
-	ifstream file(inputFile);
-	if (!file.is_open()) {
-		cerr << "Failed to open input file: " << inputFile << endl;
-		return;
-	}
-
-	// read data and insert into hashTable and avl
-	string line;
-	int lineNum = 0;
-	getline(file, line); // skip header
-	while (getline(file, line)) {
-		if ((lineNum + 1) % 10000 == 0) {
-			cout << "Processing line " << lineNum + 1 << ": " << line << endl;
-			cout << "Current hash table size: " << hashTable.getCapacity()
-				 << endl;
-		}
-		lineNum++;
-		if (line.empty())
-			continue;
-
-		// parse the line into fields
-		stringstream ss(line);
-		string puzzleId, fen, moves, rating, ratingDeviation, popularity,
-			nbPlays, themes, gameUrl, openingTags;
-		getline(ss, puzzleId, ',');
-		getline(ss, fen, ',');
-		getline(ss, moves, ',');
-		getline(ss, rating, ',');
-		getline(ss, ratingDeviation, ',');
-		getline(ss, popularity, ',');
-		getline(ss, nbPlays, ',');
-		getline(ss, themes, ',');
-		getline(ss, gameUrl, ',');
-
-		// openingTags is optional, so check if present
-		if (!ss.eof()) {
-			getline(ss, openingTags, ',');
-		} else {
-			openingTags = "";
-		}
-
-		// validate required fields (first 9 fields must not be empty)
-		if (puzzleId.empty() || fen.empty() || moves.empty() ||
-			rating.empty() || ratingDeviation.empty() || popularity.empty() ||
-			nbPlays.empty() || themes.empty() || gameUrl.empty()) {
-			continue; // skip malformed line
-		}
-
-		// parse moves, themes, openingTags as vectors
-		vector<string> movesVec, themesVec, openingTagsVec;
-		stringstream movesSS(moves), themesSS(themes), tagsSS(openingTags);
-		string token;
-		while (getline(movesSS, token, ' ')) {
-			if (!token.empty())
-				movesVec.push_back(token);
-		}
-
-		while (getline(themesSS, token, ' ')) {
-			if (!token.empty())
-				themesVec.push_back(token);
-		}
-
-		while (getline(tagsSS, token, ' ')) {
-			if (!token.empty())
-				openingTagsVec.push_back(token);
-		}
-
-		try {
-			Puzzle puzzle(puzzleId, fen, movesVec, stoi(rating),
-						  stoi(ratingDeviation), stoi(popularity),
-						  stoi(nbPlays), themesVec, gameUrl, openingTagsVec);
-			hashTable.insert(puzzle);
-			avl.insert(puzzle);
-		} catch (const exception &e) {
-			cerr << "[ERROR] Failed to parse line " << lineNum << ": " << line
-				 << " with error: " << e.what() << endl;
-			continue; // skip line if conversion fails
-		}
-	}
-	file.close();
-	auto end = high_resolution_clock::now();
-	double seconds = duration_cast<duration<double>>(end - start).count();
-	cout << "[INFO] inputDataFile completed in " << seconds << " seconds.\n";
-}
 
 void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl, Stack<Puzzle>& deleteStack) {
 	cout << "Delete a puzzle by PuzzleId or FEN.\n";
@@ -449,6 +479,7 @@ void undoDelete(HashTable<Puzzle>& hashTable, AVL<Puzzle>& avl, Stack<Puzzle>& d
         std::cout << "No deletion to undo.\n";
     }
 }
+
 void findItem() {
 	cout << "Find a puzzle by PuzzleId or FEN.\n";
 	string input;
@@ -504,33 +535,6 @@ void listSorted(const AVL<Puzzle> &avl) {
 	avl.inorderTraversal(printPuzzle);
 }
 
-void outputDataFile(const HashTable<Puzzle> &hashTable, string outputFile) {
-	// if outputFile is empty, prompt user for input
-	if (outputFile.empty()) {
-		cout << "Enter output file name: ";
-		getline(cin, outputFile);
-	}
-
-	// save to file (in hash table sequence)
-	ofstream outFile(outputFile);
-	if (outFile.is_open()) {
-		// Write header
-		outFile << "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,"
-				   "NbPlays,Themes,GameUrl,OpeningTags\n";
-		int written = 0;
-		for (int i = 0; i < hashTable.getCapacity(); i++) {
-			Puzzle item;
-			if (hashTable.getOccupiedAt(i) == 1) {
-				item = hashTable.getItemAt(i);
-				outFile << item << '\n';
-				written++;
-			}
-		}
-		outFile.close();
-	} else {
-		cerr << "[ERROR] Could not open output file: " << outputFile << endl;
-	}
-}
 void statistics(const HashTable<Puzzle> &hashTable) {
 	cout << "Hash Table Statistics:\n";
 	cout << "Load factor: " << hashTable.getLoadFactor() << "%\n";
