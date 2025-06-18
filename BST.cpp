@@ -53,8 +53,7 @@ bool BST::_delete(const string &key, BinaryNode *nodePtr, bool &deleted) {
 	}
 }
 
-void BST::_inorderTraversal(const function<void(const string &, int)> &visit,
-							BinaryNode *nodePtr) const {
+void BST::_inorderTraversal(const function<void(const string &, int)> &visit, BinaryNode *nodePtr) const {
 	if (nodePtr) {
 		_inorderTraversal(visit, nodePtr->getLeft());
 		visit(nodePtr->getKey(), nodePtr->getIndex());
@@ -62,8 +61,7 @@ void BST::_inorderTraversal(const function<void(const string &, int)> &visit,
 	}
 }
 
-void BST::_indentedTree(const function<void(const string &, int)> &visit,
-						BinaryNode *nodePtr, int level) const {
+void BST::_indentedTree(const function<void(const string &, int)> &visit, BinaryNode *nodePtr, int level) const {
 	if (nodePtr) {
 		_indentedTree(visit, nodePtr->getRight(), level + 1);
 		visit(nodePtr->getKey(), level);
@@ -90,24 +88,24 @@ bool BST::remove(const string &key) {
 	return deleted;
 }
 
-int BST::search(const std::string& key) const {
-    BinaryNode* curr = getRoot();
-    while (curr) {
-        if (key == curr->getKey()) return curr->getIndex();
-        else if (key < curr->getKey()) curr = curr->getLeft();
-        else curr = curr->getRight();
-    }
-    return -1;
+int BST::search(const std::string &key) const {
+	BinaryNode *curr = getRoot();
+	while (curr) {
+		if (key == curr->getKey())
+			return curr->getIndex();
+		else if (key < curr->getKey())
+			curr = curr->getLeft();
+		else
+			curr = curr->getRight();
+	}
+	return -1;
 }
 
-void BST::inorderTraversal(
-	const function<void(const string &, int)> &visit) const {
+void BST::inorderTraversal(const function<void(const string &, int)> &visit) const {
 	_inorderTraversal(visit, rootPtr);
 }
 
-void BST::indentedTree(const function<void(const string &, int)> &visit) const {
-	_indentedTree(visit, rootPtr, 0);
-}
+void BST::indentedTree(const function<void(const string &, int)> &visit) const { _indentedTree(visit, rootPtr, 0); }
 
 void BST::clear() {
 	_clear(rootPtr);

@@ -8,7 +8,8 @@ using std::string;
 const int DEFAULT_HASH_SIZE = 53;
 
 // HashTable definition
-template <typename T> class HashTable {
+template <typename T>
+class HashTable {
   private:
 	HashNode<T> *table; // Pointer to the array of hash nodes
 	int size;			// Number of items in the table

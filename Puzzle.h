@@ -25,24 +25,18 @@ class Puzzle {
   public:
 	// constructors
 	Puzzle()
-		: _puzzleId(""), _fen(""), _moves({}), _rating(0), _ratingDeviation(0),
-		  _popularity(0), _nbPlays(0), _themes({}), _gameUrl(""),
-		  _openingTags({}) {}
-	Puzzle(string puzzleId, string fen, vector<string> moves, int rating,
-		   int ratingDeviation, int popularity, int nbPlays,
-		   vector<string> themes, string gameUrl, vector<string> openingTags)
-		: _puzzleId(puzzleId), _fen(fen), _moves(moves), _rating(rating),
-		  _ratingDeviation(ratingDeviation), _popularity(popularity),
-		  _nbPlays(nbPlays), _themes(themes), _gameUrl(gameUrl),
-		  _openingTags(openingTags) {}
+		: _puzzleId(""), _fen(""), _moves({}), _rating(0), _ratingDeviation(0), _popularity(0), _nbPlays(0),
+		  _themes({}), _gameUrl(""), _openingTags({}) {}
+	Puzzle(string puzzleId, string fen, vector<string> moves, int rating, int ratingDeviation, int popularity,
+		   int nbPlays, vector<string> themes, string gameUrl, vector<string> openingTags)
+		: _puzzleId(puzzleId), _fen(fen), _moves(moves), _rating(rating), _ratingDeviation(ratingDeviation),
+		  _popularity(popularity), _nbPlays(nbPlays), _themes(themes), _gameUrl(gameUrl), _openingTags(openingTags) {}
 
 	// copy constructor
 	Puzzle(const Puzzle &other)
-		: _puzzleId(other._puzzleId), _fen(other._fen), _moves(other._moves),
-		  _rating(other._rating), _ratingDeviation(other._ratingDeviation),
-		  _popularity(other._popularity), _nbPlays(other._nbPlays),
-		  _themes(other._themes), _gameUrl(other._gameUrl),
-		  _openingTags(other._openingTags) {}
+		: _puzzleId(other._puzzleId), _fen(other._fen), _moves(other._moves), _rating(other._rating),
+		  _ratingDeviation(other._ratingDeviation), _popularity(other._popularity), _nbPlays(other._nbPlays),
+		  _themes(other._themes), _gameUrl(other._gameUrl), _openingTags(other._openingTags) {}
 
 	// setters
 	void setPuzzleId(const string &puzzleId) { _puzzleId = puzzleId; }
@@ -97,8 +91,7 @@ class Puzzle {
 				stream << ' ';
 			stream << p.moves()[j];
 		}
-		stream << ',' << p.rating() << ',' << p.ratingDeviation() << ','
-			   << p.popularity() << ',' << p.nbPlays() << ',';
+		stream << ',' << p.rating() << ',' << p.ratingDeviation() << ',' << p.popularity() << ',' << p.nbPlays() << ',';
 		for (size_t j = 0; j < p.themes().size(); ++j) {
 			if (j > 0)
 				stream << ' ';

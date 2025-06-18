@@ -13,8 +13,7 @@ class BinaryNode {
 
   public:
 	BinaryNode() : key(""), index(-1), left(nullptr), right(nullptr) {}
-	BinaryNode(const string &key, int index)
-		: key(key), index(index), left(nullptr), right(nullptr) {}
+	BinaryNode(const string &key, int index) : key(key), index(index), left(nullptr), right(nullptr) {}
 	BinaryNode(BinaryNode *left, BinaryNode *right, string key, int index)
 		: key(key), index(index), left(left), right(right) {}
 
