@@ -1,6 +1,9 @@
 /*
- TODO: add members information and project description
-*/
+ * Team Members: Toma Yuen, Hengli Jia, Minh Khoa Pham
+ * This project implements a hash table and an AVL tree to manage chess puzzles.
+ * The hash table is used for fast access to puzzles by their unique ID,
+ * while the AVL tree maintains a sorted order of puzzles based on their IDs.
+ */
 
 #include "AVL.h"
 #include "HashTable.h"
@@ -121,22 +124,26 @@ int main() {
 // MENU FUNCTION DEFINITIONS
 
 void menu() {
-	cout << "\nMenu Options:\n";
+	cout << "\n----------------------------------------------------------------"
+			"------\n\n";
+	cout << "Menu Options:\n";
 	cout << "I - Input data from file\n";
 	cout << "O - Output data to file\n";
 	cout << "A - Add a new puzzle\n";
 	cout << "D - Delete a puzzle\n";
-	cout << "U - Undo last deletion\n";
+	// cout << "U - Undo last deletion\n";
 	cout << "F - Find a puzzle\n";
 	cout << "L - List sorted data\n";
 	cout << "S - Show statistics\n";
 	cout << "H - Help (show this menu)\n";
 	cout << "E - Exit the program\n";
-	cout << "T - Display indented tree (hidden option)\n";
-	cout << "M - Display team members (hidden option)\n";
+	// cout << "T - Display indented tree (hidden option)\n";
+	// cout << "M - Display team members (hidden option)\n";
 }
 
 char menuInput() {
+	cout << "\n----------------------------------------------------------------"
+			"------\n";
 	cout << "\nEnter your choice: ";
 	string input;
 	getline(cin, input);
@@ -150,8 +157,7 @@ char menuInput() {
 	return '\0'; // no valid input
 }
 void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl, string inputFile) {
-	using namespace std::chrono;
-	auto start = high_resolution_clock::now();
+	auto start = chrono::high_resolution_clock::now();
 
 	// if inputFile is empty, prompt user for input
 	if (inputFile.empty()) {
@@ -245,8 +251,9 @@ void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl, string inputFile) {
 		}
 	}
 	file.close();
-	auto end = high_resolution_clock::now();
-	double seconds = duration_cast<duration<double>>(end - start).count();
+	auto end = chrono::high_resolution_clock::now();
+	double seconds =
+		chrono::duration_cast<chrono::duration<double>>(end - start).count();
 	cout << "[INFO] inputDataFile completed in " << seconds << " seconds.\n";
 }
 
@@ -608,7 +615,9 @@ void displayIndentedTree(const AVL &avl, const HashTable<Puzzle> &hashTable) {
 	printIndentedTree(avl.getRoot(), 0, hashTable);
 }
 
-void displayTeamMembers() {}
+void displayTeamMembers() {
+	cout << "Team Members: Toma Yuen, Hengli Jia, Minh Khoa Pham\n";
+}
 
 // .............................................................................
 
