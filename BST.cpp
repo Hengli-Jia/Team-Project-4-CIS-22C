@@ -90,6 +90,16 @@ bool BST::remove(const string &key) {
 	return deleted;
 }
 
+int BST::search(const std::string& key) const {
+    BinaryNode* curr = getRoot();
+    while (curr) {
+        if (key == curr->getKey()) return curr->getIndex();
+        else if (key < curr->getKey()) curr = curr->getLeft();
+        else curr = curr->getRight();
+    }
+    return -1;
+}
+
 void BST::inorderTraversal(
 	const function<void(const string &, int)> &visit) const {
 	_inorderTraversal(visit, rootPtr);

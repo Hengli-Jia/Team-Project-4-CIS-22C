@@ -23,16 +23,13 @@ using namespace std;
 void menu();
 char menuInput();
 
-void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl,
-				   string inputFile = "");
+void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl, string inputFile = "");
 void outputDataFile(const HashTable<Puzzle> &hashTable, string inputFile = "");
 
 void addItem(HashTable<Puzzle> &hashTable, AVL &avl);
-void deleteItem(HashTable<Puzzle> &hashTable, AVL &avl,
-				Stack<Puzzle> &deleteStack);
-void undoDelete(HashTable<Puzzle> &hashTable, AVL &avl,
-				Stack<Puzzle> &deleteStack);
-void findItem(const HashTable<Puzzle> &hashTable);
+void deleteItem(HashTable<Puzzle> &hashTable, AVL &avl, Stack<Puzzle> &deleteStack);
+void undoDelete(HashTable<Puzzle> &hashTable, AVL &avl, Stack<Puzzle> &deleteStack);
+void findItem(const HashTable<Puzzle> &hashTable, const AVL &avl);
 
 void listSorted(const AVL &avl, const HashTable<Puzzle> &hashTable);
 void statistics(const HashTable<Puzzle> &hashTable);
@@ -45,8 +42,7 @@ void displayTeamMembers();
 
 // HELPER FUNCTION DECLARATIONS
 int determineHashSize(string inputFile = "");
-static void printIndentedTree(BinaryNode *node, int level,
-							  const HashTable<Puzzle> &hashTable);
+static void printIndentedTree(BinaryNode *node, int level, const HashTable<Puzzle> &hashTable);
 
 // .............................................................................
 
@@ -89,7 +85,7 @@ int main() {
 			undoDelete(hashTable, avl, deleteStack);
 			break;
 		case 'F':
-			findItem(hashTable);
+			findItem(hashTable, avl);
 			break;
 		case 'L':
 			listSorted(avl, hashTable);
@@ -425,70 +421,47 @@ void addItem(HashTable<Puzzle> &hashTable, AVL &avl) {
 	}
 }
 
-void deleteItem(HashTable<Puzzle> &hashTable, AVL &avl,
-				Stack<Puzzle> &deleteStack) {
-	cout << "Delete a puzzle by PuzzleId or FEN.\n";
-	string input;
-	cout << "Enter PuzzleId (leave blank to use FEN): ";
-	getline(cin, input);
-	string key = input;
+void deleteItem(HashTable<Puzzle> &hashTable, AVL &avl, Stack<Puzzle> &deleteStack) {
+    cout << "Delete a puzzle by PuzzleId:\n";
+    string key;
+    cout << "Enter PuzzleId: ";
+    getline(cin, key);
 
-	if (key.empty()) {
-		cout << "Enter FEN: ";
-		getline(cin, key);
-	}
+    if (key.empty()) {
+        cout << "[ERROR] No PuzzleId provided.\n";
+        return;
+    }
 
-	if (key.empty()) {
-		cout << "[ERROR] No PuzzleId or FEN provided.\n";
-		return;
-	}
+    int idx = avl.search(key);
+    if (idx != -1 && idx < hashTable.getCapacity() && hashTable.getOccupiedAt(idx) == 1) {
+        Puzzle found = hashTable.getItemAt(idx);
 
-	// Try to find by PuzzleId first
-	Puzzle found;
-	bool foundById = hashTable.search(found, key);
-	if (!foundById) {
-		// Try to find by FEN (linear search)
-		for (int i = 0; i < hashTable.getCapacity(); ++i) {
-			if (hashTable.getOccupiedAt(i) == 1) {
-				Puzzle p = hashTable.getItemAt(i);
-				if (p.fen() == key) {
-					found = p;
-					foundById = true;
-					break;
-				}
-			}
-		}
-	}
+        // Remove from hash table
+        if (hashTable.remove(found, found.getKey())) {
+            cout << "[INFO] Puzzle removed from hash table.\n";
+        } else {
+            cout << "[WARN] Puzzle could not be removed from hash table.\n";
+        }
 
-	if (!foundById) {
-		cout << "[ERROR] Puzzle not found by PuzzleId or FEN.\n";
-		return;
-	}
+        // Remove from AVL
+        if (avl.remove(found.getKey())) {
+            cout << "[INFO] Puzzle removed from AVL.\n";
+        } else {
+            cout << "[WARN] Puzzle could not be removed from AVL.\n";
+        }
 
-	// Remove from hash table
-	if (hashTable.remove(found, found.getKey())) {
-		cout << "[INFO] Puzzle removed from hash table.\n";
-	} else {
-		cout << "[WARN] Puzzle could not be removed from hash table.\n";
-	}
-
-	// Remove from AVL
-	if (avl.remove(found.getKey())) {
-		cout << "[INFO] Puzzle removed from AVL.\n";
-	} else {
-		cout << "[WARN] Puzzle could not be removed from AVL.\n";
-	}
-
-	// Push to deleteStack
-	if (deleteStack.push(found)) {
-		cout << "[INFO] Puzzle pushed to deleteStack for undo.\n";
-	} else {
-		cout << "[WARN] deleteStack is full, cannot store deleted puzzle.\n";
-	}
+        // Push to deleteStack
+        if (deleteStack.push(found)) {
+            cout << "[INFO] Puzzle pushed to deleteStack for undo.\n";
+        } else {
+            cout << "[WARN] deleteStack is full, cannot store deleted puzzle.\n";
+        }
+    } else {
+        cout << "[ERROR] Puzzle not found by PuzzleId.\n";
+    }
 }
 
-void undoDelete(HashTable<Puzzle> &hashTable, AVL &avl,
-				Stack<Puzzle> &deleteStack) {
+void undoDelete(HashTable<Puzzle> &hashTable, AVL &avl, Stack<Puzzle> &deleteStack) {
 	Puzzle lastDeleted;
 	if (deleteStack.pop(lastDeleted)) {
 		if (hashTable.insert(lastDeleted)) {
@@ -513,48 +486,25 @@ void undoDelete(HashTable<Puzzle> &hashTable, AVL &avl,
 	}
 }
 
-void findItem(const HashTable<Puzzle> &hashTable) {
-	cout << "Find a puzzle by PuzzleId or FEN.\n";
-	string input;
-	cout << "Enter PuzzleId (leave blank to use FEN): ";
-	getline(cin, input);
-	string key = input;
+void findItem(const HashTable<Puzzle> &hashTable, const AVL &avl) {
+	cout << "Find a puzzle by PuzzleId:\n";
+    string key;
+    cout << "Enter PuzzleId: ";
+    getline(cin, key);
 
-	if (key.empty()) {
-		cout << "Enter FEN: ";
-		getline(cin, key);
+    if (key.empty()) {
+        cout << "[ERROR] No PuzzleId provided.\n";
+        return;
+    }
+
+    int idx = avl.search(key);
+    if (idx != -1 && idx < hashTable.getCapacity() && hashTable.getOccupiedAt(idx) == 1) {
+        Puzzle found = hashTable.getItemAt(idx);
+        cout << "[INFO] Puzzle found:\n";
+        cout << found << endl;
+    } else {
+        cout << "[ERROR] Puzzle not found by PuzzleId.\n";
 	}
-
-	if (key.empty()) {
-		cout << "[ERROR] No PuzzleId or FEN provided.\n";
-		return;
-	}
-
-	// Try to find by PuzzleId first
-	Puzzle found;
-	bool foundById = hashTable.search(found, key);
-	if (!foundById) {
-		// Try to find by FEN (linear search)
-		for (int i = 0; i < hashTable.getCapacity(); ++i) {
-			if (hashTable.getOccupiedAt(i) == 1) {
-				Puzzle p = hashTable.getItemAt(i);
-				if (p.fen() == key) {
-					found = p;
-					foundById = true;
-					break;
-				}
-			}
-		}
-	}
-
-	if (!foundById) {
-		cout << "[ERROR] Puzzle not found by PuzzleId or FEN.\n";
-		return;
-	}
-
-	// Display the found puzzle
-	cout << "[INFO] Puzzle found:\n";
-	cout << found << endl;
 }
 
 void listSorted(const AVL &avl, const HashTable<Puzzle> &hashTable) {

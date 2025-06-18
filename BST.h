@@ -21,8 +21,8 @@ class BST : public BinaryTree {
 	virtual ~BST() { this->_clear(rootPtr); }
 	bool insert(const string &key, int index);
 	bool remove(const string &key);
-	void
-	inorderTraversal(const function<void(const string &, int)> &visit) const;
+	int search(const std::string& key) const;
+	void inorderTraversal(const function<void(const string &, int)> &visit) const;
 	void indentedTree(const function<void(const string &, int)> &visit) const;
 	void clear();
 };
