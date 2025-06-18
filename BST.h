@@ -10,10 +10,9 @@ class BST : public BinaryTree {
   protected:
 	BinaryNode *_insert(BinaryNode *, const string &key, int index);
 	bool _delete(const string &key, BinaryNode *, bool &);
-	void _inorderTraversal(const function<void(const string &, int)> &visit,
-						   BinaryNode *nodePtr) const;
-	void _indentedTree(const function<void(const string &, int)> &visit,
-					   BinaryNode *nodePtr, int level) const;
+	int _search(BinaryNode *node, const std::string &key) const;
+	void _inorderTraversal(const function<void(const string &, int)> &visit, BinaryNode *nodePtr) const;
+	void _indentedTree(const function<void(const string &, int)> &visit, BinaryNode *nodePtr, int level) const;
 	void _clear(BinaryNode *node);
 
   public:

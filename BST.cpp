@@ -53,6 +53,13 @@ bool BST::_delete(const string &key, BinaryNode *nodePtr, bool &deleted) {
 	}
 }
 
+int BST::_search(BinaryNode *node, const std::string &key) const {
+    if (!node) return -1;
+    if (key == node->getKey()) return node->getIndex();
+    else if (key < node->getKey()) return _search(node->getLeft(), key);
+    else return _search(node->getRight(), key);
+}
+
 void BST::_inorderTraversal(const function<void(const string &, int)> &visit,
 							BinaryNode *nodePtr) const {
 	if (nodePtr) {
@@ -91,13 +98,7 @@ bool BST::remove(const string &key) {
 }
 
 int BST::search(const std::string& key) const {
-    BinaryNode* curr = getRoot();
-    while (curr) {
-        if (key == curr->getKey()) return curr->getIndex();
-        else if (key < curr->getKey()) curr = curr->getLeft();
-        else curr = curr->getRight();
-    }
-    return -1;
+    return _search(getRoot(), key);
 }
 
 void BST::inorderTraversal(
