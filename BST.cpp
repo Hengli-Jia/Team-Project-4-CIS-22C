@@ -99,8 +99,6 @@ int BST::search(const std::string &key) const {
 			curr = curr->getRight();
 	}
 	return -1;
-int BST::search(const std::string& key) const {
-    return _search(getRoot(), key);
 }
 
 void BST::inorderTraversal(const function<void(const string &, int)> &visit) const {

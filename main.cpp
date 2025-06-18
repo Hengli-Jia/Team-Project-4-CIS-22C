@@ -559,29 +559,53 @@ void displayTeamMembers() { cout << "Team Members: Toma Yuen, Hengli Jia, Minh K
 // OTHER FUNCTION DEFINITIONS
 
 int determineHashSize(string inputFile) {
-    if (inputFile.empty()) {
-        cout << "Enter input file name: ";
-        getline(cin, inputFile);
-    }
+	// if inputFile is empty, prompt user for input
+	if (inputFile.empty()) {
+		cout << "Enter input file name: ";
+		getline(cin, inputFile);
+	}
 
-    ifstream file(inputFile);
-    if (!file.is_open()) {
-        cerr << "Failed to open input file: " << inputFile << endl;
-        return DEFAULT_HASH_SIZE;
-    }
+	// open the input file
+	ifstream file(inputFile);
+	if (!file.is_open()) {
+		cerr << "Failed to open input file: " << inputFile << endl;
+		return DEFAULT_HASH_SIZE;
+	}
 
-    string line;
-    int lineCount = 0;
-    getline(file, line); // skip header
-    while (getline(file, line)) {
-        ++lineCount;
-    }
-    file.close();
+	string line;
+	int lineCount = 0;
+	getline(file, line); // skip header
+	while (getline(file, line)) {
+		++lineCount;
+	}
+	file.close(); // CLOSE after counting
 
-    HashTable<int> ht;
-    int hashSize = ht.nextPrime(lineCount * 2);
+	// reopen the file for actual reading
+	file.open(inputFile);
+	if (!file.is_open()) {
+		cerr << "Failed to reopen input file: " << inputFile << endl;
+		return DEFAULT_HASH_SIZE;
+	}
 
-    return hashSize;
+	// determine hash size using a prime number
+	auto isPrime = [](int n) {
+		if (n <= 1)
+			return false;
+		if (n <= 3)
+			return true;
+		if (n % 2 == 0 || n % 3 == 0)
+			return false;
+		for (int i = 5; i * i <= n; i += 6) {
+			if (n % i == 0 || n % (i + 2) == 0)
+				return false;
+		}
+		return true;
+	};
+	int hashSize = lineCount * 2;
+	while (!isPrime(hashSize))
+		++hashSize;
+
+	return hashSize;
 }
 
 // Helper for indented AVL display
