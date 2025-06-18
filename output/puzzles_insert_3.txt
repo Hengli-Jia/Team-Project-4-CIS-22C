@@ -1,0 +1,6 @@
+PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags
+00008,r6k/pp2r2p/4Rp1Q/3p4/8/1N1P2R1/PqP2bPP/7K b - - 0 24,f2g3 e6e7 b2b1 b3c1 b1c1 h6c1,1798,77,95,8020,crushing hangingPiece long middlegame
+0325W,r4r2/1p3pkp/p5p1/3R1N1Q/3P4/8/P1q2P2/3R2K1 b - - 3 25,"g6f5, d5c5, c2e4, h5g5, g7h8, g5f6",2847,106,86,251,crushing endgame long,https://lichess.org/e9AY2m5j/black#50,
+0134lC 3r3r/pQNk1ppp/1qnb1n2/1B6/8/8/PPP3PP/3R1R1K w - - 5 19 d1d6 d7d6 b7b6 a7b6 1342 75 94 3693 advantage hangingPiece middlegame short https://lichess.org/vaqz2bx6#37
+0112h8,2r3k1/2r4p/4p1p1/1p1q1pP1/p1bP1P1Q,P6R/5B2
+0125516cr,8/3B2pp/p5k1/2p3P1/1p1p1K2/8/1P6/8 b - - 0 38,c5c4 d7e8,1713,79,93,1374,bishopEndgame endgame mate mateIn1 oneMove,https://lichess.org/7FFNwibw/black#76,,

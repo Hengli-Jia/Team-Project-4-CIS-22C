@@ -64,7 +64,8 @@ template <typename T> int HashTable<T>::nextPrime(int n) const {
 }
 
 // Insert a Puzzle item into the hash table
-template <typename T> bool HashTable<T>::insert(const T &item) {
+// Returns the index where the item was inserted, or -1 if duplicate or error
+template <typename T> int HashTable<T>::insert(const T &item) {
 	// Rehash if load factor >= 75%
 	if (getLoadFactor() >= 75.0) {
 		rehash();
@@ -85,16 +86,16 @@ template <typename T> bool HashTable<T>::insert(const T &item) {
 			table[currentIndex].setOccupied(1);
 			table[currentIndex].setCollisions(collisions);
 			size++;
-			return true;
+			return currentIndex;
 		}
 		// If duplicate key, do not insert
 		if (table[currentIndex].getOccupied() == 1 &&
 			table[currentIndex].getItem().getKey() == key) {
-			return false;
+			return -1;
 		}
 		collisions++;
 	}
-	return false;
+	return -1;
 }
 
 // Remove a Puzzle item by key, output the removed item

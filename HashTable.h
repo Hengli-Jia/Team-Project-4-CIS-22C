@@ -37,7 +37,9 @@ template <typename T> class HashTable {
 	bool isEmpty() const { return size == 0; }
 
 	// Insert an item into the hash table
-	bool insert(const T &item);
+	// Returns the index where the item was inserted, or -1 if duplicate or
+	// error
+	int insert(const T &item);
 	// Remove an item by key, output the removed item
 	bool remove(T &itemOut, const string &key);
 	// Search for an item by key, output the found item

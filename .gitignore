@@ -2,4 +2,16 @@
 *.exe
 .clang-format
 main.exe
-output/
+output/*
+!output/puzzles_main.txt
+!output/puzzles_main_hashtable.txt
+!output/puzzles_insert_1.txt
+!output/puzzles_merged_1.txt
+!output/puzzles_insert_2.txt
+!output/puzzles_merged_2.txt
+!output/puzzles_insert_3.txt
+!output/puzzles_merged_3.txt
+!output/puzzles_insert_4.txt
+!output/puzzles_merged_4.txt
+!output/puzzles_insert_5.txt
+!output/puzzles_merged_5.txt

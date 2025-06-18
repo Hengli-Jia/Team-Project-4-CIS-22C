@@ -205,6 +205,8 @@ void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl, string inputFile) {
 		if (puzzleId.empty() || fen.empty() || moves.empty() ||
 			rating.empty() || ratingDeviation.empty() || popularity.empty() ||
 			nbPlays.empty() || themes.empty() || gameUrl.empty()) {
+			cerr << "[ERROR] Missing required fields in line " << lineNum
+				 << ": " << line << endl;
 			continue; // skip malformed line
 		}
 
@@ -232,19 +234,9 @@ void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl, string inputFile) {
 						  stoi(ratingDeviation), stoi(popularity),
 						  stoi(nbPlays), themesVec, gameUrl, openingTagsVec);
 			// Insert into hash table first
-			if (hashTable.insert(puzzle)) {
-				// Find index in hash table
-				int idx = -1;
-				for (int i = 0; i < hashTable.getCapacity(); ++i) {
-					if (hashTable.getOccupiedAt(i) == 1 &&
-						hashTable.getItemAt(i).getKey() == puzzle.getKey()) {
-						idx = i;
-						break;
-					}
-				}
-				if (idx != -1) {
-					avl.insert(puzzle.getKey(), idx);
-				}
+			int idx = hashTable.insert(puzzle);
+			if (idx != -1) {
+				avl.insert(puzzle.getKey(), idx);
 			}
 		} catch (const exception &e) {
 			cerr << "[ERROR] Failed to parse line " << lineNum << ": " << line
