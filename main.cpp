@@ -16,9 +16,6 @@
 
 using namespace std;
 
-HashTable<Puzzle> *globalHash; // Toma: I don't think a global variable should
-							   // be used like this
-
 // .............................................................................
 
 // MENU FUNCTION DECLARATIONS
@@ -26,47 +23,49 @@ HashTable<Puzzle> *globalHash; // Toma: I don't think a global variable should
 void menu();
 char menuInput();
 
-void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl, string inputFile = "");
+void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl,
+				   string inputFile = "");
 void outputDataFile(const HashTable<Puzzle> &hashTable, string inputFile = "");
 
-void addItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl);
-void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl, Stack<Puzzle>& deleteStack);
-void undoDelete(HashTable<Puzzle>& hashTable, AVL<Puzzle>& avl, Stack<Puzzle>& deleteStack);
-void findItem();
+void addItem(HashTable<Puzzle> &hashTable, AVL &avl);
+void deleteItem(HashTable<Puzzle> &hashTable, AVL &avl,
+				Stack<Puzzle> &deleteStack);
+void undoDelete(HashTable<Puzzle> &hashTable, AVL &avl,
+				Stack<Puzzle> &deleteStack);
+void findItem(const HashTable<Puzzle> &hashTable);
 
-void listSorted(const AVL<Puzzle> &avl);
+void listSorted(const AVL &avl, const HashTable<Puzzle> &hashTable);
 void statistics(const HashTable<Puzzle> &hashTable);
 char attemptExit();
 
 // HIDDEN MENU OPTIONS
 
-void displayIndentedTree(const AVL<Puzzle> &avl);
+void displayIndentedTree(const AVL &avl, const HashTable<Puzzle> &hashTable);
 void displayTeamMembers();
 
 // HELPER FUNCTION DECLARATIONS
 int determineHashSize(string inputFile = "");
-static void printIndentedTree(BinaryNode<Puzzle> *node, int level);
+static void printIndentedTree(BinaryNode *node, int level,
+							  const HashTable<Puzzle> &hashTable);
 
 // .............................................................................
 
 // MAIN FUNCTION
 
 int main() {
-	string inputFile = "puzzles_database.txt";
-	string outputFile = "puzzles_database_hashtable.txt";
+	string inputFile = "puzzles_main.txt";
+	string outputFile = "puzzles_main_hashtable.txt";
 
 	int hashSize = determineHashSize(inputFile);
 
 	// Initialize Hash Table， AVL and Stack
 	HashTable<Puzzle> hashTable(hashSize);
-	AVL<Puzzle> avl;
+	AVL avl;
 	Stack<Puzzle> deleteStack;
 
 	// File I/O
 	inputDataFile(hashTable, avl, inputFile);
 	outputDataFile(hashTable, outputFile);
-
-	globalHash = &hashTable;
 
 	menu();
 	char choice;
@@ -87,13 +86,13 @@ int main() {
 			deleteItem(hashTable, avl, deleteStack);
 			break;
 		case 'U': // For undo delete
-    		undoDelete(hashTable, avl, deleteStack);
-    		break;
+			undoDelete(hashTable, avl, deleteStack);
+			break;
 		case 'F':
-			findItem();
+			findItem(hashTable);
 			break;
 		case 'L':
-			listSorted(avl);
+			listSorted(avl, hashTable);
 			break;
 		case 'S':
 			statistics(hashTable);
@@ -105,7 +104,7 @@ int main() {
 			choice = attemptExit();
 			break;
 		case 'T': // hidden option: display indented tree
-			displayIndentedTree(avl);
+			displayIndentedTree(avl, hashTable);
 			break;
 		case 'M': // hidden option: display team members
 			displayTeamMembers();
@@ -150,8 +149,7 @@ char menuInput() {
 	}
 	return '\0'; // no valid input
 }
-void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl,
-				   string inputFile) {
+void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl, string inputFile) {
 	using namespace std::chrono;
 	auto start = high_resolution_clock::now();
 
@@ -233,8 +231,21 @@ void inputDataFile(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl,
 			Puzzle puzzle(puzzleId, fen, movesVec, stoi(rating),
 						  stoi(ratingDeviation), stoi(popularity),
 						  stoi(nbPlays), themesVec, gameUrl, openingTagsVec);
-			hashTable.insert(puzzle);
-			avl.insert(puzzle);
+			// Insert into hash table first
+			if (hashTable.insert(puzzle)) {
+				// Find index in hash table
+				int idx = -1;
+				for (int i = 0; i < hashTable.getCapacity(); ++i) {
+					if (hashTable.getOccupiedAt(i) == 1 &&
+						hashTable.getItemAt(i).getKey() == puzzle.getKey()) {
+						idx = i;
+						break;
+					}
+				}
+				if (idx != -1) {
+					avl.insert(puzzle.getKey(), idx);
+				}
+			}
 		} catch (const exception &e) {
 			cerr << "[ERROR] Failed to parse line " << lineNum << ": " << line
 				 << " with error: " << e.what() << endl;
@@ -275,7 +286,7 @@ void outputDataFile(const HashTable<Puzzle> &hashTable, string outputFile) {
 	}
 }
 
-void addItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl) {
+void addItem(HashTable<Puzzle> &hashTable, AVL &avl) {
 	cout << "Add a new puzzle:\n";
 	cout << "Enter full line (CSV format) or leave blank to input fields "
 			"one by one:\n";
@@ -381,10 +392,25 @@ void addItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl) {
 							 popularityInt, nbPlaysInt, themesVec, gameUrl,
 							 openingTagsVec);
 
-			hashTable.insert(newPuzzle);
-			avl.insert(newPuzzle);
-			cout << "Puzzle added successfully!\n";
-			valid = true;
+			// Insert into hash table first
+			if (hashTable.insert(newPuzzle)) {
+				// Find index in hash table
+				int idx = -1;
+				for (int i = 0; i < hashTable.getCapacity(); ++i) {
+					if (hashTable.getOccupiedAt(i) == 1 &&
+						hashTable.getItemAt(i).getKey() == newPuzzle.getKey()) {
+						idx = i;
+						break;
+					}
+				}
+				if (idx != -1) {
+					avl.insert(newPuzzle.getKey(), idx);
+				}
+				cout << "Puzzle added successfully!\n";
+				valid = true;
+			} else {
+				cout << "[ERROR] Failed to insert puzzle into hash table.\n";
+			}
 		} catch (const invalid_argument &) {
 			cout << "[ERROR] One or more numeric fields are not valid "
 					"integers. Please re-enter.\n";
@@ -407,8 +433,8 @@ void addItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl) {
 	}
 }
 
-
-void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl, Stack<Puzzle>& deleteStack) {
+void deleteItem(HashTable<Puzzle> &hashTable, AVL &avl,
+				Stack<Puzzle> &deleteStack) {
 	cout << "Delete a puzzle by PuzzleId or FEN.\n";
 	string input;
 	cout << "Enter PuzzleId (leave blank to use FEN): ";
@@ -463,24 +489,39 @@ void deleteItem(HashTable<Puzzle> &hashTable, AVL<Puzzle> &avl, Stack<Puzzle>& d
 
 	// Push to deleteStack
 	if (deleteStack.push(found)) {
-    	cout << "[INFO] Puzzle pushed to deleteStack for undo.\n";
+		cout << "[INFO] Puzzle pushed to deleteStack for undo.\n";
 	} else {
-    	cout << "[WARN] deleteStack is full, cannot store deleted puzzle.\n";
-	}	
+		cout << "[WARN] deleteStack is full, cannot store deleted puzzle.\n";
+	}
 }
 
-void undoDelete(HashTable<Puzzle>& hashTable, AVL<Puzzle>& avl, Stack<Puzzle>& deleteStack) {
-    Puzzle lastDeleted;
-    if (deleteStack.pop(lastDeleted)) {
-        hashTable.insert(lastDeleted);
-        avl.insert(lastDeleted);
-        std::cout << "Undo successful. Puzzle restored.\n";
-    } else {
-        std::cout << "No deletion to undo.\n";
-    }
+void undoDelete(HashTable<Puzzle> &hashTable, AVL &avl,
+				Stack<Puzzle> &deleteStack) {
+	Puzzle lastDeleted;
+	if (deleteStack.pop(lastDeleted)) {
+		if (hashTable.insert(lastDeleted)) {
+			// Find index in hash table
+			int idx = -1;
+			for (int i = 0; i < hashTable.getCapacity(); ++i) {
+				if (hashTable.getOccupiedAt(i) == 1 &&
+					hashTable.getItemAt(i).getKey() == lastDeleted.getKey()) {
+					idx = i;
+					break;
+				}
+			}
+			if (idx != -1) {
+				avl.insert(lastDeleted.getKey(), idx);
+			}
+			std::cout << "Undo successful. Puzzle restored.\n";
+		} else {
+			std::cout << "[ERROR] Failed to restore puzzle to hash table.\n";
+		}
+	} else {
+		std::cout << "No deletion to undo.\n";
+	}
 }
 
-void findItem() {
+void findItem(const HashTable<Puzzle> &hashTable) {
 	cout << "Find a puzzle by PuzzleId or FEN.\n";
 	string input;
 	cout << "Enter PuzzleId (leave blank to use FEN): ";
@@ -499,12 +540,12 @@ void findItem() {
 
 	// Try to find by PuzzleId first
 	Puzzle found;
-	bool foundById = globalHash->search(found, key);
+	bool foundById = hashTable.search(found, key);
 	if (!foundById) {
 		// Try to find by FEN (linear search)
-		for (int i = 0; i < globalHash->getCapacity(); ++i) {
-			if (globalHash->getOccupiedAt(i) == 1) {
-				Puzzle p = globalHash->getItemAt(i);
+		for (int i = 0; i < hashTable.getCapacity(); ++i) {
+			if (hashTable.getOccupiedAt(i) == 1) {
+				Puzzle p = hashTable.getItemAt(i);
 				if (p.fen() == key) {
 					found = p;
 					foundById = true;
@@ -524,13 +565,15 @@ void findItem() {
 	cout << found << endl;
 }
 
-void listSorted(const AVL<Puzzle> &avl) {
+void listSorted(const AVL &avl, const HashTable<Puzzle> &hashTable) {
 	cout << "Listing all puzzles sorted by PuzzleId (AVL inorder traversal):\n";
 	// Helper function to print each puzzle
-	auto printPuzzle = [](string key) {
-		Puzzle puzzleOut;
-		globalHash->search(puzzleOut, key);
-		cout << puzzleOut << endl;
+	auto printPuzzle = [&](const string &, int idx) {
+		if (idx >= 0 && idx < hashTable.getCapacity() &&
+			hashTable.getOccupiedAt(idx) == 1) {
+			Puzzle puzzleOut = hashTable.getItemAt(idx);
+			cout << puzzleOut << endl;
+		}
 	};
 	avl.inorderTraversal(printPuzzle);
 }
@@ -568,9 +611,9 @@ char attemptExit() {
 
 // HIDDEN MENU OPTIONS
 
-void displayIndentedTree(const AVL<Puzzle> &avl) {
+void displayIndentedTree(const AVL &avl, const HashTable<Puzzle> &hashTable) {
 	cout << "Indented AVL (by PuzzleId):\n";
-	printIndentedTree(avl.getRoot(), 0);
+	printIndentedTree(avl.getRoot(), 0, hashTable);
 }
 
 void displayTeamMembers() {}
@@ -630,15 +673,20 @@ int determineHashSize(string inputFile) {
 }
 
 // Helper for indented AVL display
-static void printIndentedTree(BinaryNode<Puzzle> *node, int level) {
+static void printIndentedTree(BinaryNode *node, int level,
+							  const HashTable<Puzzle> &hashTable) {
 	if (!node)
 		return;
 	for (int i = 0; i < level; ++i)
 		cout << ".";
 	cout << (level + 1) << ").";
-	Puzzle puzzleOut;
-	globalHash->search(puzzleOut, node->getKey());
-	cout << " " << puzzleOut.puzzleId() << endl;
-	printIndentedTree(node->getLeft(), level + 1);
-	printIndentedTree(node->getRight(), level + 1);
+	if (node->getIndex() >= 0 && node->getIndex() < hashTable.getCapacity() &&
+		hashTable.getOccupiedAt(node->getIndex()) == 1) {
+		Puzzle puzzleOut = hashTable.getItemAt(node->getIndex());
+		cout << " " << puzzleOut.puzzleId() << endl;
+	} else {
+		cout << " [Invalid index]" << endl;
+	}
+	printIndentedTree(node->getLeft(), level + 1, hashTable);
+	printIndentedTree(node->getRight(), level + 1, hashTable);
 }

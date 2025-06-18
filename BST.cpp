@@ -4,25 +4,22 @@
 using std::function;
 using std::string;
 
-template <typename T>
-BinaryNode<T> *BST<T>::_insert(BinaryNode<T> *nodePtr, BinaryNode<T> *newPtr) {
+BinaryNode *BST::_insert(BinaryNode *nodePtr, const string &key, int index) {
 	if (!nodePtr) {
 		++count;
-		return newPtr;
+		return new BinaryNode(key, index);
 	}
-	if (newPtr->getKey() < nodePtr->getKey()) {
-		nodePtr->setLeft(_insert(nodePtr->getLeft(), newPtr));
-	} else if (newPtr->getKey() > nodePtr->getKey()) {
-		nodePtr->setRight(_insert(nodePtr->getRight(), newPtr));
+	if (key < nodePtr->getKey()) {
+		nodePtr->setLeft(_insert(nodePtr->getLeft(), key, index));
+	} else if (key > nodePtr->getKey()) {
+		nodePtr->setRight(_insert(nodePtr->getRight(), key, index));
 	} else {
-		delete newPtr;
 		return nodePtr;
 	}
 	return nodePtr;
 }
 
-template <typename T>
-bool BST<T>::_delete(const string &key, BinaryNode<T> *nodePtr, bool &deleted) {
+bool BST::_delete(const string &key, BinaryNode *nodePtr, bool &deleted) {
 	if (!nodePtr)
 		return false;
 	if (key < nodePtr->getKey()) {
@@ -32,42 +29,41 @@ bool BST<T>::_delete(const string &key, BinaryNode<T> *nodePtr, bool &deleted) {
 	} else {
 		deleted = true;
 		--count;
-		if (nodePtr -> isLeaf()) {
+		if (nodePtr->isLeaf()) {
 			delete nodePtr;
 			nodePtr = nullptr;
 		} else if (!nodePtr->getLeft()) {
-			BinaryNode<T> *temp = nodePtr;
+			BinaryNode *temp = nodePtr;
 			nodePtr = nodePtr->getRight();
 			delete temp;
 		} else if (!nodePtr->getRight()) {
-			BinaryNode<T> *temp = nodePtr;
+			BinaryNode *temp = nodePtr;
 			nodePtr = nodePtr->getLeft();
 			delete temp;
 		} else {
-			BinaryNode<T> *succ = nodePtr->getRight();
+			BinaryNode *succ = nodePtr->getRight();
 			while (succ->getLeft()) {
 				succ = succ->getLeft();
 			}
 			nodePtr->setKey(succ->getKey());
+			nodePtr->setIndex(succ->getIndex());
 			_delete(succ->getKey(), nodePtr->getRight(), deleted);
 		}
 		return true;
 	}
 }
 
-template <typename T>
-void BST<T>::_inorderTraversal(const function<void(const string &)> &visit,
-							   BinaryNode<T> *nodePtr) const {
+void BST::_inorderTraversal(const function<void(const string &, int)> &visit,
+							BinaryNode *nodePtr) const {
 	if (nodePtr) {
 		_inorderTraversal(visit, nodePtr->getLeft());
-		visit(nodePtr->getKey());
+		visit(nodePtr->getKey(), nodePtr->getIndex());
 		_inorderTraversal(visit, nodePtr->getRight());
 	}
 }
 
-template <typename T>
-void BST<T>::_indentedTree(const function<void(const string &, int)> &visit,
-						   BinaryNode<T> *nodePtr, int level) const {
+void BST::_indentedTree(const function<void(const string &, int)> &visit,
+						BinaryNode *nodePtr, int level) const {
 	if (nodePtr) {
 		_indentedTree(visit, nodePtr->getRight(), level + 1);
 		visit(nodePtr->getKey(), level);
@@ -75,8 +71,7 @@ void BST<T>::_indentedTree(const function<void(const string &, int)> &visit,
 	}
 }
 
-template <typename T> 
-void BST<T>::_clear(BinaryNode<T> *node) {
+void BST::_clear(BinaryNode *node) {
 	if (node) {
 		_clear(node->getLeft());
 		_clear(node->getRight());
@@ -84,32 +79,27 @@ void BST<T>::_clear(BinaryNode<T> *node) {
 	}
 }
 
-template <typename T> 
-bool BST<T>::insert(const T &inputData) {
-	BinaryNode<T> *newNode = new BinaryNode<T>(inputData);
-	rootPtr = _insert(rootPtr, newNode);
+bool BST::insert(const string &key, int index) {
+	rootPtr = _insert(rootPtr, key, index);
 	return true;
 }
 
-template <typename T> 
-bool BST<T>::remove(const string &key) {
+bool BST::remove(const string &key) {
 	bool deleted = false;
 	_delete(key, rootPtr, deleted);
 	return deleted;
 }
 
-template <typename T>
-void BST<T>::inorderTraversal(const function<void(const string &)> &visit) const {
+void BST::inorderTraversal(
+	const function<void(const string &, int)> &visit) const {
 	_inorderTraversal(visit, rootPtr);
 }
 
-template <typename T>
-void BST<T>::indentedTree(const function<void(const string &, int)> &visit) const {
+void BST::indentedTree(const function<void(const string &, int)> &visit) const {
 	_indentedTree(visit, rootPtr, 0);
 }
 
-template <typename T> 
-void BST<T>::clear() {
+void BST::clear() {
 	_clear(rootPtr);
 	rootPtr = nullptr;
 	count = 0;

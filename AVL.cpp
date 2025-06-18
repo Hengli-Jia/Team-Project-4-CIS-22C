@@ -2,185 +2,182 @@
 #include "AVL.h"
 #include <algorithm>
 
-// Get height of node
-template <typename T> int AVL<T>::_getHeight(AVLNode<T> *node) const {
+int AVL::_getHeight(AVLNode *node) const {
 	return node ? node->getHeight() : 0;
 }
 
-// Get balance factor
-template <typename T> int AVL<T>::_getBalance(AVLNode<T> *node) const {
+int AVL::_getBalance(AVLNode *node) const {
 	if (!node)
 		return 0;
-	return _getHeight(static_cast<AVLNode<T> *>(node->getLeft())) -
-		   _getHeight(static_cast<AVLNode<T> *>(node->getRight()));
+	return _getHeight(static_cast<AVLNode *>(node->getLeft())) -
+		   _getHeight(static_cast<AVLNode *>(node->getRight()));
 }
 
-// Right rotation
-template <typename T> AVLNode<T> *AVL<T>::_rotateRight(AVLNode<T> *y) {
-	AVLNode<T> *x = static_cast<AVLNode<T> *>(y->getLeft());
-	AVLNode<T> *T2 = static_cast<AVLNode<T> *>(x->getRight());
+AVLNode *AVL::_rotateRight(AVLNode *y) {
+	AVLNode *x = static_cast<AVLNode *>(y->getLeft());
+	AVLNode *T2 = static_cast<AVLNode *>(x->getRight());
 	x->setRight(y);
 	y->setLeft(T2);
-	y->setHeight(
-		std::max(_getHeight(static_cast<AVLNode<T> *>(y->getLeft())),
-				 _getHeight(static_cast<AVLNode<T> *>(y->getRight()))) +
-		1);
-	x->setHeight(
-		std::max(_getHeight(static_cast<AVLNode<T> *>(x->getLeft())),
-				 _getHeight(static_cast<AVLNode<T> *>(x->getRight()))) +
-		1);
+	y->setHeight(std::max(_getHeight(static_cast<AVLNode *>(y->getLeft())),
+						  _getHeight(static_cast<AVLNode *>(y->getRight()))) +
+				 1);
+	x->setHeight(std::max(_getHeight(static_cast<AVLNode *>(x->getLeft())),
+						  _getHeight(static_cast<AVLNode *>(x->getRight()))) +
+				 1);
 	return x;
 }
 
-// Left rotation
-template <typename T> AVLNode<T> *AVL<T>::_rotateLeft(AVLNode<T> *x) {
-	AVLNode<T> *y = static_cast<AVLNode<T> *>(x->getRight());
-	AVLNode<T> *T2 = static_cast<AVLNode<T> *>(y->getLeft());
+AVLNode *AVL::_rotateLeft(AVLNode *x) {
+	AVLNode *y = static_cast<AVLNode *>(x->getRight());
+	AVLNode *T2 = static_cast<AVLNode *>(y->getLeft());
 	y->setLeft(x);
 	x->setRight(T2);
-	x->setHeight(
-		std::max(_getHeight(static_cast<AVLNode<T> *>(x->getLeft())),
-				 _getHeight(static_cast<AVLNode<T> *>(x->getRight()))) +
-		1);
-	y->setHeight(
-		std::max(_getHeight(static_cast<AVLNode<T> *>(y->getLeft())),
-				 _getHeight(static_cast<AVLNode<T> *>(y->getRight()))) +
-		1);
+	x->setHeight(std::max(_getHeight(static_cast<AVLNode *>(x->getLeft())),
+						  _getHeight(static_cast<AVLNode *>(x->getRight()))) +
+				 1);
+	y->setHeight(std::max(_getHeight(static_cast<AVLNode *>(y->getLeft())),
+						  _getHeight(static_cast<AVLNode *>(y->getRight()))) +
+				 1);
 	return y;
 }
 
 // Insert
-template <typename T>
-AVLNode<T> *AVL<T>::_insert(AVLNode<T> *node, const T &data) {
+// node: current node, key: puzzle key, index: hash table index
+// Returns new root after insertion
+
+AVLNode *AVL::_insert(AVLNode *node, const string &key, int index) {
 	if (!node) {
 		++this->count;
-		return new AVLNode<T>(data);
+		return new AVLNode(key, index);
 	}
-	if (data.getKey() < node->getKey()) {
+	if (key < node->getKey()) {
 		node->setLeft(
-			_insert(static_cast<AVLNode<T> *>(node->getLeft()), data));
-	} else if (data.getKey() > node->getKey()) {
+			_insert(static_cast<AVLNode *>(node->getLeft()), key, index));
+	} else if (key > node->getKey()) {
 		node->setRight(
-			_insert(static_cast<AVLNode<T> *>(node->getRight()), data));
+			_insert(static_cast<AVLNode *>(node->getRight()), key, index));
 	} else {
-		return node; // duplicate keys not allowed
+		return node;
 	}
 	node->setHeight(
-		std::max(_getHeight(static_cast<AVLNode<T> *>(node->getLeft())),
-				 _getHeight(static_cast<AVLNode<T> *>(node->getRight()))) +
+		std::max(_getHeight(static_cast<AVLNode *>(node->getLeft())),
+				 _getHeight(static_cast<AVLNode *>(node->getRight()))) +
 		1);
 	int balance = _getBalance(node);
 	// Left Left
-	if (balance > 1 && data.getKey() < node->getLeft()->getKey())
+	if (balance > 1 && key < node->getLeft()->getKey())
 		return _rotateRight(node);
 	// Right Right
-	if (balance < -1 && data.getKey() > node->getRight()->getKey())
+	if (balance < -1 && key > node->getRight()->getKey())
 		return _rotateLeft(node);
 	// Left Right
-	if (balance > 1 && data.getKey() > node->getLeft()->getKey()) {
-		node->setLeft(_rotateLeft(static_cast<AVLNode<T> *>(node->getLeft())));
+	if (balance > 1 && key > node->getLeft()->getKey()) {
+		node->setLeft(_rotateLeft(static_cast<AVLNode *>(node->getLeft())));
 		return _rotateRight(node);
 	}
 	// Right Left
-	if (balance < -1 && data.getKey() < node->getRight()->getKey()) {
-		node->setRight(
-			_rotateRight(static_cast<AVLNode<T> *>(node->getRight())));
+	if (balance < -1 && key < node->getRight()->getKey()) {
+		node->setRight(_rotateRight(static_cast<AVLNode *>(node->getRight())));
 		return _rotateLeft(node);
 	}
 	return node;
 }
 
-template <typename T> bool AVL<T>::insert(const T &data) {
-	this->rootPtr = _insert(static_cast<AVLNode<T> *>(this->rootPtr), data);
+bool AVL::insert(const string &key, int index) {
+	this->rootPtr = _insert(static_cast<AVLNode *>(this->rootPtr), key, index);
 	return true;
 }
 
 // Remove (with rebalancing)
-template <typename T>
-AVLNode<T> *AVL<T>::_remove(AVLNode<T> *node, const string &key,
-							bool &deleted) {
+AVLNode *AVL::_remove(AVLNode *node, const string &key, bool &deleted) {
 	if (!node)
 		return nullptr;
 	if (key < node->getKey()) {
 		node->setLeft(
-			_remove(static_cast<AVLNode<T> *>(node->getLeft()), key, deleted));
+			_remove(static_cast<AVLNode *>(node->getLeft()), key, deleted));
 	} else if (key > node->getKey()) {
 		node->setRight(
-			_remove(static_cast<AVLNode<T> *>(node->getRight()), key, deleted));
+			_remove(static_cast<AVLNode *>(node->getRight()), key, deleted));
 	} else {
 		deleted = true;
-		--this->count;
 		if (!node->getLeft() || !node->getRight()) {
-			AVLNode<T> *temp =
-				node->getLeft() ? static_cast<AVLNode<T> *>(node->getLeft())
-								: static_cast<AVLNode<T> *>(node->getRight());
-			delete node;
-			return temp;
+			AVLNode *temp = node->getLeft()
+								? static_cast<AVLNode *>(node->getLeft())
+								: static_cast<AVLNode *>(node->getRight());
+			if (!temp) {
+				temp = node;
+				node = nullptr;
+			} else {
+				*node = *temp;
+			}
+			delete temp;
+			--this->count;
 		} else {
-			AVLNode<T> *succ = static_cast<AVLNode<T> *>(node->getRight());
-			while (succ->getLeft())
-				succ = static_cast<AVLNode<T> *>(succ->getLeft());
+			AVLNode *succ = static_cast<AVLNode *>(node->getRight());
+			while (succ->getLeft()) {
+				succ = static_cast<AVLNode *>(succ->getLeft());
+			}
 			node->setKey(succ->getKey());
-			node->setRight(_remove(static_cast<AVLNode<T> *>(node->getRight()),
+			node->setIndex(succ->getIndex());
+			node->setRight(_remove(static_cast<AVLNode *>(node->getRight()),
 								   succ->getKey(), deleted));
 		}
 	}
+	if (!node)
+		return node;
 	node->setHeight(
-		std::max(_getHeight(static_cast<AVLNode<T> *>(node->getLeft())),
-				 _getHeight(static_cast<AVLNode<T> *>(node->getRight()))) +
+		std::max(_getHeight(static_cast<AVLNode *>(node->getLeft())),
+				 _getHeight(static_cast<AVLNode *>(node->getRight()))) +
 		1);
 	int balance = _getBalance(node);
 	// Left Left
 	if (balance > 1 &&
-		_getBalance(static_cast<AVLNode<T> *>(node->getLeft())) >= 0)
+		_getBalance(static_cast<AVLNode *>(node->getLeft())) >= 0)
 		return _rotateRight(node);
 	// Left Right
 	if (balance > 1 &&
-		_getBalance(static_cast<AVLNode<T> *>(node->getLeft())) < 0) {
-		node->setLeft(_rotateLeft(static_cast<AVLNode<T> *>(node->getLeft())));
+		_getBalance(static_cast<AVLNode *>(node->getLeft())) < 0) {
+		node->setLeft(_rotateLeft(static_cast<AVLNode *>(node->getLeft())));
 		return _rotateRight(node);
 	}
 	// Right Right
 	if (balance < -1 &&
-		_getBalance(static_cast<AVLNode<T> *>(node->getRight())) <= 0)
+		_getBalance(static_cast<AVLNode *>(node->getRight())) <= 0)
 		return _rotateLeft(node);
 	// Right Left
 	if (balance < -1 &&
-		_getBalance(static_cast<AVLNode<T> *>(node->getRight())) > 0) {
-		node->setRight(
-			_rotateRight(static_cast<AVLNode<T> *>(node->getRight())));
+		_getBalance(static_cast<AVLNode *>(node->getRight())) > 0) {
+		node->setRight(_rotateRight(static_cast<AVLNode *>(node->getRight())));
 		return _rotateLeft(node);
 	}
 	return node;
 }
 
-template <typename T> bool AVL<T>::remove(const string &key) {
+bool AVL::remove(const string &key) {
 	bool deleted = false;
 	this->rootPtr =
-		_remove(static_cast<AVLNode<T> *>(this->rootPtr), key, deleted);
+		_remove(static_cast<AVLNode *>(this->rootPtr), key, deleted);
 	return deleted;
 }
 
-template <typename T> void AVL<T>::_clear(AVLNode<T> *node) {
+void AVL::_clear(AVLNode *node) {
 	if (node) {
-		_clear(static_cast<AVLNode<T> *>(node->getLeft()));
-		_clear(static_cast<AVLNode<T> *>(node->getRight()));
+		_clear(static_cast<AVLNode *>(node->getLeft()));
+		_clear(static_cast<AVLNode *>(node->getRight()));
 		delete node;
 	}
 }
 
-template <typename T>
-void AVL<T>::_inorderTraversal(const function<void(const string &)> &visit,
-							   AVLNode<T> *node) const {
+void AVL::_inorderTraversal(const function<void(const string &, int)> &visit,
+							AVLNode *node) const {
 	if (node) {
-		_inorderTraversal(visit, static_cast<AVLNode<T> *>(node->getLeft()));
-		visit(node->getKey());
-		_inorderTraversal(visit, static_cast<AVLNode<T> *>(node->getRight()));
+		_inorderTraversal(visit, static_cast<AVLNode *>(node->getLeft()));
+		visit(node->getKey(), node->getIndex());
+		_inorderTraversal(visit, static_cast<AVLNode *>(node->getRight()));
 	}
 }
 
-template <typename T>
-void AVL<T>::inorderTraversal(
-	const function<void(const string &)> &visit) const {
-	_inorderTraversal(visit, static_cast<AVLNode<T> *>(this->rootPtr));
+void AVL::inorderTraversal(
+	const function<void(const string &, int)> &visit) const {
+	_inorderTraversal(visit, static_cast<AVLNode *>(this->rootPtr));
 }

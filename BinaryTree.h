@@ -3,11 +3,11 @@
 
 #include "BinaryNode.h"
 
-template <typename T> class BinaryTree {
+class BinaryTree {
   protected:
-	BinaryNode<T> *rootPtr = nullptr;
+	BinaryNode *rootPtr = nullptr;
 	int count = 0;
-	void _clear(BinaryNode<T> *node);
+	void _clear(BinaryNode *node);
 
   public:
 	BinaryTree() = default;
@@ -15,10 +15,10 @@ template <typename T> class BinaryTree {
 	bool isEmpty() const { return count == 0; }
 	int getCount() const { return count; }
 	void clear();
-	BinaryNode<T> *getRoot() const { return rootPtr; }
+	BinaryNode *getRoot() const { return rootPtr; }
 };
 
-template <typename T> void BinaryTree<T>::_clear(BinaryNode<T> *node) {
+void BinaryTree::_clear(BinaryNode *node) {
 	if (node) {
 		_clear(node->getLeft());
 		_clear(node->getRight());
@@ -26,7 +26,7 @@ template <typename T> void BinaryTree<T>::_clear(BinaryNode<T> *node) {
 	}
 }
 
-template <typename T> void BinaryTree<T>::clear() {
+void BinaryTree::clear() {
 	_clear(rootPtr);
 	rootPtr = nullptr;
 	count = 0;

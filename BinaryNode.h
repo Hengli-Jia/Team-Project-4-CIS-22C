@@ -4,32 +4,28 @@
 #include <string>
 using std::string;
 
-template <typename T> class BinaryNode {
+class BinaryNode {
   private:
-	T data;
-	BinaryNode<T> *left;
-	BinaryNode<T> *right;
 	string key;
 	int index;
+	BinaryNode *left;
+	BinaryNode *right;
 
   public:
-	BinaryNode() : left(nullptr), right(nullptr), key(""), index(-1) {}
-	BinaryNode(BinaryNode<T> *left, BinaryNode<T> *right, string key, int index)
-		: left(left), right(right), key(key), index(index) {}
-	BinaryNode(const T &data)
-		: data(data), left(nullptr), right(nullptr), key(data.getKey()),
-		  index(-1) {}
+	BinaryNode() : key(""), index(-1), left(nullptr), right(nullptr) {}
+	BinaryNode(const string &key, int index)
+		: key(key), index(index), left(nullptr), right(nullptr) {}
+	BinaryNode(BinaryNode *left, BinaryNode *right, string key, int index)
+		: key(key), index(index), left(left), right(right) {}
 
-	void setLeft(BinaryNode<T> *Ptr) { this->left = Ptr; }
-	void setRight(BinaryNode<T> *Ptr) { this->right = Ptr; }
-	BinaryNode<T> *getLeft() const { return left; }
-	BinaryNode<T> *getRight() const { return right; }
+	void setLeft(BinaryNode *Ptr) { this->left = Ptr; }
+	void setRight(BinaryNode *Ptr) { this->right = Ptr; }
+	BinaryNode *getLeft() const { return left; }
+	BinaryNode *getRight() const { return right; }
 	void setKey(string k) { this->key = k; }
 	string getKey() const { return key; }
 	void setIndex(int idx) { this->index = idx; }
-	int getIndex() { return index; }
-	T &getData() { return data; }
-	const T &getData() const { return data; }
+	int getIndex() const { return index; }
 	bool isLeaf() { return this->left == nullptr && this->right == nullptr; }
 };
 
