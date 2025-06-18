@@ -4,7 +4,8 @@
 #include <string>
 
 // HashNode definition
-template <typename T> class HashNode {
+template <typename T>
+class HashNode {
   private:
 	T item = T();
 	int occupied;	// 1 -> occupied, 0 -> empty, -1 -> deleted
@@ -12,8 +13,7 @@ template <typename T> class HashNode {
   public:
 	HashNode() : occupied(0), collisions(0) {}
 	HashNode(const T &anItem) : item(anItem), occupied(1), collisions(0) {}
-	HashNode(const T &anItem, int ocp, int nCol)
-		: item(anItem), occupied(ocp), collisions(nCol) {}
+	HashNode(const T &anItem, int ocp, int nCol) : item(anItem), occupied(ocp), collisions(nCol) {}
 
 	void setItem(const T &anItem) { item = anItem; }
 	void setOccupied(int ocp) { occupied = ocp; }

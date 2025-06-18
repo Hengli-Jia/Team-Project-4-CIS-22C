@@ -27,16 +27,14 @@ class AVL : public BST {
 	int _getHeight(AVLNode *node) const;
 	int _getBalance(AVLNode *node) const;
 	void _clear(AVLNode *node);
-	void _inorderTraversal(const function<void(const string &, int)> &visit,
-						   AVLNode *node) const;
+	void _inorderTraversal(const function<void(const string &, int)> &visit, AVLNode *node) const;
 
   public:
 	AVL() = default;
 	virtual ~AVL() { this->_clear(static_cast<AVLNode *>(this->rootPtr)); }
 	bool insert(const string &key, int index);
 	bool remove(const string &key);
-	void
-	inorderTraversal(const function<void(const string &, int)> &visit) const;
+	void inorderTraversal(const function<void(const string &, int)> &visit) const;
 	void clear() {
 		this->_clear(static_cast<AVLNode *>(this->rootPtr));
 		this->rootPtr = nullptr;

@@ -1,7 +1,7 @@
 /*
  * Team Members: Toma Yuen, Hengli Jia, Minh Khoa Pham
  * This project implements a hash table and an AVL tree to manage chess puzzles.
- * The hash table matains puzzles by their unique ID,
+ * The hash table maintains puzzles by their unique ID,
  * while the AVL tree is for quick access for puzzles based on their IDs.
  */
 
@@ -175,8 +175,7 @@ void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl, string inputFile) {
 	while (getline(file, line)) {
 		if ((lineNum + 1) % 10000 == 0) {
 			cout << "Processing line " << lineNum + 1 << ": " << line << endl;
-			cout << "Current hash table size: " << hashTable.getCapacity()
-				 << endl;
+			cout << "Current hash table size: " << hashTable.getCapacity() << endl;
 		}
 		lineNum++;
 		if (line.empty())
@@ -184,8 +183,7 @@ void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl, string inputFile) {
 
 		// parse the line into fields
 		stringstream ss(line);
-		string puzzleId, fen, moves, rating, ratingDeviation, popularity,
-			nbPlays, themes, gameUrl, openingTags;
+		string puzzleId, fen, moves, rating, ratingDeviation, popularity, nbPlays, themes, gameUrl, openingTags;
 		getline(ss, puzzleId, ',');
 		getline(ss, fen, ',');
 		getline(ss, moves, ',');
@@ -204,11 +202,9 @@ void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl, string inputFile) {
 		}
 
 		// validate required fields (first 9 fields must not be empty)
-		if (puzzleId.empty() || fen.empty() || moves.empty() ||
-			rating.empty() || ratingDeviation.empty() || popularity.empty() ||
-			nbPlays.empty() || themes.empty() || gameUrl.empty()) {
-			cerr << "[ERROR] Missing required fields in line " << lineNum
-				 << ": " << line << endl;
+		if (puzzleId.empty() || fen.empty() || moves.empty() || rating.empty() || ratingDeviation.empty() ||
+			popularity.empty() || nbPlays.empty() || themes.empty() || gameUrl.empty()) {
+			cerr << "[ERROR] Missing required fields in line " << lineNum << ": " << line << endl;
 			continue; // skip malformed line
 		}
 
@@ -232,24 +228,21 @@ void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl, string inputFile) {
 		}
 
 		try {
-			Puzzle puzzle(puzzleId, fen, movesVec, stoi(rating),
-						  stoi(ratingDeviation), stoi(popularity),
-						  stoi(nbPlays), themesVec, gameUrl, openingTagsVec);
+			Puzzle puzzle(puzzleId, fen, movesVec, stoi(rating), stoi(ratingDeviation), stoi(popularity), stoi(nbPlays),
+						  themesVec, gameUrl, openingTagsVec);
 			// Insert into hash table first
 			int idx = hashTable.insert(puzzle);
 			if (idx != -1) {
 				avl.insert(puzzle.getKey(), idx);
 			}
 		} catch (const exception &e) {
-			cerr << "[ERROR] Failed to parse line " << lineNum << ": " << line
-				 << " with error: " << e.what() << endl;
+			cerr << "[ERROR] Failed to parse line " << lineNum << ": " << line << " with error: " << e.what() << endl;
 			continue; // skip line if conversion fails
 		}
 	}
 	file.close();
 	auto end = chrono::high_resolution_clock::now();
-	double seconds =
-		chrono::duration_cast<chrono::duration<double>>(end - start).count();
+	double seconds = chrono::duration_cast<chrono::duration<double>>(end - start).count();
 	cout << "[INFO] inputDataFile completed in " << seconds << " seconds.\n";
 }
 
@@ -288,8 +281,7 @@ void addItem(HashTable<Puzzle> &hashTable, AVL &avl) {
 	string line;
 	getline(cin, line);
 
-	string puzzleId, fen, moves, rating, ratingDeviation, popularity, nbPlays,
-		themes, gameUrl, openingTags;
+	string puzzleId, fen, moves, rating, ratingDeviation, popularity, nbPlays, themes, gameUrl, openingTags;
 
 	bool valid = false;
 	while (!valid) {
@@ -331,9 +323,8 @@ void addItem(HashTable<Puzzle> &hashTable, AVL &avl) {
 		}
 
 		// Validate required fields
-		if (puzzleId.empty() || fen.empty() || moves.empty() ||
-			rating.empty() || ratingDeviation.empty() || popularity.empty() ||
-			nbPlays.empty() || themes.empty() || gameUrl.empty()) {
+		if (puzzleId.empty() || fen.empty() || moves.empty() || rating.empty() || ratingDeviation.empty() ||
+			popularity.empty() || nbPlays.empty() || themes.empty() || gameUrl.empty()) {
 			cout << "[ERROR] One or more required fields are empty. "
 					"Please re-enter.\n";
 			puzzleId.clear();
@@ -383,17 +374,15 @@ void addItem(HashTable<Puzzle> &hashTable, AVL &avl) {
 				continue;
 			}
 
-			Puzzle newPuzzle(puzzleId, fen, movesVec, ratingInt, ratingDevInt,
-							 popularityInt, nbPlaysInt, themesVec, gameUrl,
-							 openingTagsVec);
+			Puzzle newPuzzle(puzzleId, fen, movesVec, ratingInt, ratingDevInt, popularityInt, nbPlaysInt, themesVec,
+							 gameUrl, openingTagsVec);
 
 			// Insert into hash table first
 			if (hashTable.insert(newPuzzle)) {
 				// Find index in hash table
 				int idx = -1;
 				for (int i = 0; i < hashTable.getCapacity(); ++i) {
-					if (hashTable.getOccupiedAt(i) == 1 &&
-						hashTable.getItemAt(i).getKey() == newPuzzle.getKey()) {
+					if (hashTable.getOccupiedAt(i) == 1 && hashTable.getItemAt(i).getKey() == newPuzzle.getKey()) {
 						idx = i;
 						break;
 					}
@@ -429,43 +418,43 @@ void addItem(HashTable<Puzzle> &hashTable, AVL &avl) {
 }
 
 void deleteItem(HashTable<Puzzle> &hashTable, AVL &avl, Stack<Puzzle> &deleteStack) {
-    cout << "Delete a puzzle by PuzzleId:\n";
-    string key;
-    cout << "Enter PuzzleId: ";
-    getline(cin, key);
+	cout << "Delete a puzzle by PuzzleId:\n";
+	string key;
+	cout << "Enter PuzzleId: ";
+	getline(cin, key);
 
-    if (key.empty()) {
-        cout << "[ERROR] No PuzzleId provided.\n";
-        return;
-    }
+	if (key.empty()) {
+		cout << "[ERROR] No PuzzleId provided.\n";
+		return;
+	}
 
-    int idx = avl.search(key);
-    if (idx != -1 && idx < hashTable.getCapacity() && hashTable.getOccupiedAt(idx) == 1) {
-        Puzzle found = hashTable.getItemAt(idx);
+	int idx = avl.search(key);
+	if (idx != -1 && idx < hashTable.getCapacity() && hashTable.getOccupiedAt(idx) == 1) {
+		Puzzle found = hashTable.getItemAt(idx);
 
-        // Remove from hash table
-        if (hashTable.remove(found, found.getKey())) {
-            cout << "[INFO] Puzzle removed from hash table.\n";
-        } else {
-            cout << "[WARN] Puzzle could not be removed from hash table.\n";
-        }
+		// Remove from hash table
+		if (hashTable.remove(found, found.getKey())) {
+			cout << "[INFO] Puzzle removed from hash table.\n";
+		} else {
+			cout << "[WARN] Puzzle could not be removed from hash table.\n";
+		}
 
-        // Remove from AVL
-        if (avl.remove(found.getKey())) {
-            cout << "[INFO] Puzzle removed from AVL.\n";
-        } else {
-            cout << "[WARN] Puzzle could not be removed from AVL.\n";
-        }
+		// Remove from AVL
+		if (avl.remove(found.getKey())) {
+			cout << "[INFO] Puzzle removed from AVL.\n";
+		} else {
+			cout << "[WARN] Puzzle could not be removed from AVL.\n";
+		}
 
-        // Push to deleteStack
-        if (deleteStack.push(found)) {
-            cout << "[INFO] Puzzle pushed to deleteStack for undo.\n";
-        } else {
-            cout << "[WARN] deleteStack is full, cannot store deleted puzzle.\n";
-        }
-    } else {
-        cout << "[ERROR] Puzzle not found by PuzzleId.\n";
-    }
+		// Push to deleteStack
+		if (deleteStack.push(found)) {
+			cout << "[INFO] Puzzle pushed to deleteStack for undo.\n";
+		} else {
+			cout << "[WARN] deleteStack is full, cannot store deleted puzzle.\n";
+		}
+	} else {
+		cout << "[ERROR] Puzzle not found by PuzzleId.\n";
+	}
 }
 
 void undoDelete(HashTable<Puzzle> &hashTable, AVL &avl, Stack<Puzzle> &deleteStack) {
@@ -475,8 +464,7 @@ void undoDelete(HashTable<Puzzle> &hashTable, AVL &avl, Stack<Puzzle> &deleteSta
 			// Find index in hash table
 			int idx = -1;
 			for (int i = 0; i < hashTable.getCapacity(); ++i) {
-				if (hashTable.getOccupiedAt(i) == 1 &&
-					hashTable.getItemAt(i).getKey() == lastDeleted.getKey()) {
+				if (hashTable.getOccupiedAt(i) == 1 && hashTable.getItemAt(i).getKey() == lastDeleted.getKey()) {
 					idx = i;
 					break;
 				}
@@ -495,22 +483,22 @@ void undoDelete(HashTable<Puzzle> &hashTable, AVL &avl, Stack<Puzzle> &deleteSta
 
 void findItem(const HashTable<Puzzle> &hashTable, const AVL &avl) {
 	cout << "Find a puzzle by PuzzleId:\n";
-    string key;
-    cout << "Enter PuzzleId: ";
-    getline(cin, key);
+	string key;
+	cout << "Enter PuzzleId: ";
+	getline(cin, key);
 
-    if (key.empty()) {
-        cout << "[ERROR] No PuzzleId provided.\n";
-        return;
-    }
+	if (key.empty()) {
+		cout << "[ERROR] No PuzzleId provided.\n";
+		return;
+	}
 
-    int idx = avl.search(key);
-    if (idx != -1 && idx < hashTable.getCapacity() && hashTable.getOccupiedAt(idx) == 1) {
-        Puzzle found = hashTable.getItemAt(idx);
-        cout << "[INFO] Puzzle found:\n";
-        cout << found << endl;
-    } else {
-        cout << "[ERROR] Puzzle not found by PuzzleId.\n";
+	int idx = avl.search(key);
+	if (idx != -1 && idx < hashTable.getCapacity() && hashTable.getOccupiedAt(idx) == 1) {
+		Puzzle found = hashTable.getItemAt(idx);
+		cout << "[INFO] Puzzle found:\n";
+		cout << found << endl;
+	} else {
+		cout << "[ERROR] Puzzle not found by PuzzleId.\n";
 	}
 }
 
@@ -518,8 +506,7 @@ void listSorted(const AVL &avl, const HashTable<Puzzle> &hashTable) {
 	cout << "Listing all puzzles sorted by PuzzleId (AVL inorder traversal):\n";
 	// Helper function to print each puzzle
 	auto printPuzzle = [&](const string &, int idx) {
-		if (idx >= 0 && idx < hashTable.getCapacity() &&
-			hashTable.getOccupiedAt(idx) == 1) {
+		if (idx >= 0 && idx < hashTable.getCapacity() && hashTable.getOccupiedAt(idx) == 1) {
 			Puzzle puzzleOut = hashTable.getItemAt(idx);
 			cout << puzzleOut << endl;
 		}
@@ -565,9 +552,7 @@ void displayIndentedTree(const AVL &avl, const HashTable<Puzzle> &hashTable) {
 	printIndentedTree(avl.getRoot(), 0, hashTable);
 }
 
-void displayTeamMembers() {
-	cout << "Team Members: Toma Yuen, Hengli Jia, Minh Khoa Pham\n";
-}
+void displayTeamMembers() { cout << "Team Members: Toma Yuen, Hengli Jia, Minh Khoa Pham\n"; }
 
 // .............................................................................
 
@@ -600,8 +585,7 @@ int determineHashSize(string inputFile) {
 }
 
 // Helper for indented AVL display
-static void printIndentedTree(BinaryNode *node, int level,
-							  const HashTable<Puzzle> &hashTable) {
+static void printIndentedTree(BinaryNode *node, int level, const HashTable<Puzzle> &hashTable) {
 	if (!node)
 		return;
 	for (int i = 0; i < level; ++i)

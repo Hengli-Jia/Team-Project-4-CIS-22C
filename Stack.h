@@ -1,7 +1,8 @@
 #ifndef STACK_H
 #define STACK_H
 
-template <typename T> class Stack {
+template <typename T>
+class Stack {
   private:
 	static const int MAX_STACK_SIZE = 100;
 	T data[MAX_STACK_SIZE];
