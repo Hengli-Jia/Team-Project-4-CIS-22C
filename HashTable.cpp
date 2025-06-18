@@ -2,6 +2,7 @@
 #include "HashTable.h"
 
 #include <cmath> // Include cmath for sqrt function
+#include <cstdint>
 #include <iostream>
 
 using std::cerr;
@@ -19,13 +20,17 @@ template <typename T> HashTable<T>::HashTable(int initialCapacity) {
 // Destructor: releases allocated memory
 template <typename T> HashTable<T>::~HashTable() { delete[] table; }
 
-// Simple hash function for string keys
+// Improved hash function for string keys using the FNV-1a algorithm
+// This provides better distribution for typical string keys (like puzzle IDs)
 template <typename T> int HashTable<T>::hashFunction(const string &key) const {
-	int hash = 1;
-	for (char c : key) {
-		hash = 31 * hash + static_cast<unsigned char>(c);
+	const uint64_t fnv_offset_basis = 14695981039346656037ULL;
+	const uint64_t fnv_prime = 1099511628211ULL;
+	uint64_t hash = fnv_offset_basis;
+	for (unsigned char c : key) {
+		hash ^= c;
+		hash *= fnv_prime;
 	}
-	return hash % capacity;
+	return static_cast<int>(hash % capacity);
 }
 
 // Linear probing for collision resolution
