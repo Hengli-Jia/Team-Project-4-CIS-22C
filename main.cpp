@@ -1,8 +1,8 @@
 /*
  * Team Members: Toma Yuen, Hengli Jia, Minh Khoa Pham
  * This project implements a hash table and an AVL tree to manage chess puzzles.
- * The hash table is used for fast access to puzzles by their unique ID,
- * while the AVL tree maintains a sorted order of puzzles based on their IDs.
+ * The hash table matains puzzles by their unique ID,
+ * while the AVL tree is for quick access for puzzles based on their IDs.
  */
 
 #include "AVL.h"
