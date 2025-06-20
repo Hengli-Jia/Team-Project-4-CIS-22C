@@ -1,5 +1,5 @@
 /*
- * Team Members: Toma Yuen, Hengli Jia, Minh Khoa Pham
+ * Team Members: Toma Yuen, Hengli Jia, Minh Khoa Pham，Mosafa Abdelkawy, Francesca Cacchione
  * This project implements a hash table and an AVL tree to manage chess puzzles.
  * The hash table maintains puzzles by their unique ID,
  * while the AVL tree is for quick access for puzzles based on their IDs.
