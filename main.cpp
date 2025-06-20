@@ -62,9 +62,8 @@ int main() {
 	AVL avl;
 	Stack<Puzzle> deleteStack;
 
-	// File I/O
+	// File I
 	inputDataFile(hashTable, avl, inputFile);
-	outputDataFile(hashTable, outputFile);
 
 	menu();
 	char choice;
@@ -113,6 +112,9 @@ int main() {
 			break;
 		}
 	} while (choice != 'E');
+
+	// File O
+	outputDataFile(hashTable, outputFile);
 }
 
 // .............................................................................
