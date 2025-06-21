@@ -62,7 +62,7 @@ int main() {
 	AVL avl;
 	Stack<Puzzle> deleteStack;
 
-	// File I
+	// File Input
 	inputDataFile(hashTable, avl, inputFile);
 
 	menu();
@@ -113,7 +113,7 @@ int main() {
 		}
 	} while (choice != 'E');
 
-	// File O
+	// File Output
 	outputDataFile(hashTable, outputFile);
 }
 
@@ -155,8 +155,6 @@ char menuInput() {
 	return '\0'; // no valid input
 }
 void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl, string inputFile) {
-	auto start = chrono::high_resolution_clock::now();
-
 	// if inputFile is empty, prompt user for input
 	if (inputFile.empty()) {
 		cout << "Enter input file name: ";
@@ -169,6 +167,8 @@ void inputDataFile(HashTable<Puzzle> &hashTable, AVL &avl, string inputFile) {
 		cerr << "Failed to open input file: " << inputFile << endl;
 		return;
 	}
+
+	auto start = chrono::high_resolution_clock::now();
 
 	// read data and insert into hashTable and avl
 	string line;
@@ -285,137 +285,123 @@ void addItem(HashTable<Puzzle> &hashTable, AVL &avl) {
 
 	string puzzleId, fen, moves, rating, ratingDeviation, popularity, nbPlays, themes, gameUrl, openingTags;
 
-	bool valid = false;
-	while (!valid) {
-		if (!line.empty()) {
-			// Parse CSV line
-			stringstream ss(line);
-			getline(ss, puzzleId, ',');
-			getline(ss, fen, ',');
-			getline(ss, moves, ',');
-			getline(ss, rating, ',');
-			getline(ss, ratingDeviation, ',');
-			getline(ss, popularity, ',');
-			getline(ss, nbPlays, ',');
-			getline(ss, themes, ',');
-			getline(ss, gameUrl, ',');
-			if (!ss.eof())
-				getline(ss, openingTags, ',');
-		} else {
-			cout << "PuzzleId: ";
-			getline(cin, puzzleId);
-			cout << "FEN: ";
-			getline(cin, fen);
-			cout << "Moves (space-separated): ";
-			getline(cin, moves);
-			cout << "Rating: ";
-			getline(cin, rating);
-			cout << "RatingDeviation: ";
-			getline(cin, ratingDeviation);
-			cout << "Popularity: ";
-			getline(cin, popularity);
-			cout << "NbPlays: ";
-			getline(cin, nbPlays);
-			cout << "Themes (space-separated): ";
-			getline(cin, themes);
-			cout << "GameUrl: ";
-			getline(cin, gameUrl);
-			cout << "OpeningTags (space-separated, optional): ";
-			getline(cin, openingTags);
-		}
+	if (!line.empty()) {
+		// Parse CSV line
+		stringstream ss(line);
+		getline(ss, puzzleId, ',');
 
-		// Validate required fields
-		if (puzzleId.empty() || fen.empty() || moves.empty() || rating.empty() || ratingDeviation.empty() ||
-			popularity.empty() || nbPlays.empty() || themes.empty() || gameUrl.empty()) {
-			cout << "[ERROR] One or more required fields are empty. "
-					"Please re-enter.\n";
-			puzzleId.clear();
-			fen.clear();
-			moves.clear();
-			rating.clear();
-			ratingDeviation.clear();
-			popularity.clear();
-			nbPlays.clear();
-			themes.clear();
-			gameUrl.clear();
-			openingTags.clear();
-			line.clear();
-			cout << "Enter full line (CSV format) or leave blank to input "
-					"fields one by one:\n";
-			getline(cin, line);
-			continue;
-		}
-
-		// Parse moves, themes, openingTags as vectors
-		auto split = [](const string &s) {
-			vector<string> v;
-			stringstream ss(s);
-			string item;
-			while (ss >> item)
-				v.push_back(item);
-			return v;
-		};
-		vector<string> movesVec = split(moves);
-		vector<string> themesVec = split(themes);
-		vector<string> openingTagsVec = split(openingTags);
-
-		// Validate integer fields
-		try {
-			int ratingInt = stoi(rating);
-			int ratingDevInt = stoi(ratingDeviation);
-			int popularityInt = stoi(popularity);
-			int nbPlaysInt = stoi(nbPlays);
-
-			// Check for duplicate puzzleId
+		// Immediately check for duplicate puzzleId
+		if (!puzzleId.empty()) {
 			Puzzle temp;
 			if (hashTable.search(temp, puzzleId)) {
-				cout << "[ERROR] PuzzleId already exists in the hash "
-						"table. Please use a unique PuzzleId.\n";
-				puzzleId.clear();
-				line.clear();
-				continue;
+				cout << "[ERROR] PuzzleId already exists in the hash table.\n";
+				return; // Exit on invalid input
 			}
-
-			Puzzle newPuzzle(puzzleId, fen, movesVec, ratingInt, ratingDevInt, popularityInt, nbPlaysInt, themesVec,
-							 gameUrl, openingTagsVec);
-
-			// Insert into hash table first
-			if (hashTable.insert(newPuzzle)) {
-				// Find index in hash table
-				int idx = -1;
-				for (int i = 0; i < hashTable.getCapacity(); ++i) {
-					if (hashTable.getOccupiedAt(i) == 1 && hashTable.getItemAt(i).getKey() == newPuzzle.getKey()) {
-						idx = i;
-						break;
-					}
-				}
-				if (idx != -1) {
-					avl.insert(newPuzzle.getKey(), idx);
-				}
-				cout << "Puzzle added successfully!\n";
-				valid = true;
-			} else {
-				cout << "[ERROR] Failed to insert puzzle into hash table.\n";
-			}
-		} catch (const invalid_argument &) {
-			cout << "[ERROR] One or more numeric fields are not valid "
-					"integers. Please re-enter.\n";
-			rating.clear();
-			ratingDeviation.clear();
-			popularity.clear();
-			nbPlays.clear();
-			line.clear();
-			continue;
-		} catch (const out_of_range &) {
-			cout << "[ERROR] One or more numeric fields are out of range. "
-					"Please re-enter.\n";
-			rating.clear();
-			ratingDeviation.clear();
-			popularity.clear();
-			nbPlays.clear();
-			line.clear();
-			continue;
 		}
+
+		getline(ss, fen, ',');
+		getline(ss, moves, ',');
+		getline(ss, rating, ',');
+		getline(ss, ratingDeviation, ',');
+		getline(ss, popularity, ',');
+		getline(ss, nbPlays, ',');
+		getline(ss, themes, ',');
+		getline(ss, gameUrl, ',');
+		if (!ss.eof())
+			getline(ss, openingTags, ',');
+	} else {
+		cout << "PuzzleId: ";
+		getline(cin, puzzleId);
+
+		// Immediately check for duplicate puzzleId
+		if (!puzzleId.empty()) {
+			Puzzle temp;
+			if (hashTable.search(temp, puzzleId)) {
+				cout << "[ERROR] PuzzleId already exists in the hash table.\n";
+				return; // Exit on invalid input
+			}
+		} else {
+			cout << "[ERROR] PuzzleId cannot be empty. Exiting addItem.\n";
+			return; // Exit on invalid input
+		}
+
+		cout << "FEN: ";
+		getline(cin, fen);
+		cout << "Moves (space-separated): ";
+		getline(cin, moves);
+		cout << "Rating: ";
+		getline(cin, rating);
+		cout << "RatingDeviation: ";
+		getline(cin, ratingDeviation);
+		cout << "Popularity: ";
+		getline(cin, popularity);
+		cout << "NbPlays: ";
+		getline(cin, nbPlays);
+		cout << "Themes (space-separated): ";
+		getline(cin, themes);
+		cout << "GameUrl: ";
+		getline(cin, gameUrl);
+		cout << "OpeningTags (space-separated, optional): ";
+		getline(cin, openingTags);
+	}
+
+	// Validate required fields
+	if (puzzleId.empty() || fen.empty() || moves.empty() || rating.empty() || ratingDeviation.empty() ||
+		popularity.empty() || nbPlays.empty() || themes.empty() || gameUrl.empty()) {
+		cout << "[ERROR] One or more required fields are empty. "
+				"Exiting addItem.\n";
+		return; // Exit on invalid input
+	}
+
+	// Parse moves, themes, openingTags as vectors
+	auto split = [](const string &s) {
+		vector<string> v;
+		stringstream ss(s);
+		string item;
+		while (ss >> item)
+			v.push_back(item);
+		return v;
+	};
+	vector<string> movesVec = split(moves);
+	vector<string> themesVec = split(themes);
+	vector<string> openingTagsVec = split(openingTags);
+
+	// Validate integer fields
+	try {
+		int ratingInt = stoi(rating);
+		int ratingDevInt = stoi(ratingDeviation);
+		int popularityInt = stoi(popularity);
+		int nbPlaysInt = stoi(nbPlays);
+
+		Puzzle newPuzzle(puzzleId, fen, movesVec, ratingInt, ratingDevInt, popularityInt, nbPlaysInt, themesVec,
+						 gameUrl, openingTagsVec);
+
+		// Insert into hash table first
+		if (hashTable.insert(newPuzzle)) {
+			// Find index in hash table
+			int idx = -1;
+			for (int i = 0; i < hashTable.getCapacity(); ++i) {
+				if (hashTable.getOccupiedAt(i) == 1 && hashTable.getItemAt(i).getKey() == newPuzzle.getKey()) {
+					idx = i;
+					break;
+				}
+			}
+			if (idx != -1) {
+				avl.insert(newPuzzle.getKey(), idx);
+			}
+			cout << "Puzzle added successfully!\n";
+		} else {
+			cout << "[ERROR] Failed to insert puzzle into hash table. Exiting addItem.\n";
+			return; // Exit on invalid input
+		}
+	} catch (const invalid_argument &) {
+		cout << "[ERROR] One or more numeric fields are not valid "
+				"integers. Exiting addItem.\n";
+		return; // Exit on invalid input
+	} catch (const out_of_range &) {
+		cout << "[ERROR] One or more numeric fields are out of range. "
+				"Exiting addItem.\n";
+		return; // Exit on invalid input
 	}
 }
 
@@ -484,9 +470,8 @@ void undoDelete(HashTable<Puzzle> &hashTable, AVL &avl, Stack<Puzzle> &deleteSta
 }
 
 void findItem(const HashTable<Puzzle> &hashTable, const AVL &avl) {
-	cout << "Find a puzzle by PuzzleId:\n";
+	cout << "Find a puzzle by PuzzleId: ";
 	string key;
-	cout << "Enter PuzzleId: ";
 	getline(cin, key);
 
 	if (key.empty()) {
@@ -498,7 +483,34 @@ void findItem(const HashTable<Puzzle> &hashTable, const AVL &avl) {
 	if (idx != -1 && idx < hashTable.getCapacity() && hashTable.getOccupiedAt(idx) == 1) {
 		Puzzle found = hashTable.getItemAt(idx);
 		cout << "[INFO] Puzzle found:\n";
-		cout << found << endl;
+		cout << "  PuzzleId: " << found.puzzleId() << '\n';
+		cout << "  FEN: " << found.fen() << '\n';
+		cout << "  Moves: ";
+		for (size_t j = 0; j < found.moves().size(); ++j) {
+			if (j > 0)
+				cout << " ";
+			cout << found.moves()[j];
+		}
+		cout << '\n';
+		cout << "  Rating: " << found.rating() << '\n';
+		cout << "  Rating Deviation: " << found.ratingDeviation() << '\n';
+		cout << "  Popularity: " << found.popularity() << '\n';
+		cout << "  Number of Plays: " << found.nbPlays() << '\n';
+		cout << "  Themes: ";
+		for (size_t j = 0; j < found.themes().size(); ++j) {
+			if (j > 0)
+				cout << " ";
+			cout << found.themes()[j];
+		}
+		cout << '\n';
+		cout << "  Game URL: " << found.gameUrl() << '\n';
+		cout << "  Opening Tags: ";
+		for (size_t j = 0; j < found.openingTags().size(); ++j) {
+			if (j > 0)
+				cout << " ";
+			cout << found.openingTags()[j];
+		}
+		cout << '\n';
 	} else {
 		cout << "[ERROR] Puzzle not found by PuzzleId.\n";
 	}
@@ -561,29 +573,29 @@ void displayTeamMembers() { cout << "Team Members: Toma Yuen, Hengli Jia, Minh K
 // OTHER FUNCTION DEFINITIONS
 
 int determineHashSize(string inputFile) {
-    if (inputFile.empty()) {
-        cout << "Enter input file name: ";
-        getline(cin, inputFile);
-    }
+	if (inputFile.empty()) {
+		cout << "Enter input file name: ";
+		getline(cin, inputFile);
+	}
 
-    ifstream file(inputFile);
-    if (!file.is_open()) {
-        cerr << "Failed to open input file: " << inputFile << endl;
-        return DEFAULT_HASH_SIZE;
-    }
+	ifstream file(inputFile);
+	if (!file.is_open()) {
+		cerr << "Failed to open input file: " << inputFile << endl;
+		return DEFAULT_HASH_SIZE;
+	}
 
-    string line;
-    int lineCount = 0;
-    getline(file, line); // skip header
-    while (getline(file, line)) {
-        ++lineCount;
-    }
-    file.close();
+	string line;
+	int lineCount = 0;
+	getline(file, line); // skip header
+	while (getline(file, line)) {
+		++lineCount;
+	}
+	file.close();
 
-    HashTable<int> ht;
-    int hashSize = ht.nextPrime(lineCount * 2);
+	HashTable<int> ht;
+	int hashSize = ht.nextPrime(lineCount * 2);
 
-    return hashSize;
+	return hashSize;
 }
 
 // Helper for indented AVL display
